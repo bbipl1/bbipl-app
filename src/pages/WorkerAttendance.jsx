@@ -260,6 +260,7 @@ function AttendanceForm() {
           console.log(formData.selfie)
         } else {
           setImageUploadText("Selfie Uploaded");
+          setisSelfieUploaded(true);
           console.log("File uploaded successfully: ", data.Location);
           alert(`File uploaded to: ${data.Location}`);
         }
