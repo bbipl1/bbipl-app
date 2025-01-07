@@ -14,6 +14,7 @@ AWS.config.update({
 
 function AttendanceForm() {
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isSelfieUploaded,setisSelfieUploaded]=useState(false);
   const [blobFile,setBlobFile]=useState();
   const [imageUploadText,setImageUploadText]=useState("Upload Selfie")
   const [videoBlob, setVideoBlob] = useState(null); // Store the recorded video
@@ -312,7 +313,7 @@ function AttendanceForm() {
                   className="w-40 h-40 object-cover"
                 />
                 </div>
-                <button onClick={selfieUpload} className="bg-green-400 p-2 rounded-md text-white">{imageUploadText}</button>
+                <button onClick={selfieUpload} disabled={isSelfieUploaded} className={`bg-green-400 p-2 rounded-md  text-white ${isSelfieUploaded?"cursor-none":"cursor-pointer"}`}>{imageUploadText}</button>
                 <p className="mt-2 text-sm text-gray-500">
                   Geo Coordinates: {formData.selfie.geoCoordinates}
                 </p>
