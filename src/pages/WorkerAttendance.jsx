@@ -314,7 +314,7 @@ function AttendanceForm() {
                   className="w-40 h-40 object-cover"
                 />
                 </div>
-                <button onClick={selfieUpload} disabled={isSelfieUploaded} className={`bg-green-400 p-2 rounded-md  text-white ${isSelfieUploaded?"cursor-none":"cursor-pointer"}`}>{imageUploadText}</button>
+                <button onClick={selfieUpload} disabled={isSelfieUploaded} className={`bg-green-400 p-2 rounded-md  text-white ${isSelfieUploaded?"cursor-not-allowed":"cursor-pointer"}`}>{imageUploadText}</button>
                 <p className="mt-2 text-sm text-gray-500">
                   Geo Coordinates: {formData.selfie.geoCoordinates}
                 </p>
