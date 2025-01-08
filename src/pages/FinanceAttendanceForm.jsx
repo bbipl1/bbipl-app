@@ -1,6 +1,10 @@
 import React from "react";
-
+import { Navigate, useNavigate } from "react-router-dom";
 const FinanceAttendanceForm = () => {
+    const navigate=useNavigate();
+    const handleBack=()=>{
+        navigate("/authentication/login")
+    }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600">
       <div className="text-center bg-white p-10 rounded-lg shadow-lg">

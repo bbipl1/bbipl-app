@@ -9,7 +9,7 @@ function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: 'developer',
+    role: 'admin',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');

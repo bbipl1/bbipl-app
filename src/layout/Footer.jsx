@@ -47,7 +47,7 @@ const Footer = () => {
         <div>
           <h2 className="text-lg font-bold">Contact Us</h2>
           <p className="mt-2">
-            Email: <a href="Rakesh@businessbasket.in" className="hover:text-yellow-300">rakesh@businessbasket.in</a>
+            Email: <a href="rakesh@businessbasket.in" className="hover:text-yellow-300">rakesh@businessbasket.in</a>
           </p>
           <p>
             Phone: <a href="+91 75036 77953" className="hover:text-yellow-300">+91 75036 77953</a>
