@@ -50,7 +50,7 @@ const Footer = () => {
             Email: <a href="mailto:rakesh@businessbasket.in" className="hover:text-yellow-300">rakesh@businessbasket.in</a>
           </p>
           <p>
-            Phone: <a href="+91 75036 77953" className="hover:text-yellow-300">+91 75036 77953</a>
+            Phone: <a href="tel:+91 75036 77953" className="hover:text-yellow-300">+91 75036 77953</a>
           </p>
           <div className="flex space-x-4 mt-4">
             <a
