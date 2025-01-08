@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import AWS from 'aws-sdk'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { postData } from "../api/AttendanceUpload";
 
 
 
@@ -7,19 +9,31 @@ const S3_BUCKET='bpipl-attendance-image'
 const REGION='ap-south-1'
 const access_key=process.env.REACT_APP_ACCESS_KEY
 const secrect_access_key=process.env.REACT_APP_SECRECT_ACCESS_KEY
+const serverURL=process.env.REACT_APP_SERVER_URL
 
 AWS.config.update({
   accessKeyId: access_key,
   secretAccessKey: secrect_access_key,})
 
 function AttendanceForm() {
+  //video
+  const [selectedVideoFile, setSelectedVideoFile] = useState(null);
+  const [videoUploadProgress, setVideoUploadProgress] = useState(0);
+  const [isVideoUploaded,setisVideoUploaded]=useState(false);
+  const [videoUploadText,setVideoUploadText]=useState("Upload Video")
+  //selfie
+  const [selfieURL,setSelfieURL]=useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isSelfieUploaded,setisSelfieUploaded]=useState(false);
   const [blobFile,setBlobFile]=useState();
   const [imageUploadText,setImageUploadText]=useState("Upload Selfie")
+
+
   const [videoBlob, setVideoBlob] = useState(null); // Store the recorded video
   const [geoCoordinates, setGeoCoordinates] = useState(""); // Store the geo-coordinates
   const [isRecording, setIsRecording] = useState(false); // Manage recording state
+  const [accountDetails,setAccountDetails]=useState(null);
+
   const [formData, setFormData] = useState({
     selfie: null,
     employeeName: "",
@@ -30,12 +44,19 @@ function AttendanceForm() {
     day: "",
     expenses: "",
     expensesType: "",
-    paymentsMethod: "",
-    qrCodeImageURL: null,
+    accountDetailsImageURL: null,
     paymentsStatus: "",
     progressReportVideo: null,
     progressReportDescription: "",
-    geoCoordinates: "",
+  
+  });
+
+  const s3Client = new S3Client({
+    region: 'ap-south-1', // e.g., 'us-east-1'
+    credentials: {
+      accessKeyId: access_key,
+      secretAccessKey: secrect_access_key,
+    },
   });
 
   const videoRef = useRef(null); // Reference for the video element
@@ -139,6 +160,8 @@ function AttendanceForm() {
       );
 
       const imageUrl = canvas.toDataURL("image/png");
+      setSelfieURL(imageUrl);
+      console.log(imageUrl)
       const blob = dataURLToBlob(imageUrl);
       setBlobFile(blob);
       setFormData((prevData) => ({
@@ -222,7 +245,19 @@ function AttendanceForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    alert("Form submitted successfully!");
+    const url=`${serverURL}/api/submit-attendance`
+    postData(url,formData)
+    .then((res)=>{
+      if(res){
+        alert("Form submitted successfully!");
+      }else{
+        alert("getting server error while uploading the form. Please try again after sometime.")
+      }
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+    
   };
 
   const handleChange = (e) => {
@@ -243,7 +278,7 @@ function AttendanceForm() {
 
     const params = {
       Bucket: S3_BUCKET,
-      Key: `${"name.png"}`, // The folder path in S3
+      Key: `selfies/${"name.png"}`, // The folder path in S3
       Body: blobFile,
       ContentType: "image/png",
       ACL: "public-read", // Optional: Make the file public
@@ -256,16 +291,80 @@ function AttendanceForm() {
       .send((err, data) => {
         if (err) {
           console.error("Error uploading file: ", err);
-          console.log("T",formData.selfie.name)
           console.log(formData.selfie)
         } else {
           setImageUploadText("Selfie Uploaded");
           setisSelfieUploaded(true);
           console.log("File uploaded successfully: ", data.Location);
           alert(`File uploaded to: ${data.Location}`);
+          setFormData((prevData) => ({
+            ...prevData,
+            selfie: { imageUrl:data.Location, geoCoordinates },
+          }));
         }
       });
   };
+
+  const handleVideoUpload = async () => {
+    if (!videoBlob) {
+      alert('Please select a file first!');
+      return;
+    }
+
+    const params = {
+      Bucket: S3_BUCKET, // Replace with your S3 bucket name
+      Key: `videos/${'video.mp4'}`, // The file path in your bucket
+      Body: videoBlob,
+      ContentType: "video/mp4", // File MIME type
+    };
+
+    try {
+      const uploadCommand = new PutObjectCommand(params);
+
+      await s3Client.send(uploadCommand);
+      alert('File uploaded successfully!');
+      setisVideoUploaded(true)
+      setVideoUploadText("Video Uploaded");
+      const fileUrl = `https://${params.Bucket}.s3.${"ap-south-1"}.amazonaws.com/${params.Key}`;
+      setFormData((prevData)=>({...prevData,"progressReportVideo":fileUrl}));
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('File upload failed!');
+    }
+  };
+
+  useEffect(()=>{
+    if(accountDetails){
+      const uploadParam={
+        Bucket:S3_BUCKET,
+        Key:"AccountDetails/acc.jpg",
+        Body:accountDetails,
+        ContentType:accountDetails.type
+      }
+
+      const s3 = new AWS.S3({
+        params: { Bucket: S3_BUCKET },
+        region: REGION,
+      });
+
+      s3.upload(uploadParam)
+      .on("httpUploadProgress", (evt) => {
+        setUploadProgress(Math.round((evt.loaded / evt.total) * 100));
+      })
+      .send((err, data) => {
+        if (err) {
+          console.error("Error uploading account details: ", err);
+          console.log(accountDetails.type)
+        } else {
+          // setImageUploadText("Account Details Uploaded");
+          // setisSelfieUploaded(true);
+          console.log("Account details uploaded successfully: ", data.Location);
+          setFormData((prevData)=>({...prevData,"accountDetailsImageURL":data.Location}))
+          alert(`File uploaded to: ${data.Location}`);
+        }
+      });
+    }
+  },[accountDetails])
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center">
@@ -305,18 +404,18 @@ function AttendanceForm() {
             </button>
 
             {/* Display uploaded selfie */}
-            {formData.selfie && (
+            {selfieURL && (
               <div className="mt-4">
                 <div>
                 <img
-                  src={formData.selfie.imageUrl}
+                  src={selfieURL}
                   alt="Uploaded Selfie"
                   className="w-40 h-40 object-cover"
                 />
                 </div>
-                <button onClick={selfieUpload} disabled={isSelfieUploaded} className={`bg-green-400 p-2 rounded-md  text-white ${isSelfieUploaded?"cursor-not-allowed":"cursor-pointer"}`}>{imageUploadText}</button>
+                <button onClick={selfieUpload} disabled={isSelfieUploaded} className={` ${isSelfieUploaded?'bg-gray-400':'bg-green-400'} p-2 rounded-md  text-white ${isSelfieUploaded?"cursor-not-allowed":"cursor-pointer"}`}>{imageUploadText}</button>
                 <p className="mt-2 text-sm text-gray-500">
-                  Geo Coordinates: {formData.selfie.geoCoordinates}
+                  Geo Coordinates: {geoCoordinates}
                 </p>
               </div>
             )}
@@ -502,15 +601,15 @@ function AttendanceForm() {
             </label>
             <input
               type="file"
-              id="qrCodeImage"
-              name="qrCodeImage"
-              onChange={handleChange}
-              accept="image/*"
+              id="AccountDetails"
+              name="AccountDetails"
+              onChange={(e)=>{setAccountDetails(e.target.files[0])}}
+              accept="image/png, image/jpg, image/jpeg"
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
             <p className="text-xs text-gray-500 mt-1">
-              Please upload a clear image of the QR code.
+              Please upload a clear image(jpg, jpeg, png files only) of the Account details.
             </p>
           </div>
 
@@ -530,8 +629,8 @@ function AttendanceForm() {
               required
             >
               <option value="">Select Payment Status</option>
-              <option value="received">Received</option>
-              <option value="due">Due</option>
+              <option value="Received">Received</option>
+              <option value="Pending">Pending</option>
             </select>
           </div>
 
@@ -593,12 +692,7 @@ function AttendanceForm() {
                   controls
                   className="w-full h-auto border border-gray-300 rounded-lg"
                 ></video>
-                <button
-                  onClick={handleUpload}
-                  className="mt-4 w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
-                >
-                  Upload Video
-                </button>
+                <button onClick={handleVideoUpload} disabled={isVideoUploaded} className={` ${isVideoUploaded?'bg-gray-400':'bg-green-400'} p-2 rounded-md  text-white ${isVideoUploaded?"cursor-not-allowed":"cursor-pointer"}`}>{videoUploadText}</button>
               </div>
             )}
           </div>

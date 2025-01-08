@@ -4,6 +4,7 @@ import { Link,useNavigate } from 'react-router-dom';
 
 function Login() {
 
+  const [Role,setRole]=useState('admin');
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -18,11 +19,27 @@ function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleRole=(e)=>{
+    setFormData((prevData) => ({ ...prevData, 'role': e.target.value }));
+    setRole(e.target.value);
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    navigate('/pages/worker-attendance-form');
+    if(Role==="admin"){
+      navigate('/pages/admin');
+    }else if(Role==="developer"){
+      navigate('/pages/developer-attendance-form');
+    }else if(Role==="finance"){
+      navigate('/pages/finance-attendance-form');
+    }else if(Role==="worker"){
+      navigate('/pages/worker-attendance-form');
+    }
+
+    return 
+    
 
     try {
       const response = await fetch('https://api.example.com/login', {
@@ -93,13 +110,14 @@ function Login() {
             <select
               id="role"
               name="role"
-              value={formData.role}
-              onChange={handleChange}
+              value={Role}
+              onChange={handleRole}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             //   required
             >
-              <option value="developer">Developer</option>
               <option value="admin">Admin</option>
+              <option value="developer">Developer</option>
+              <option value="finance">Finance</option>
               <option value="worker">Worker</option>
             </select>
           </div>

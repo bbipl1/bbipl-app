@@ -11,15 +11,15 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <nav className="bg-cyan-400 text-white p-4 shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center">
           <Link to="/" className="text-2xl font-bold">
             <img
-              src="/path-to-your-logo.png"
+              src="/assets/logo/logo-png.png"
               alt="Logo"
-              className="h-10 w-auto"
+              className="h-16 w-auto rounded-md"
             />
           </Link>
         </div>

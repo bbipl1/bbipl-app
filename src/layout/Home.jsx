@@ -16,13 +16,13 @@ const Home = () => {
           </p>
           <div className="flex justify-center gap-6">
             <Link
-              to="/services"
+              to="/pages/services"
               className="bg-yellow-400 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition duration-300"
             >
               Our Services
             </Link>
             <Link
-              to="/contact-us"
+              to="/pages/contact-us"
               className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
             >
               Contact Us
