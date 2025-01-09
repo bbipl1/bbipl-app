@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 function Login() {
-  const [role, setRole] = useState('admin');
+  const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("admin");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    empMobileOrId: '',  // Single field to accept either empId or empMobile
-    empPassword: '',
-    empRole: 'admin',
+    empMobileOrId: "", // Single field to accept either empId or empMobile
+    empPassword: "",
+    empRole: "admin",
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [showPassword, setShowPassword] = useState(false);  // State to toggle password visibility
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,8 +29,9 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
+    setLoading(true);
 
     // Extract empId or empMobile from the input field
     const { empMobileOrId, empPassword, empRole } = formData;
@@ -47,49 +50,56 @@ function Login() {
       try {
         const url = `${serverURL}/api/user-login`;
         const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(dataToSend),
         });
 
         if (!response.ok) {
-          throw new Error('Invalid credentials');
+          throw new Error("Invalid credentials");
         }
 
         const data = await response.json();
-        setSuccess('Login successful!');
+        setSuccess("Login successful!");
         console.log(data);
 
         // Redirect or perform additional actions upon successful login
-        if (role === 'admin') {
-          navigate('/pages/admin-dashboard');
-        } else if (role === 'developer') {
-          navigate('/pages/developer-attendance-form');
-        } else if (role === 'finance') {
-          navigate('/pages/finance-attendance-form');
-        } else if (role === 'civil') {
-          navigate('/pages/civil-attendance-form');
+        if (role === "admin") {
+          navigate("/pages/admin-dashboard");
+        } else if (role === "developer") {
+          navigate("/pages/developer-attendance-form");
+        } else if (role === "finance") {
+          navigate("/pages/finance-attendance-form");
+        } else if (role === "civil") {
+          navigate("/pages/civil-attendance-form");
         }
       } catch (err) {
         setError(err.message);
       }
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">Welcome Back</h2>
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
+          Welcome Back
+        </h2>
         <form onSubmit={handleSubmit}>
           {error && <p className="text-red-500 text-center">{error}</p>}
           {success && <p className="text-green-500 text-center">{success}</p>}
           <div className="mb-6">
-            <label htmlFor="mobileOrId" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="mobileOrId"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Employee ID / Mobile
             </label>
             <input
               id="mobileOrId"
-              name="empMobileOrId"  // We only use this field for either empId or empMobile
+              name="empMobileOrId" // We only use this field for either empId or empMobile
               value={formData.empMobileOrId}
               onChange={handleChange}
               placeholder="Enter your employee ID or mobile number"
@@ -98,12 +108,15 @@ function Login() {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Password
             </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'} // Toggle between password and text type
+                type={showPassword ? "text" : "password"} // Toggle between password and text type
                 id="password"
                 name="empPassword"
                 value={formData.empPassword}
@@ -117,12 +130,15 @@ function Login() {
                 className="absolute top-2 right-3 text-gray-600"
                 onClick={() => setShowPassword((prevState) => !prevState)} // Toggle password visibility
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
           <div className="mb-6">
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="role"
+              className=" block text-sm font-medium text-gray-700 mb-2"
+            >
               Role
             </label>
             <select
@@ -139,6 +155,14 @@ function Login() {
               <option value="civil">Civil</option>
             </select>
           </div>
+
+          <div className="flex items-center justify-center mb-4">
+            {loading && (
+              <ClipLoader color="#4A90E2" loading={loading} size={50} />
+            )}
+          </div>
+          
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
@@ -147,8 +171,11 @@ function Login() {
           </button>
         </form>
         <p className="mt-6 text-sm text-gray-600 text-center">
-          Don’t have an account?{' '}
-          <Link to="/authentication/sign-up" className="text-blue-500 hover:underline">
+          Don’t have an account?{" "}
+          <Link
+            to="/authentication/sign-up"
+            className="text-blue-500 hover:underline"
+          >
             Sign Up
           </Link>
         </p>
