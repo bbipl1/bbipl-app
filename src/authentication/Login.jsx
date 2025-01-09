@@ -13,6 +13,7 @@ function Login() {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPassword, setShowPassword] = useState(false);  // State to toggle password visibility
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -100,16 +101,25 @@ function Login() {
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
-            <input
-              type="password"
-              id="password"
-              name="empPassword"
-              value={formData.empPassword}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'} // Toggle between password and text type
+                id="password"
+                name="empPassword"
+                value={formData.empPassword}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+              />
+              <button
+                type="button"
+                className="absolute top-2 right-3 text-gray-600"
+                onClick={() => setShowPassword((prevState) => !prevState)} // Toggle password visibility
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
           </div>
           <div className="mb-6">
             <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
