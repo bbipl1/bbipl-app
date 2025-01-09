@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+const serverURL = process.env.REACT_APP_SERVER_URL;
 
 function Login() {
-
-  const [Role,setRole]=useState('admin');
+  const [role, setRole] = useState('admin');
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    role: 'admin',
+    empMobileOrId: '',  // Single field to accept either empId or empMobile
+    empPassword: '',
+    empRole: 'admin',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -19,50 +19,59 @@ function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleRole=(e)=>{
-    setFormData((prevData) => ({ ...prevData, 'role': e.target.value }));
+  const handleRole = (e) => {
     setRole(e.target.value);
-  }
+    setFormData((prevData) => ({ ...prevData, empRole: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if(Role==="admin"){
-      navigate('/pages/admin');
-    }else if(Role==="developer"){
-      navigate('/pages/developer-attendance-form');
-    }else if(Role==="finance"){
-      navigate('/pages/finance-attendance-form');
-    }else if(Role==="worker"){
-      navigate('/pages/worker-attendance-form');
-    }
 
-    return 
-    
+    // Extract empId or empMobile from the input field
+    const { empMobileOrId, empPassword, empRole } = formData;
+    let dataToSend = {};
 
-    try {
-      const response = await fetch('https://api.example.com/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid email or password');
+    if (empMobileOrId) {
+      // Check if the input looks like a mobile number or empId
+      if (empMobileOrId.length === 10 && /^[0-9]+$/.test(empMobileOrId)) {
+        // It's a mobile number, send it as empMobile
+        dataToSend = { empMobile: empMobileOrId, empPassword, empRole };
+      } else {
+        // Otherwise, treat it as empId
+        dataToSend = { empId: empMobileOrId, empPassword, empRole };
       }
 
-      const data = await response.json();
-      setSuccess('Login successful!');
-      // You can store the token or user data here if required
-      console.log(data);
-      // Redirect or perform additional actions upon successful login
-    } catch (err) {
-      setError(err.message);
+      try {
+        const url = `${serverURL}/api/user-login`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSend),
+        });
+
+        if (!response.ok) {
+          throw new Error('Invalid credentials');
+        }
+
+        const data = await response.json();
+        setSuccess('Login successful!');
+        console.log(data);
+
+        // Redirect or perform additional actions upon successful login
+        if (role === 'admin') {
+          navigate('/pages/admin-dashboard');
+        } else if (role === 'developer') {
+          navigate('/pages/developer-attendance-form');
+        } else if (role === 'finance') {
+          navigate('/pages/finance-attendance-form');
+        } else if (role === 'civil') {
+          navigate('/pages/civil-attendance-form');
+        }
+      } catch (err) {
+        setError(err.message);
+      }
     }
   };
 
@@ -74,18 +83,17 @@ function Login() {
           {error && <p className="text-red-500 text-center">{error}</p>}
           {success && <p className="text-green-500 text-center">{success}</p>}
           <div className="mb-6">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email ID
+            <label htmlFor="mobileOrId" className="block text-sm font-medium text-gray-700 mb-2">
+              Employee ID / Mobile
             </label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
+              id="mobileOrId"
+              name="empMobileOrId"  // We only use this field for either empId or empMobile
+              value={formData.empMobileOrId}
               onChange={handleChange}
-              placeholder="Enter your email"
+              placeholder="Enter your employee ID or mobile number"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            //   required
+              required
             />
           </div>
           <div className="mb-6">
@@ -95,12 +103,12 @@ function Login() {
             <input
               type="password"
               id="password"
-              name="password"
-              value={formData.password}
+              name="empPassword"
+              value={formData.empPassword}
               onChange={handleChange}
               placeholder="Enter your password"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            //   required
+              required
             />
           </div>
           <div className="mb-6">
@@ -109,16 +117,16 @@ function Login() {
             </label>
             <select
               id="role"
-              name="role"
-              value={Role}
+              name="empRole"
+              value={role}
               onChange={handleRole}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            //   required
+              required
             >
               <option value="admin">Admin</option>
               <option value="developer">Developer</option>
               <option value="finance">Finance</option>
-              <option value="worker">Worker</option>
+              <option value="civil">Civil</option>
             </select>
           </div>
           <button

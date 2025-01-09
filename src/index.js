@@ -15,6 +15,7 @@ import ContactUs from './pages/ContactUs.jsx';
 import DeveloperAttendanceForm from './pages/DeveloperAttendanceForm.jsx';
 import FinanceAttendanceForm from './pages/FinanceAttendanceForm.jsx';
 import Admin from './pages/admin/Admin.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 
 // const routerFromelements=
 const router=createBrowserRouter(createRoutesFromElements(
@@ -22,10 +23,11 @@ const router=createBrowserRouter(createRoutesFromElements(
     <Route path='' element={<Home/>}></Route>
     <Route path='authentication/login' element={<Login/>}></Route>
     <Route path='authentication/sign-up' element={<Signup/>}></Route>
+    <Route path='pages/admin-dashboard' element={<AdminDashboard/>}></Route>
     <Route path='pages/admin' element={<Admin/>}></Route>
     <Route path='pages/developer-attendance-form' element={<DeveloperAttendanceForm/>}></Route>
     <Route path='pages/finance-attendance-form' element={<FinanceAttendanceForm/>}></Route>
-    <Route path='pages/worker-attendance-form' element={<WorkerAttendance/>}></Route>
+    <Route path='pages/civil-attendance-form' element={<WorkerAttendance/>}></Route>
     <Route path='pages/about' element={<About/>}></Route>
     <Route path='pages/services' element={<Services/>}></Route>
     <Route path='pages/contact-us' element={<ContactUs/>}></Route>
