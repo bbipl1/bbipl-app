@@ -82,7 +82,7 @@ function Login() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 flex items-center justify-center min-h-screen">
+    <div className="bg-gradient-to-r from-cyan-400 via-cyan-600 to-cyan-800 flex items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
           Welcome Back
@@ -170,7 +170,7 @@ function Login() {
             Login
           </button>
         </form>
-        <p className="mt-6 text-sm text-gray-600 text-center">
+        {/* <p className="mt-6 text-sm text-gray-600 text-center">
           Don’t have an account?{" "}
           <Link
             to="/authentication/sign-up"
@@ -178,7 +178,7 @@ function Login() {
           >
             Sign Up
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );
