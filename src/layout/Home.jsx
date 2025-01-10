@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import MainServices from '../pages/services/MainService'
 
 const Home = () => {
   return (
@@ -31,8 +32,10 @@ const Home = () => {
         </div>
       </section>
 
+      <MainServices/>
+
       {/* About Section */}
-      <section className="py-16 bg-gray-100">
+      {/* <section className="py-16 bg-gray-100">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">About Us</h2>
           <p className="text-lg mb-6">
@@ -47,10 +50,10 @@ const Home = () => {
             Learn More About Us
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-blue-50 text-center">
+      {/* <section className="py-16 bg-blue-50 text-center">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold mb-6">What Our Clients Say</h2>
           <div className="flex justify-center gap-8">
@@ -72,7 +75,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 };
