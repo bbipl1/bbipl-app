@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import AWS from 'aws-sdk'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { postData } from "../api/AttendanceUpload";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 
@@ -16,6 +17,8 @@ AWS.config.update({
   secretAccessKey: secrect_access_key,})
 
 function AttendanceForm() {
+  //navigation
+  const navigate=useNavigate()
   //video
   const [selectedVideoFile, setSelectedVideoFile] = useState(null);
   const [videoUploadProgress, setVideoUploadProgress] = useState(0);
@@ -250,6 +253,7 @@ function AttendanceForm() {
     .then((res)=>{
       if(res){
         alert("Form submitted successfully!");
+        navigate("/")
       }else{
         alert("getting server error while uploading the form. Please try again after sometime.")
       }

@@ -13,7 +13,7 @@ const FinanceAttendanceForm = () => {
           We're working hard to bring this feature to life. Stay tuned for updates!
         </p>
         <div className="mt-8">
-          <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+          <button onClick={handleBack()} className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
             Go Back
           </button>
         </div>
