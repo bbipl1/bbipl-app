@@ -26,7 +26,7 @@ const NavBar = () => {
 
         {/* Navigation Links */}
         <ul
-          className={`md:flex space-x-6 font-medium ${
+          className={` ml-4 md:flex space-x-6 font-medium ${
             isMenuOpen ? "flex" : "hidden"
           } absolute md:static top-full left-0 w-full md:w-auto bg-cyan-600 md:bg-transparent py-4 md:py-0`}
         >
