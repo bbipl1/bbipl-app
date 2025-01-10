@@ -1,17 +1,34 @@
+import { BucketAccelerateStatus } from "@aws-sdk/client-s3";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const NavBar = () => {
   // State to toggle mobile menu visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFormsDropdownOpen, setIsFormsDropdownOpen] = useState(false);
 
   // Function to toggle menu visibility
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleFormsDropdown = () => {
+    setIsFormsDropdownOpen(!isFormsDropdownOpen);
+  };
+
+  const handleMenuItemClick=()=>{
+    setIsFormsDropdownOpen(false);
+  }
+
+  const handledivClick=(e)=>{
+      if(e.target.name!=="forms"){
+        setIsFormsDropdownOpen(false);
+      }
+      // alert(e.target.value)
+  }
+
   return (
-    <nav className="bg-cyan-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <nav onClick={handledivClick} className="bg-cyan-600 text-white p-4 shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center">
@@ -31,27 +48,56 @@ const NavBar = () => {
           } absolute md:static top-full left-0 w-full md:w-auto bg-cyan-600 md:bg-transparent py-4 md:py-0`}
         >
           <li>
-            <Link to="/" className="hover:text-yellow-300 transition">
+            <Link onClick={handleMenuItemClick} to="/" className="hover:text-yellow-300 transition">
               Home
             </Link>
           </li>
-          <li>
-            <Link to="/pages/about" className="hover:text-yellow-300 transition">
-              About
-            </Link>
+          <li className="relative">
+            <button
+              onClick={toggleFormsDropdown}
+              name="forms"
+              value={"forms"}
+              className="hover:text-yellow-300 transition"
+            >
+              Forms
+            </button>
+            {isFormsDropdownOpen && (
+              <ul className="absolute left-0 mt-2 bg-cyan-600  shadow-lg">
+                <li className="px-4 py-2 hover:bg-cyan-700">
+                  <Link className="text-nowrap" to="/pages/forms/requirements">Requirements</Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-cyan-700">
+                  <Link  className="text-nowrap" to="/forms/form2">Form 2</Link>
+                </li>
+                <li className="px-4 py-2 hover:bg-cyan-700">
+                  <Link  className="text-nowrap" to="/forms/form3">Form 3</Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li>
-            <Link to="/pages/services" className="hover:text-yellow-300 transition">
+            <Link
+            onClick={handleMenuItemClick}
+              to="/pages/services"
+              className="hover:text-yellow-300 transition"
+            >
               Services
             </Link>
           </li>
           <li>
-            <Link to="/pages/contact-us" className="hover:text-yellow-300 transition">
+            <Link
+              to="/pages/contact-us"
+              className="hover:text-yellow-300 transition"
+            >
               Contact Us
             </Link>
           </li>
           <li>
-            <Link to="authentication/login" className="hover:text-yellow-300 transition">
+            <Link
+            onClick={handleMenuItemClick}
+              to="authentication/login"
+              className="hover:text-yellow-300 transition"
+            >
               Login
             </Link>
           </li>
