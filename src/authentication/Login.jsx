@@ -61,11 +61,11 @@ function Login() {
 
         const data = await response.json();
         setSuccess("Login successful!");
-        console.log(data);
+        console.log(data?.user);
 
         // Redirect or perform additional actions upon successful login
         if (role === "admin") {
-          navigate("/pages/admin-dashboard");
+          navigate("/pages/admin-dashboard",{ state: { data } });
         } else if (role === "developer") {
           navigate("/pages/developer-attendance-form");
         } else if (role === "finance") {

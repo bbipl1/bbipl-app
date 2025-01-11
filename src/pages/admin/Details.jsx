@@ -68,7 +68,7 @@ const Admin = () => {
               <option value="admin">Admin</option>
               <option value="developer">Developer</option>
               <option value="finance">Finance</option>
-              <option value="worker">Worker</option>
+              <option value="civil">Civil</option>
             </select>
           </div>
 
