@@ -4,6 +4,7 @@ import Upload from './UploadFiles';   // Import the Upload component
 import Others from './Others';   // Import the Others component
 import { Navigate, useNavigate,useLocation } from 'react-router-dom';
 import ContactUsMessages from './ContactUsMessages';
+import FormRequirementDetails from './FormRequirementDetails';
 
 const AdminDashboard = () => {
     const location = useLocation();
@@ -20,6 +21,8 @@ const AdminDashboard = () => {
                 return <Upload />;
             case 'contactUsMessages':
                 return <ContactUsMessages />;
+            case "form-requirements":
+                return <FormRequirementDetails/>;
             default:
                 return <p className="text-gray-600">Please select an option from above.</p>;
         }
@@ -37,7 +40,7 @@ const AdminDashboard = () => {
     return (
         <div className="p-1 bg-gray-100 min-h-screen">
             <h1 className="text-3xl font-bold text-gray-800 mb-6 ml-14">Hi {data?.user?.empName}</h1>
-            <div className=" grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
+            <div className=" grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
                 <button
                     onClick={() => setActiveComponent('details')}
                     className="w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
@@ -48,7 +51,13 @@ const AdminDashboard = () => {
                     onClick={() => setActiveComponent('upload')}
                     className=" w-100 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
                 >
-                    Upload Files
+                    Add Employees
+                </button>
+                <button
+                    onClick={() => setActiveComponent('form-requirements')}
+                    className=" w-100 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+                >
+                    Requirements Form
                 </button>
                 <button
                     onClick={() => setActiveComponent('contactUsMessages')}

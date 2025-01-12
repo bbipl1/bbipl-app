@@ -1,6 +1,12 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { ClipLoader } from "react-spinners";
+
+const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const RequirementForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [submitText, setSubmitText] = useState("Submit");
   const [formData, setFormData] = useState({
     date: "",
     empName: "",
@@ -13,17 +19,44 @@ const RequirementForm = () => {
   });
 
   const handleChange = (e) => {
+    setSubmitText("Submit");
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
+    setLoading(true);
+    const url = `${serverUrl}/api/forms/submit-form`;
+    const postBody = {
+      method: "POST",
+      Headers: {
+        "content-Type": "application/json",
+      },
+      
+    };
+
+    await axios
+      .post(url, formData, postBody)
+      .then((res) => {
+        if (res) {
+          setSubmitText("Submitted");
+          console.log("Form Submitted:", formData);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setSubmitText("Failed!");
+      });
+
+      setLoading(false)
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border rounded shadow-md">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto p-4 border rounded shadow-md"
+    >
       <h2 className="text-lg font-bold mb-4">Requirement Form</h2>
 
       {/* Date */}
@@ -103,7 +136,10 @@ const RequirementForm = () => {
 
       {/* Date of Requirement */}
       <div className="mb-4">
-        <label htmlFor="dateOfRequirement" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="dateOfRequirement"
+          className="block text-sm font-medium mb-1"
+        >
           Date Of Requirement
         </label>
         <input
@@ -118,7 +154,10 @@ const RequirementForm = () => {
 
       {/* Requirement Type */}
       <div className="mb-4">
-        <label htmlFor="requirementType" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="requirementType"
+          className="block text-sm font-medium mb-1"
+        >
           Requirement Type
         </label>
         <select
@@ -148,12 +187,18 @@ const RequirementForm = () => {
         ></textarea>
       </div>
 
+      <div className="flex items-center justify-center mb-4">
+            {loading && (
+              <ClipLoader color="#4A90E2" loading={loading} size={50} />
+            )}
+          </div>
+
       {/* Submit Button */}
       <button
         type="submit"
         className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
       >
-        Submit
+        {submitText}
       </button>
     </form>
   );
