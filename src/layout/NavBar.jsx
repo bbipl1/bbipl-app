@@ -67,10 +67,10 @@ const NavBar = () => {
                   <Link className="text-nowrap" to="/pages/forms/requirements">Requirements</Link>
                 </li>
                 <li className="px-4 py-2 hover:bg-cyan-700">
-                  <Link  className="text-nowrap" to="/forms/form2">Form 2</Link>
+                  <Link  className="text-nowrap" to="/pages/forms/requirements">Form 2</Link>
                 </li>
                 <li className="px-4 py-2 hover:bg-cyan-700">
-                  <Link  className="text-nowrap" to="/forms/form3">Form 3</Link>
+                  <Link  className="text-nowrap" to="/pages/forms/requirements">Form 3</Link>
                 </li>
               </ul>
             )}

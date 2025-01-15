@@ -33,7 +33,6 @@ const RequirementForm = () => {
       Headers: {
         "content-Type": "application/json",
       },
-      
     };
 
     await axios
@@ -49,7 +48,7 @@ const RequirementForm = () => {
         setSubmitText("Failed!");
       });
 
-      setLoading(false)
+    setLoading(false);
   };
 
   return (
@@ -58,7 +57,63 @@ const RequirementForm = () => {
       className="max-w-md mx-auto p-4 border rounded shadow-md"
     >
       <h2 className="text-lg font-bold mb-4">Requirement Form</h2>
+      {/* employee type */}
+      <label htmlFor="employee-type" className="block text-sm font-medium mb-1">
+        Employee Type*
+      </label>
+      <select
+        id="employee-type"
+        name="employee-type"
+        className="w-full border rounded px-3 py-2"
+      >
+        <option value="vendor">Vendor</option>
+        <option value="employee">Employee</option>
+      </select>
 
+      {/* Employee Name */}
+      <div className="mb-4">
+        <label htmlFor="empName" className="block text-sm font-medium mb-1">
+          Employee Name*
+        </label>
+        <input
+          type="text"
+          id="empName"
+          name="empName"
+          value={formData.empName}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
+      {/* Employee ID */}
+      <div className="mb-4">
+        <label htmlFor="empId" className="block text-sm font-medium mb-1">
+          Employee ID*
+        </label>
+        <input
+          type="text"
+          id="empId"
+          name="empId"
+          value={formData.empId}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
+      {/* Employee Mobile */}
+      <div className="mb-4">
+        <label htmlFor="empMobile" className="block text-sm font-medium mb-1">
+          Mobile No.*
+        </label>
+        <input
+          type="tel"
+          id="empMobile"
+          name="empMobile"
+          value={formData.empMobile}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
       {/* Date */}
       <div className="mb-4">
         <label htmlFor="date" className="block text-sm font-medium mb-1">
@@ -74,64 +129,80 @@ const RequirementForm = () => {
         />
       </div>
 
-      {/* Employee Name */}
-      <div className="mb-4">
-        <label htmlFor="empName" className="block text-sm font-medium mb-1">
-          Employee Name
+      {/* state */}
+      <div>
+        <label htmlFor="state" className="block text-sm font-medium mb-1">
+          State*
         </label>
-        <input
-          type="text"
-          id="empName"
-          name="empName"
-          value={formData.empName}
-          onChange={handleChange}
+        <select
+          id="state"
+          name="state"
+          value={formData.state}
           className="w-full border rounded px-3 py-2"
-        />
+        >
+          <option value="select">Select</option>
+          <option value="uttar-pradesh">Uttar Pradesh</option>
+        </select>
       </div>
-
-      {/* Employee ID */}
-      <div className="mb-4">
-        <label htmlFor="empId" className="block text-sm font-medium mb-1">
-          Employee ID
+      {/* district */}
+      <div>
+        <label htmlFor="state" className="block text-sm font-medium mb-1">
+          District*
         </label>
-        <input
-          type="text"
-          id="empId"
-          name="empId"
-          value={formData.empId}
-          onChange={handleChange}
+        <select
+          id="district"
+          name="district"
+          value={formData.district}
           className="w-full border rounded px-3 py-2"
-        />
+        >
+          <option value="select">Select</option>
+          <option value="unnao">Unnao</option>
+          <option value="barabanki">Barabanki</option>
+        </select>
       </div>
-
-      {/* Employee Mobile */}
-      <div className="mb-4">
-        <label htmlFor="empMobile" className="block text-sm font-medium mb-1">
-          Employee Mobile
-        </label>
-        <input
-          type="tel"
-          id="empMobile"
-          name="empMobile"
-          value={formData.empMobile}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
-
-      {/* Site Name */}
+      {/* location */}
       <div className="mb-4">
         <label htmlFor="siteName" className="block text-sm font-medium mb-1">
-          Site Name
+          Location*
         </label>
-        <input
+        <select
           type="text"
-          id="siteName"
-          name="siteName"
-          value={formData.siteName}
+          id="location"
+          name="location"
+          value={formData.location}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2"
-        />
+        >
+          <option value="select">Select</option>
+          <option value="barahua">Barahua</option>
+          <option value="gualchappa-kalan">Gulchappa Kalan</option>
+          <option value="chamrauli"> Chamrauli</option>
+        </select>
+      </div>
+      {/* site-name */}
+      <div className="mb-4">
+        <label htmlFor="siteName" className="block text-sm font-medium mb-1">
+          Site Name*
+        </label>
+        <select
+          type="text"
+          id="site-name"
+          name="site-name"
+          value={formData.location}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="pump-house">Pump House</option>
+          <option value="boundary-wall">Boundary Wall</option>
+          <optgroup label="Pipe Line">
+            <option value="pipe-line-installation">Installation</option>
+            <option value="pipe-line-maintenance">Maintenance</option>
+          </optgroup>
+          <option value="water-tank">Water Tank</option>
+          <option value="connection">Connection</option>
+          <option value="campus-development">Campus Development</option>
+          <option value="cwr">(CWR)</option>
+        </select>
       </div>
 
       {/* Date of Requirement */}
@@ -140,7 +211,7 @@ const RequirementForm = () => {
           htmlFor="dateOfRequirement"
           className="block text-sm font-medium mb-1"
         >
-          Date Of Requirement
+          Date Of Requirement*
         </label>
         <input
           type="date"
@@ -158,7 +229,7 @@ const RequirementForm = () => {
           htmlFor="requirementType"
           className="block text-sm font-medium mb-1"
         >
-          Requirement Type
+          Requirement Type*
         </label>
         <select
           id="requirementType"
@@ -175,7 +246,7 @@ const RequirementForm = () => {
       {/* Remarks */}
       <div className="mb-4">
         <label htmlFor="remarks" className="block text-sm font-medium mb-1">
-          Remarks
+          Remarks*
         </label>
         <textarea
           id="remarks"
@@ -188,10 +259,8 @@ const RequirementForm = () => {
       </div>
 
       <div className="flex items-center justify-center mb-4">
-            {loading && (
-              <ClipLoader color="#4A90E2" loading={loading} size={50} />
-            )}
-          </div>
+        {loading && <ClipLoader color="#4A90E2" loading={loading} size={50} />}
+      </div>
 
       {/* Submit Button */}
       <button

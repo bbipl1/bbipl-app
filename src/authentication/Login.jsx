@@ -28,6 +28,7 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
+    navigate("/pages/civil-attendance-form");
     e.preventDefault();
     setError("");
     setSuccess("");
