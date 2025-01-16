@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -18,8 +18,15 @@ const RequirementForm = () => {
     remarks: "",
   });
 
+  useEffect(()=>{
+    const dateNow=(new Date()).toLocaleDateString();
+    console.log(dateNow)
+    setFormData({...formData,'date':dateNow})
+  },[]);
+
   const handleChange = (e) => {
     setSubmitText("Submit");
+    
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -120,9 +127,10 @@ const RequirementForm = () => {
           Date
         </label>
         <input
-          type="date"
+          type="text"
           id="date"
           name="date"
+          disabled
           value={formData.date}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2"
