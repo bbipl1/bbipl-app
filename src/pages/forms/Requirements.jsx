@@ -15,46 +15,134 @@ const RequirementForm = () => {
     siteName: "",
     dateOfRequirement: "",
     requirementType: "Material", // Default value
+    workType: "", // Added workType field
     remarks: "",
+    state: "select",
+    district: "select",
+    block: "select",
+    empType: "select", // Added Employee Type field
   });
 
-  useEffect(()=>{
-    const dateNow=(new Date()).toLocaleDateString();
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
+  const [siteNames, setSiteNames] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]); // This will store workTypes fetched for a site
+
+  useEffect(() => {
+    // Fetching states on component mount
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    // Set current date
+    // const dateNow = (new Date()).toLocaleDateString();
+    const dateNow = new Intl.DateTimeFormat('en-GB').format(new Date());
+
     console.log(dateNow)
-    setFormData({...formData,'date':dateNow})
-  },[]);
+    setFormData({ ...formData, date: dateNow });
+  }, []);
+
+  // Fetch states data from API
+  const fetchStates = async () => {
+    try {
+      const res = await axios.get(
+        `${serverUrl}/api/site-management/find-site-details`
+      );
+      setStates(res.data.data[0].states); // Assuming response data format
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  // Fetch districts based on selected state
+  const fetchDistricts = (stateName) => {
+    const selectedState = states.find((state) => state.stateName === stateName);
+    setDistricts(selectedState ? selectedState.districts : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      district: "select",
+      block: "select",
+      siteName: "select",
+      workType: "", // Reset workType when state or district changes
+    }));
+  };
+
+  // Fetch blocks based on selected district
+  const fetchBlocks = (districtName) => {
+    const selectedDistrict = districts.find(
+      (district) => district.districtName === districtName
+    );
+    setBlocks(selectedDistrict ? selectedDistrict.blocks : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      block: "select",
+      siteName: "select",
+      workType: "", // Reset workType when district or block changes
+    }));
+  };
+
+  // Fetch site names based on selected block
+  const fetchSiteNames = (blockName) => {
+    const selectedBlock = blocks.find((block) => block.blockName === blockName);
+    setSiteNames(selectedBlock ? selectedBlock.sites : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      siteName: "select",
+      workType: "", // Reset workType when block or siteName changes
+    }));
+  };
+
+  // Set work types based on selected site name
+  const fetchWorkTypes = (siteName) => {
+    const selectedSite = siteNames.find((site) => site.siteName === siteName);
+    if (selectedSite) {
+      setWorkTypes(selectedSite.workType || []);
+    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      workType: "select", // Reset workType if no workType available
+    }));
+  };
 
   const handleChange = (e) => {
     setSubmitText("Submit");
-    
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+
+    // Fetch dependent data based on selected dropdown value
+    if (name === "state") {
+      fetchDistricts(value); // Fetch districts when state is selected
+    } else if (name === "district") {
+      fetchBlocks(value); // Fetch blocks when district is selected
+    } else if (name === "block") {
+      fetchSiteNames(value); // Fetch site names when block is selected
+    } else if (name === "siteName") {
+      fetchWorkTypes(value); // Fetch work types when site is selected
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const url = `${serverUrl}/api/forms/submit-form`;
-    const postBody = {
-      method: "POST",
-      Headers: {
-        "content-Type": "application/json",
-      },
-    };
 
-    await axios
-      .post(url, formData, postBody)
-      .then((res) => {
-        if (res) {
-          setSubmitText("Submitted");
-          console.log("Form Submitted:", formData);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setSubmitText("Failed!");
+    try {
+      // Directly sending the POST request with data and headers
+      const res = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "application/json", // Correct header for JSON
+        },
       });
 
+      // Handle successful form submission
+      setSubmitText("Submitted");
+      console.log("Form Submitted:", formData);
+    } catch (err) {
+      // Handle errors during form submission
+      console.error("Error submitting form:", err);
+      setSubmitText("Failed!");
+    }
     setLoading(false);
   };
 
@@ -64,18 +152,25 @@ const RequirementForm = () => {
       className="max-w-md mx-auto p-4 border rounded shadow-md"
     >
       <h2 className="text-lg font-bold mb-4">Requirement Form</h2>
-      {/* employee type */}
-      <label htmlFor="employee-type" className="block text-sm font-medium mb-1">
-        Employee Type*
-      </label>
-      <select
-        id="employee-type"
-        name="employee-type"
-        className="w-full border rounded px-3 py-2"
-      >
-        <option value="vendor">Vendor</option>
-        <option value="employee">Employee</option>
-      </select>
+
+      {/* Employee Type */}
+      <div className="mb-4">
+        <label htmlFor="empType" className="block text-sm font-medium mb-1">
+          Employee Type*
+        </label>
+        <select
+          id="empType"
+          name="empType"
+          value={formData.empType}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="select">Select</option>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+        </select>
+      </div>
 
       {/* Employee Name */}
       <div className="mb-4">
@@ -107,13 +202,13 @@ const RequirementForm = () => {
         />
       </div>
 
-      {/* Employee Mobile */}
+      {/* Mobile No. */}
       <div className="mb-4">
         <label htmlFor="empMobile" className="block text-sm font-medium mb-1">
-          Mobile No.*
+          Mobile*
         </label>
         <input
-          type="tel"
+          type="text"
           id="empMobile"
           name="empMobile"
           value={formData.empMobile}
@@ -121,24 +216,9 @@ const RequirementForm = () => {
           className="w-full border rounded px-3 py-2"
         />
       </div>
-      {/* Date */}
-      <div className="mb-4">
-        <label htmlFor="date" className="block text-sm font-medium mb-1">
-          Date
-        </label>
-        <input
-          type="text"
-          id="date"
-          name="date"
-          disabled
-          value={formData.date}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
 
-      {/* state */}
-      <div>
+      {/* State */}
+      <div className="mb-4">
         <label htmlFor="state" className="block text-sm font-medium mb-1">
           State*
         </label>
@@ -146,70 +226,99 @@ const RequirementForm = () => {
           id="state"
           name="state"
           value={formData.state}
+          onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
           <option value="select">Select</option>
-          <option value="uttar-pradesh">Uttar Pradesh</option>
+          {states.map((state) => (
+            <option key={state._id} value={state.stateName}>
+              {state.stateName}
+            </option>
+          ))}
         </select>
       </div>
-      {/* district */}
-      <div>
-        <label htmlFor="state" className="block text-sm font-medium mb-1">
+
+      {/* District */}
+      <div className="mb-4">
+        <label htmlFor="district" className="block text-sm font-medium mb-1">
           District*
         </label>
         <select
           id="district"
           name="district"
           value={formData.district}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          <option value="unnao">Unnao</option>
-          <option value="barabanki">Barabanki</option>
-        </select>
-      </div>
-      {/* location */}
-      <div className="mb-4">
-        <label htmlFor="siteName" className="block text-sm font-medium mb-1">
-          Location*
-        </label>
-        <select
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
           <option value="select">Select</option>
-          <option value="barahua">Barahua</option>
-          <option value="gualchappa-kalan">Gulchappa Kalan</option>
-          <option value="chamrauli"> Chamrauli</option>
+          {districts.map((district) => (
+            <option key={district._id} value={district.districtName}>
+              {district.districtName}
+            </option>
+          ))}
         </select>
       </div>
-      {/* site-name */}
+
+      {/* Block */}
+      <div className="mb-4">
+        <label htmlFor="block" className="block text-sm font-medium mb-1">
+          Block*
+        </label>
+        <select
+          id="block"
+          name="block"
+          value={formData.block}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="select">Select</option>
+          {blocks.map((block) => (
+            <option key={block._id} value={block.blockName}>
+              {block.blockName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Site Name */}
       <div className="mb-4">
         <label htmlFor="siteName" className="block text-sm font-medium mb-1">
           Site Name*
         </label>
         <select
-          type="text"
-          id="site-name"
-          name="site-name"
-          value={formData.location}
+          id="siteName"
+          name="siteName"
+          value={formData.siteName}
           onChange={handleChange}
           className="w-full border rounded px-3 py-2"
         >
-          <option value="pump-house">Pump House</option>
-          <option value="boundary-wall">Boundary Wall</option>
-          <optgroup label="Pipe Line">
-            <option value="pipe-line-installation">Installation</option>
-            <option value="pipe-line-maintenance">Maintenance</option>
-          </optgroup>
-          <option value="water-tank">Water Tank</option>
-          <option value="connection">Connection</option>
-          <option value="campus-development">Campus Development</option>
-          <option value="cwr">(CWR)</option>
+          <option value="select">Select</option>
+          {siteNames.map((site) => (
+            <option key={site._id} value={site.siteName}>
+              {site.siteName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Work Type */}
+      <div className="mb-4">
+        <label htmlFor="workType" className="block text-sm font-medium mb-1">
+          Type of Work*
+        </label>
+        <select
+          id="workType"
+          name="workType"
+          value={formData.workType}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        >
+          <option value="select">Select</option>
+          {workTypes.map((type) => (
+            <option key={type._id} value={type.workTypeName}>
+              {type.workTypeName}
+            </option>
+          ))}
         </select>
       </div>
 

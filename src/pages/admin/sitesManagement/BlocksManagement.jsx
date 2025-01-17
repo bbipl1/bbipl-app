@@ -1,137 +1,295 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+
+const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const BlocksManagement = () => {
-    const [blocks, setBlocks] = useState([]); // Holds the list of blocks
-    const [newBlock, setNewBlock] = useState(''); // State for new block input
-    const [editIndex, setEditIndex] = useState(null); // Index of the block being edited
-    const [editValue, setEditValue] = useState(''); // Value for the block being edited
+  const [states, setStates] = useState([]);
+  const [selectedStateId, setSelectedStateId] = useState("");
+  const [selectedDistrictId, setSelectedDistrictId] = useState("");
+  const [selectedBlockId, setSelectedBlockId] = useState("");
+  const [newBlockName, setNewBlockName] = useState("");
+  const [updatedBlockName, setUpdatedBlockName] = useState("");
 
-    const API_URL = 'https://your-api-url.com/api/blocks'; // Replace with your actual API endpoint
+  useEffect(() => {
+    fetchStates();
+  }, []);
 
-    // Fetch blocks from the API on component mount
-    useEffect(() => {
-        fetchBlocks();
-    }, []);
-
-    // Fetch blocks function
-    const fetchBlocks = async () => {
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            setBlocks(data);
-        } catch (error) {
-            console.error("Error fetching blocks:", error);
+  useEffect(() => {
+    if (selectedStateId && selectedDistrictId && selectedBlockId) {
+      const selectedState = states.find((state) => state._id === selectedStateId);
+      if (selectedState) {
+        const selectedDistrict = selectedState.districts.find(
+          (district) => district._id === selectedDistrictId
+        );
+        if (selectedDistrict) {
+          const selectedBlock = selectedDistrict.blocks.find(
+            (block) => block._id === selectedBlockId
+          );
+          if (selectedBlock) {
+            setUpdatedBlockName(selectedBlock.blockName); // Set the block name for editing
+          }
         }
-    };
+      }
+    }
+  }, [selectedStateId, selectedDistrictId, selectedBlockId, states]);
+  
 
-    // Function to add a new block
-    const addBlock = async () => {
-        if (newBlock.trim()) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name: newBlock.trim() }),
-                });
+  const fetchStates = async () => {
+    try {
+      const response = await fetch(`${serverUrl}/api/site-management/find-site-details`);
+      const data = await response.json();
+      setStates(data?.data[0]?.states || []);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
 
-                if (response.ok) {
-                    setNewBlock('');
-                    fetchBlocks(); // Refresh the list of blocks after adding
-                }
-            } catch (error) {
-                console.error("Error adding block:", error);
-            }
+  const handleAddBlock = async () => {
+    if (newBlockName.trim() && selectedStateId && selectedDistrictId) {
+      try {
+        const response = await fetch(`${serverUrl}/api/site-management/add-block-name`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            stateId: selectedStateId,
+            districtId: selectedDistrictId,
+            blockName: newBlockName.trim(),
+          }),
+        });
+
+        if (response.ok) {
+          setNewBlockName("");
+          fetchStates();
+          alert("Block added successfully!");
+        } else {
+          alert("Failed to add block. Please try again.");
         }
-    };
+      } catch (error) {
+        console.error("Error adding block:", error);
+      }
+    } else {
+      alert("Please select a state, district, and enter a block name.");
+    }
+  };
 
-    // Function to update an existing block
-    const updateBlock = async () => {
-        if (editValue.trim()) {
-            try {
-                const blockId = blocks[editIndex].id; // Assuming each block has an `id` field
-                const response = await fetch(`${API_URL}/${blockId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name: editValue.trim() }),
-                });
+  const handleUpdateBlock = async () => {
+    if (updatedBlockName.trim() && selectedStateId && selectedDistrictId && selectedBlockId) {
+      try {
+        const response = await fetch(`${serverUrl}/api/site-management/update-block-name`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            stateId: selectedStateId,
+            districtId: selectedDistrictId,
+            blockId: selectedBlockId,
+            blockName: updatedBlockName.trim(),
+          }),
+        });
 
-                if (response.ok) {
-                    setEditIndex(null);
-                    setEditValue('');
-                    fetchBlocks(); // Refresh the list of blocks after updating
-                }
-            } catch (error) {
-                console.error("Error updating block:", error);
-            }
+        if (response.ok) {
+          fetchStates();
+          alert("Block updated successfully!");
+        } else {
+          alert("Failed to update block. Please try again.");
         }
-    };
+      } catch (error) {
+        console.error("Error updating block:", error);
+      }
+    } else {
+      alert("Please select a state, district, block, and enter a new block name.");
+    }
+  };
 
-    // Function to delete a block
-    const deleteBlock = async (id) => {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-            });
+  const handleDeleteBlock = async () => {
+    if (selectedStateId && selectedDistrictId && selectedBlockId) {
+      const res = window.confirm("Are you sure you want to delete this block?");
+      if (!res) return;
 
-            if (response.ok) {
-                fetchBlocks(); // Refresh the list of blocks after deleting
-            }
-        } catch (error) {
-            console.error("Error deleting block:", error);
+      try {
+        const response = await fetch(`${serverUrl}/api/site-management/delete-block-name`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ stateId: selectedStateId, districtId: selectedDistrictId, blockId: selectedBlockId }),
+        });
+
+        if (response.ok) {
+          fetchStates();
+          alert("Block deleted successfully!");
+        } else {
+          alert("Failed to delete block. Please try again.");
         }
-    };
+      } catch (error) {
+        console.error("Error deleting block:", error);
+      }
+    } else {
+      alert("Please select a state, district, and block to delete.");
+    }
+  };
 
-    return (
-        <div className="p-4 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
-            <h1 className="text-3xl font-bold text-gray-700 mb-6">Blocks Management</h1>
-            <div className="mb-4 flex gap-4">
-                <input
-                    type="text"
-                    value={editIndex !== null ? editValue : newBlock}
-                    onChange={(e) =>
-                        editIndex !== null ? setEditValue(e.target.value) : setNewBlock(e.target.value)
-                    }
-                    placeholder="Enter block name"
-                    className="px-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                    onClick={editIndex !== null ? updateBlock : addBlock}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-                >
-                    {editIndex !== null ? 'Update Block' : 'Add Block'}
-                </button>
-            </div>
+  return (
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Blocks Management</h2>
 
-            <ul className="space-y-4">
-                {blocks.map((block, index) => (
-                    <li key={block.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-md shadow-sm">
-                        <span className="text-gray-700">{block.name}</span>
-                        <div className="flex space-x-4">
-                            <button
-                                onClick={() => {
-                                    setEditIndex(index);
-                                    setEditValue(block.name);
-                                }}
-                                className="text-blue-500 hover:text-blue-700"
-                            >
-                                Edit
-                            </button>
-                            <button
-                                onClick={() => deleteBlock(block.id)}
-                                className="text-red-500 hover:text-red-700"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+      {/* Add Block */}
+      <div className="mb-8">
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Add Block</h3>
+        <div className="mb-4">
+          <label className="block text-lg font-medium text-gray-700">State</label>
+          <select
+            value={selectedStateId}
+            onChange={(e) => {
+              setSelectedStateId(e.target.value);
+              setSelectedDistrictId("");
+              setSelectedBlockId("");
+            }}
+            className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a State</option>
+            {states.map((state) => (
+              <option key={state._id} value={state._id}>
+                {state.stateName}
+              </option>
+            ))}
+          </select>
         </div>
-    );
+        {selectedStateId && (
+          <div className="mb-4">
+            <label className="block text-lg font-medium text-gray-700">District</label>
+            <select
+              value={selectedDistrictId}
+              onChange={(e) => setSelectedDistrictId(e.target.value)}
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a District</option>
+              {states
+                .find((state) => state._id === selectedStateId)
+                ?.districts.map((district) => (
+                  <option key={district._id} value={district._id}>
+                    {district.districtName}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+        {selectedDistrictId && (
+          <div className="mb-4">
+            <label className="block text-lg font-medium text-gray-700">Block Name</label>
+            <input
+              type="text"
+              value={newBlockName}
+              onChange={(e) => setNewBlockName(e.target.value)}
+              placeholder="Enter new block name"
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        )}
+        <button
+          onClick={handleAddBlock}
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200"
+        >
+          Add Block
+        </button>
+      </div>
+
+      {/* Edit/Delete Block */}
+      <div>
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">Edit or Delete Block</h3>
+        <div className="mb-4">
+          <label className="block text-lg font-medium text-gray-700">State</label>
+          <select
+            value={selectedStateId}
+            onChange={(e) => {
+              setSelectedStateId(e.target.value);
+              setSelectedDistrictId("");
+              setSelectedBlockId("");
+            }}
+            className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a State</option>
+            {states.map((state) => (
+              <option key={state._id} value={state._id}>
+                {state.stateName}
+              </option>
+            ))}
+          </select>
+        </div>
+        {selectedStateId && (
+          <div className="mb-4">
+            <label className="block text-lg font-medium text-gray-700">District</label>
+            <select
+              value={selectedDistrictId}
+              onChange={(e) => {
+                setSelectedDistrictId(e.target.value);
+                setSelectedBlockId("");
+              }}
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a District</option>
+              {states
+                .find((state) => state._id === selectedStateId)
+                ?.districts.map((district) => (
+                  <option key={district._id} value={district._id}>
+                    {district.districtName}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+        {selectedDistrictId && (
+          <div className="mb-4">
+            <label className="block text-lg font-medium text-gray-700">Block</label>
+            <select
+              value={selectedBlockId}
+              onChange={(e) => setSelectedBlockId(e.target.value)}
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a Block</option>
+              {states
+                .find((state) => state._id === selectedStateId)
+                ?.districts.find((district) => district._id === selectedDistrictId)
+                ?.blocks.map((block) => (
+                  <option key={block._id} value={block._id}>
+                    {block.blockName}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+        {selectedBlockId && (
+          <div className="mb-4">
+            <label className="block text-lg font-medium text-gray-700">Edit Block Name</label>
+            <input
+              type="text"
+              value={updatedBlockName}
+              onChange={(e) => setUpdatedBlockName(e.target.value)}
+              placeholder="Enter new block name"
+              className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        )}
+        <div className="space-x-4">
+          <button
+            onClick={handleUpdateBlock}
+            className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-200"
+          >
+            Update Block
+          </button>
+          <button
+            onClick={handleDeleteBlock}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
+          >
+            Delete Block
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default BlocksManagement;

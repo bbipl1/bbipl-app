@@ -34,58 +34,66 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    // alert("navigating")
     const allowMe = window.confirm("Are you sure to logOut?");
     if (allowMe) {
       navigate("/");
     }
   };
 
+  const getButtonClass = (component) => {
+    return activeComponent === component
+      ? "w-100 px-4 py-2 bg-gray-300 text-black rounded hover:bg-blue-700 transition duration-100"
+      : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
+  };
+
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 ml-14">
-        Hi {data?.user?.empName}
-      </h1>
-      <div className=" grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6 ml-14">
+          Hi! {data?.user?.empName}
+        </h1>
+      </div>
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
         <button
           onClick={() => setActiveComponent("details")}
-          className="w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
+          className={getButtonClass("details")}
         >
-          Show Details
+          Show Employee
         </button>
-        
+
         <button
           onClick={() => setActiveComponent("upload")}
-          className=" w-100 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+          className={getButtonClass("upload")}
         >
-          Add Employees
+          Add Employee
         </button>
         <button
           onClick={() => setActiveComponent("sites-management")}
-          className=" w-100 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+          className={getButtonClass("sites-management")}
         >
-          Add Sites
+          Add Site
         </button>
         <button
           onClick={() => setActiveComponent("form-requirements")}
-          className=" w-100 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-200"
+          className={getButtonClass("form-requirements")}
         >
           Requirements Form
         </button>
         <button
           onClick={() => setActiveComponent("contactUsMessages")}
-          className=" w-100 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition duration-200"
+          className={getButtonClass("contactUsMessages")}
         >
           Contact Us
         </button>
         <button
           onClick={() => handleLogout()}
-          className=" w-100  px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition duration-200"
+          className="w-100 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
         >
           Logout
         </button>
       </div>
-      <div className=" bg-gray-50 rounded shadow">{renderComponent()}</div>
+      <div className="bg-slate-500 h-1 my-2"></div>
+      <div className="bg-gray-50 rounded shadow">{renderComponent()}</div>
     </div>
   );
 };

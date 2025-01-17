@@ -34,10 +34,11 @@ const FormRequirementDetails = () => {
         <table className="table-auto w-full border-collapse border border-gray-200">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2">Employee ID</th>
+              {/* <th className="border border-gray-300 px-4 py-2">Employee ID</th> */}
               <th className="border border-gray-300 px-4 py-2">Name</th>
+              <th className="border border-gray-300 px-4 py-2">Mobile</th>
               <th className="border border-gray-300 px-4 py-2">Site Name</th>
-              <th className="border border-gray-300 px-4 py-2">Location</th>
+              <th className="border border-gray-300 px-4 py-2">Type of Work</th>
               <th className="border border-gray-300 px-4 py-2">Submission Date</th>
               <th className="border border-gray-300 px-4 py-2">Requirement Date</th>
               <th className="border border-gray-300 px-4 py-2">Requirement Type</th>
@@ -47,10 +48,11 @@ const FormRequirementDetails = () => {
           <tbody>
             {formDetails.map((form, index) => (
               <tr key={index} className="hover:bg-gray-50">
-                <td className="border border-gray-300 px-4 py-2">{form.empId}</td>
                 <td className="border border-gray-300 px-4 py-2">{form.empName}</td>
-                <td className="border border-gray-300 px-4 py-2">{"empty"}</td>
+                <td className="border border-gray-300 px-4 py-2">{form.empMobile}</td>
+                {/* <td className="border border-gray-300 px-4 py-2">{"empty"}</td> */}
                 <td className="border border-gray-300 px-4 py-2">{form.siteName}</td>
+                <td className="border border-gray-300 px-4 py-2">{form.workTypeName}</td>
                 <td className="border border-gray-300 px-4 py-2">{form.date}</td>
                 <td className="border border-gray-300 px-4 py-2">{form.dateOfRequirement}</td>
                 <td className="border border-gray-300 px-4 py-2">{form.requirementType}</td>
