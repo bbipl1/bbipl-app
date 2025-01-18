@@ -63,6 +63,7 @@ function Login() {
         const data = await response.json();
         setSuccess("Login successful!");
         console.log(data?.user);
+        alert("Login success.")
 
         // Redirect or perform additional actions upon successful login
         if (role === "admin") {
@@ -71,7 +72,7 @@ function Login() {
           navigate("/pages/developer-attendance-form");
         } else if (role === "finance") {
           navigate("/pages/finance-attendance-form");
-        } else if (role === "civil") {
+        } else if (role === "construction") {
           navigate("/pages/civil-attendance-form");
         }
       } catch (err) {
