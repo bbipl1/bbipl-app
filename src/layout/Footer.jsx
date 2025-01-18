@@ -5,7 +5,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 const Footer = () => {
   return (
-    <footer className="bg-cyan-700 text-white p-6 ">
+    <footer className="bg-gray-200 text-black p-6 ">
       <div>
         <h2 className="text-lg font-bold "><img src="../assets/logo/logo-png.png" 
         alt="logo" 
@@ -31,25 +31,25 @@ const Footer = () => {
           <h2 className="text-lg font-bold">Quick Links</h2>
           <ul className="mt-2 space-y-2">
             <li>
-              <a href="/" className="hover:text-yellow-300">
-                Home
+              <a href="http://mypdfhub.s3-website.ap-south-1.amazonaws.com" className="hover:text-blue-600">
+                MyPDFHub
               </a>
             </li>
-            <li>
-              <a href="/pages/about" className="hover:text-yellow-300">
+            {/* <li>
+              <a href="/pages/about" className="hover:text-blue-600">
                 About Us
               </a>
-            </li>
-            <li>
-              <a href="/pages/services" className="hover:text-yellow-300">
+            </li> */}
+            {/* <li>
+              <a href="/pages/services" className="hover:text-blue-600">
                 Services
               </a>
-            </li>
-            <li>
-              <a href="/pages/contact-us" className="hover:text-yellow-300">
+            </li> */}
+            {/* <li>
+              <a href="/pages/contact-us" className="hover:text-blue-600">
                 Contact Us
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
 
@@ -57,10 +57,10 @@ const Footer = () => {
         <div className="pr-8">
           <h2 className="text-lg font-bold">Contact Us</h2>
           <p className="mt-2 text-wrap">
-            Email: <a href="mailto:rakesh@businessbasket.in" className="hover:text-yellow-300 mr-2">rakesh@businessbasket.in</a>
+            Email: <a href="mailto:rakesh@businessbasket.in" className="hover:text-blue-600 mr-2">rakesh@businessbasket.in</a>
           </p>
           <p className="mt-3">
-            Phone: <a href="tel:+91 75036 77953" className="hover:text-yellow-300 ">+917503677953</a>
+            Phone: <a href="tel:+91 75036 77953" className="hover:text-blue-600 ">+917503677953</a>
           </p>
         
         </div>
@@ -69,7 +69,7 @@ const Footer = () => {
           href="https://facebook.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-yellow-300"
+          className="hover:text-blue-600"
         >
           <i className="fa fa-facebook"></i> Facebook
         </a>
@@ -77,7 +77,7 @@ const Footer = () => {
           href="https://twitter.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-yellow-300"
+          className="hover:text-blue-600"
         >
           <i className="fa fa-twitter"></i> Twitter
         </a>
@@ -85,7 +85,7 @@ const Footer = () => {
           href="https://linkedin.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-yellow-300"
+          className="hover:text-blue-600"
         >
           <i className="fa fa-linkedin text-white-600 text-xl"></i> LinkedIn
         </a>

@@ -28,7 +28,7 @@ const ServicesPage = () => {
       },
       {
         id: 'finance',
-        title: 'Finance',
+        title: 'Financial Services',
         imageUrl: financeImage,
         items: [
           { title: 'Home Loan', imageUrl: homeLoanImage },
@@ -40,7 +40,7 @@ const ServicesPage = () => {
       },
       {
         id: 'civil',
-        title: 'Civil',
+        title: 'Construction Services',
         imageUrl: civilImage,
         items: [
           { title: 'Construction Work', imageUrl: constructionImage },
@@ -57,7 +57,7 @@ const ServicesPage = () => {
     };
   
     return (
-      <div className="bg-cyan-600 py-20">
+      <div className="bg-white py-20">
         {!selectedService ? (
           <>
             {/* Hero Section */}
@@ -94,8 +94,8 @@ const ServicesPage = () => {
         ) : (
           <>
             {/* Sub-Service Section */}
-            <div className="p-4 sm:p-6 bg-cyan-600  shadow-lg rounded-lg mb-6">
-              <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">{selectedService.title}</h2>
+            <div className="p-4 sm:p-6 bg-white  shadow-lg rounded-lg mb-6 border border-spacing-1 m-2">
+              <h2 className="text-2xl sm:text-4xl font-bold text-black mb-4">{selectedService.title}</h2>
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {selectedService.items.map((item, index) => (
                   <div
@@ -113,7 +113,7 @@ const ServicesPage = () => {
               </section>
               <button
                 onClick={goBack}
-                className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-cyan-800 via-yellow-800 to-red-800  text-white font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition"
+                className="mt-4 sm:mt-6 px-4 sm:px-6 py-2 sm:py-3 bg-blue-600  text-white font-semibold rounded-lg shadow-lg hover:bg-blue-600 transition"
               >
                 Go Back
               </button>

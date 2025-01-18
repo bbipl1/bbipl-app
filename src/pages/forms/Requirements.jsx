@@ -37,9 +37,9 @@ const RequirementForm = () => {
   useEffect(() => {
     // Set current date
     // const dateNow = (new Date()).toLocaleDateString();
-    const dateNow = new Intl.DateTimeFormat('en-GB').format(new Date());
+    const dateNow = new Intl.DateTimeFormat("en-GB").format(new Date());
 
-    console.log(dateNow)
+    console.log(dateNow);
     setFormData({ ...formData, date: dateNow });
   }, []);
 
@@ -149,243 +149,251 @@ const RequirementForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto p-4 border rounded shadow-md"
+      className="max-w-full w-full mt-20  mx-auto p-4 border rounded shadow-md "
     >
-      <h2 className="text-lg font-bold mb-4">Requirement Form</h2>
+      <h2 className="text-2xl font-bold flex  justify-center  mb-10">
+        Requirement Form
+      </h2>
 
-      {/* Employee Type */}
-      <div className="mb-4">
-        <label htmlFor="empType" className="block text-sm font-medium mb-1">
-          Employee Type*
-        </label>
-        <select
-          id="empType"
-          name="empType"
-          value={formData.empType}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          <option value="Full-time">Full-time</option>
-          <option value="Part-time">Part-time</option>
-          <option value="Contract">Contract</option>
-        </select>
-      </div>
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Employee Type */}
+        <div className="mb-4">
+          <label htmlFor="empType" className="block text-sm font-medium mb-1">
+            Employee Type*
+          </label>
+          <select
+            id="empType"
+            name="empType"
+            value={formData.empType}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            <option value="vendor">Vendor</option>
+            <option value="employee">Employee</option>
+            {/* <option value="Contract">Contract</option> */}
+          </select>
+        </div>
 
-      {/* Employee Name */}
-      <div className="mb-4">
-        <label htmlFor="empName" className="block text-sm font-medium mb-1">
-          Employee Name*
-        </label>
-        <input
-          type="text"
-          id="empName"
-          name="empName"
-          value={formData.empName}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
+        {/* Employee Name */}
+        <div className="mb-4">
+          <label htmlFor="empName" className="block text-sm font-medium mb-1">
+            Employee Name*
+          </label>
+          <input
+            type="text"
+            id="empName"
+            name="empName"
+            value={formData.empName}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      {/* Employee ID */}
-      <div className="mb-4">
-        <label htmlFor="empId" className="block text-sm font-medium mb-1">
-          Employee ID*
-        </label>
-        <input
-          type="text"
-          id="empId"
-          name="empId"
-          value={formData.empId}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
+        {/* Employee ID */}
+        <div className="mb-4">
+          <label htmlFor="empId" className="block text-sm font-medium mb-1">
+            Employee ID*
+          </label>
+          <input
+            type="text"
+            id="empId"
+            name="empId"
+            value={formData.empId}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      {/* Mobile No. */}
-      <div className="mb-4">
-        <label htmlFor="empMobile" className="block text-sm font-medium mb-1">
-          Mobile*
-        </label>
-        <input
-          type="text"
-          id="empMobile"
-          name="empMobile"
-          value={formData.empMobile}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
+        {/* Mobile No. */}
+        <div className="mb-4">
+          <label htmlFor="empMobile" className="block text-sm font-medium mb-1">
+            Mobile*
+          </label>
+          <input
+            type="text"
+            id="empMobile"
+            name="empMobile"
+            value={formData.empMobile}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      {/* State */}
-      <div className="mb-4">
-        <label htmlFor="state" className="block text-sm font-medium mb-1">
-          State*
-        </label>
-        <select
-          id="state"
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          {states.map((state) => (
-            <option key={state._id} value={state.stateName}>
-              {state.stateName}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* State */}
+        <div className="mb-4">
+          <label htmlFor="state" className="block text-sm font-medium mb-1">
+            State*
+          </label>
+          <select
+            id="state"
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            {states.map((state) => (
+              <option key={state._id} value={state.stateName}>
+                {state.stateName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* District */}
-      <div className="mb-4">
-        <label htmlFor="district" className="block text-sm font-medium mb-1">
-          District*
-        </label>
-        <select
-          id="district"
-          name="district"
-          value={formData.district}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          {districts.map((district) => (
-            <option key={district._id} value={district.districtName}>
-              {district.districtName}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* District */}
+        <div className="mb-4">
+          <label htmlFor="district" className="block text-sm font-medium mb-1">
+            District*
+          </label>
+          <select
+            id="district"
+            name="district"
+            value={formData.district}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            {districts.map((district) => (
+              <option key={district._id} value={district.districtName}>
+                {district.districtName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Block */}
-      <div className="mb-4">
-        <label htmlFor="block" className="block text-sm font-medium mb-1">
-          Block*
-        </label>
-        <select
-          id="block"
-          name="block"
-          value={formData.block}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          {blocks.map((block) => (
-            <option key={block._id} value={block.blockName}>
-              {block.blockName}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* Block */}
+        <div className="mb-4">
+          <label htmlFor="block" className="block text-sm font-medium mb-1">
+            Block*
+          </label>
+          <select
+            id="block"
+            name="block"
+            value={formData.block}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            {blocks.map((block) => (
+              <option key={block._id} value={block.blockName}>
+                {block.blockName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Site Name */}
-      <div className="mb-4">
-        <label htmlFor="siteName" className="block text-sm font-medium mb-1">
-          Site Name*
-        </label>
-        <select
-          id="siteName"
-          name="siteName"
-          value={formData.siteName}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          {siteNames.map((site) => (
-            <option key={site._id} value={site.siteName}>
-              {site.siteName}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* Site Name */}
+        <div className="mb-4">
+          <label htmlFor="siteName" className="block text-sm font-medium mb-1">
+            Site Name*
+          </label>
+          <select
+            id="siteName"
+            name="siteName"
+            value={formData.siteName}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            {siteNames.map((site) => (
+              <option key={site._id} value={site.siteName}>
+                {site.siteName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Work Type */}
-      <div className="mb-4">
-        <label htmlFor="workType" className="block text-sm font-medium mb-1">
-          Type of Work*
-        </label>
-        <select
-          id="workType"
-          name="workType"
-          value={formData.workType}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="select">Select</option>
-          {workTypes.map((type) => (
-            <option key={type._id} value={type.workTypeName}>
-              {type.workTypeName}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* Work Type */}
+        <div className="mb-4">
+          <label htmlFor="workType" className="block text-sm font-medium mb-1">
+            Type of Work*
+          </label>
+          <select
+            id="workType"
+            name="workType"
+            value={formData.workType}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="select">Select</option>
+            {workTypes.map((type) => (
+              <option key={type._id} value={type.workTypeName}>
+                {type.workTypeName}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Date of Requirement */}
-      <div className="mb-4">
-        <label
-          htmlFor="dateOfRequirement"
-          className="block text-sm font-medium mb-1"
-        >
-          Date Of Requirement*
-        </label>
-        <input
-          type="date"
-          id="dateOfRequirement"
-          name="dateOfRequirement"
-          value={formData.dateOfRequirement}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        />
-      </div>
+        {/* Date of Requirement */}
+        <div className="mb-4">
+          <label
+            htmlFor="dateOfRequirement"
+            className="block text-sm font-medium mb-1"
+          >
+            Date Of Requirement*
+          </label>
+          <input
+            type="date"
+            id="dateOfRequirement"
+            name="dateOfRequirement"
+            value={formData.dateOfRequirement}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
 
-      {/* Requirement Type */}
-      <div className="mb-4">
-        <label
-          htmlFor="requirementType"
-          className="block text-sm font-medium mb-1"
-        >
-          Requirement Type*
-        </label>
-        <select
-          id="requirementType"
-          name="requirementType"
-          value={formData.requirementType}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="Material">Material</option>
-          <option value="Amount">Amount</option>
-        </select>
+        {/* Requirement Type */}
+        <div className="mb-4">
+          <label
+            htmlFor="requirementType"
+            className="block text-sm font-medium mb-1"
+          >
+            Requirement Type*
+          </label>
+          <select
+            id="requirementType"
+            name="requirementType"
+            value={formData.requirementType}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+          >
+            <option value="Material">Material</option>
+            <option value="Amount">Amount</option>
+          </select>
+        </div>
       </div>
 
       {/* Remarks */}
-      <div className="mb-4">
+      <div className="mb-4 ">
         <label htmlFor="remarks" className="block text-sm font-medium mb-1">
           Remarks*
         </label>
-        <textarea
-          id="remarks"
-          name="remarks"
-          value={formData.remarks}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2"
-          rows="3"
-        ></textarea>
+        <div className="w-full flex justify-center">
+          <textarea
+            id="remarks"
+            name="remarks"
+            value={formData.remarks}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            rows="3"
+          ></textarea>
+        </div>
       </div>
 
       <div className="flex items-center justify-center mb-4">
         {loading && <ClipLoader color="#4A90E2" loading={loading} size={50} />}
       </div>
 
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
-      >
-        {submitText}
-      </button>
+      <div className="flex justify-center">
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-1/4  bg-blue-500 text-white py-2 rounded hover:bg-blue-600 "
+        >
+          {submitText}
+        </button>
+      </div>
     </form>
   );
 };

@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-cyan-600 text-white text-center py-20">
+      <section className="bg-white text-black text-center py-20">
         <div className="container mx-auto">
           <h1 className="text-4xl font-bold leading-tight mb-4">
             Welcome to Business Basket
@@ -16,18 +16,18 @@ const Home = () => {
             our offerings and get in touch with us today!
           </p>
           <div className="flex justify-center gap-6">
-            <Link
+            {/* <Link
               to="/pages/services"
-              className="bg-yellow-400 text-cyan-600 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition duration-300"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
             >
               Our Services
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               to="/pages/contact-us"
               className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
             >
               Contact Us
-            </Link>
+            </Link> */}
           </div>
         </div>
       </section>

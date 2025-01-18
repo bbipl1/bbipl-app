@@ -83,8 +83,8 @@ function Login() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-cyan-400 via-cyan-600 to-cyan-800 flex items-center justify-center min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+    <div className="bg-white flex items-center justify-center min-h-screen">
+      <div className="bg-gray-50 p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-3xl font-bold text-center text-blue-600 mb-8">
           Welcome Back
         </h2>
@@ -96,7 +96,7 @@ function Login() {
               htmlFor="mobileOrId"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Employee ID / Mobile
+              Employee/Vendor ID/Mobile No
             </label>
             <input
               id="mobileOrId"
@@ -152,8 +152,8 @@ function Login() {
             >
               <option value="admin">Admin</option>
               <option value="developer">Developer</option>
+              <option value="construction">Construction</option>
               <option value="finance">Finance</option>
-              <option value="civil">Civil</option>
             </select>
           </div>
 
@@ -171,7 +171,7 @@ function Login() {
             Login
           </button>
         </form>
-        {/* <p className="mt-6 text-sm text-gray-600 text-center">
+        {/* <p className="mt-6 text-sm text-gray-600">
           Don’t have an account?{" "}
           <Link
             to="/authentication/sign-up"
@@ -179,7 +179,17 @@ function Login() {
           >
             Sign Up
           </Link>
-        </p> */}
+        </p>*/}
+        <p className="my-2 text-sm text-gray-600 ">
+          Didn’t remember password?{" "}
+          <Link
+            to="/authentication/officials/cons-and-fin-forgot-password"
+            className="text-blue-500 hover:underline"
+          >
+            Forgot here
+          </Link>
+        </p>
+         
       </div>
     </div>
   );
