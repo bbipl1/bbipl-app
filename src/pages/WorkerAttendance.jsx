@@ -336,44 +336,7 @@ function AttendanceForm() {
     }
   };
 
-  useEffect(() => {
-    if (accountDetails) {
-      const uploadParam = {
-        Bucket: S3_BUCKET,
-        Key: "AccountDetails/acc.jpg",
-        Body: accountDetails,
-        ContentType: accountDetails.type,
-      };
-
-      const s3 = new AWS.S3({
-        params: { Bucket: S3_BUCKET },
-        region: REGION,
-      });
-
-      s3.upload(uploadParam)
-        .on("httpUploadProgress", (evt) => {
-          setUploadProgress(Math.round((evt.loaded / evt.total) * 100));
-        })
-        .send((err, data) => {
-          if (err) {
-            console.error("Error uploading account details: ", err);
-            console.log(accountDetails.type);
-          } else {
-            // setImageUploadText("Account Details Uploaded");
-            // setisSelfieUploaded(true);
-            console.log(
-              "Account details uploaded successfully: ",
-              data.Location
-            );
-            setFormData((prevData) => ({
-              ...prevData,
-              accountDetailsImageURL: data.Location,
-            }));
-            alert(`File uploaded to: ${data.Location}`);
-          }
-        });
-    }
-  }, [accountDetails]);
+ 
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center w-full">
@@ -383,12 +346,10 @@ function AttendanceForm() {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-12">
-
-          
             {/* Selfie Input */}
             <div className="text-center">
-            <h2 className="text-xl font-bold text-black text-center mb-8">
-               Photos
+              <h2 className="text-xl font-bold text-black text-center mb-8">
+                Photos
               </h2>
               {/* Video stream (Live Camera Feed) */}
               <video
@@ -641,101 +602,6 @@ function AttendanceForm() {
               />
             </div>
             {/* </div> */}
-
-            {/* Expenses and Expenses Type */}
-            {/* <div className="grid grid-cols-2 gap-4"> */}
-            <div>
-              <label
-                htmlFor="expenses"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Expenses Amount
-              </label>
-              <input
-                type="number"
-                id="expenses"
-                name="expenses"
-                value={formData.expenses}
-                onChange={handleChange}
-                placeholder="Enter Expenses"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="expensesType"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Expenses Type
-              </label>
-              <select
-                id="expensesType"
-                name="expensesType"
-                value={formData.expensesType}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              >
-                <option value="">Select Expenses Type</option>
-                <option value="manpower">Manpower</option>
-                <option value="material">Material</option>
-                <option value="tools_and_machinery">Tools & Machinery</option>
-                <option value="repair">Repair</option>
-                <option value="ration">Ration</option>
-                <option value="vendor">Vendor</option>
-                <option value="vendor">Self</option>
-              </select>
-            </div>
-            {/* </div> */}
-
-            {/* Payments Status */}
-
-            <div>
-              <label
-                htmlFor="qrCodeImage"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Upload QR Code/passbook/upi id picture
-              </label>
-              <input
-                type="file"
-                id="AccountDetails"
-                name="AccountDetails"
-                onChange={(e) => {
-                  setAccountDetails(e.target.files[0]);
-                }}
-                accept="image/png, image/jpg, image/jpeg"
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Please upload a clear image(jpg, jpeg, png files only) of the
-                Account details.
-              </p>
-            </div>
-
-            <div>
-              <label
-                htmlFor="paymentsStatus"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Payment Status
-              </label>
-              <select
-                id="paymentsStatus"
-                name="paymentsStatus"
-                value={formData.paymentsStatus}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              >
-                <option value="">Select Payment Status</option>
-                <option value="Received">Received</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
           </div>
 
           {/* Progress Report Description */}
@@ -759,12 +625,12 @@ function AttendanceForm() {
           </div>
 
           <div className="flex justify-center">
-          <button
-            type="submit"
-            className="w-1/2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
-          >
-            Submit
-          </button>
+            <button
+              type="submit"
+              className="w-1/2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200"
+            >
+              Submit
+            </button>
           </div>
         </form>
       </div>

@@ -1,26 +1,40 @@
 import axios from "axios";
+import AWS from "aws-sdk";
 import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 
+// const serverUrl = process.env.REACT_APP_SERVER_URL;
+const S3_BUCKET = "bpipl-attendance-image";
+const REGION = "ap-south-1";
+const access_key = process.env.REACT_APP_ACCESS_KEY;
+const secrect_access_key = process.env.REACT_APP_SECRECT_ACCESS_KEY;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const RequirementForm = () => {
+
+  const [timeStamp, setTimeStamps] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [paymentMethods, setPaymentMethods] = useState(null);
   const [submitText, setSubmitText] = useState("Submit");
   const [formData, setFormData] = useState({
+    empType: "Select",
     date: "",
     empName: "",
     empId: "",
     empMobile: "",
-    siteName: "",
     dateOfRequirement: "",
-    requirementType: "Material", // Default value
-    workType: "", // Added workType field
+    requirementType: "Select", // Default value
+    state: "Select",
+    district: "Select",
+    block: "Select",
+    siteName: "",
+    workType: "",
+    expensesAmount: "",
+    expensesType: "",
+    paymentMethod: "",
+    paymentStatus: "",
     remarks: "",
-    state: "select",
-    district: "select",
-    block: "select",
-    empType: "select", // Added Employee Type field
   });
 
   const [states, setStates] = useState([]);
@@ -37,9 +51,10 @@ const RequirementForm = () => {
   useEffect(() => {
     // Set current date
     // const dateNow = (new Date()).toLocaleDateString();
+    setTimeStamps(Date.now());
     const dateNow = new Intl.DateTimeFormat("en-GB").format(new Date());
 
-    console.log(dateNow);
+    // console.log(dateNow);
     setFormData({ ...formData, date: dateNow });
   }, []);
 
@@ -61,9 +76,9 @@ const RequirementForm = () => {
     setDistricts(selectedState ? selectedState.districts : []);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      district: "select",
-      block: "select",
-      siteName: "select",
+      district: "Select",
+      block: "Select",
+      siteName: "Select",
       workType: "", // Reset workType when state or district changes
     }));
   };
@@ -122,28 +137,162 @@ const RequirementForm = () => {
     }
   };
 
+  const [isPaymentMethodReady, setIsPaymentMethodReady] = useState(false); // Flag for payment method ready
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const url = `${serverUrl}/api/forms/submit-form`;
+    setSubmitText(""); // Reset submission status
+
+    // console.log("Form Submitted:", formData);
+    // const url = `${serverUrl}/api/forms/submit-form`;
 
     try {
-      // Directly sending the POST request with data and headers
-      const res = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "application/json", // Correct header for JSON
-        },
-      });
+      // Step 1: Upload file to AWS and get the path
+      const path = await uploadFileToAWS();
+      console.log(path);
 
-      // Handle successful form submission
-      setSubmitText("Submitted");
-      console.log("Form Submitted:", formData);
+      if (!path) {
+        alert("Error uploading the document. Please try again.");
+        console.error("Error during AWS upload.");
+        setLoading(false);
+        setSubmitText("Error");
+        return; // Exit if upload fails
+      }
+
+      // Step 2: Update formData with the uploaded file path
+      setFormData((prevData) => ({
+        ...prevData,
+        paymentMethod: path,
+      }));
+
+      // Set flag to indicate payment method is ready
+      setIsPaymentMethodReady(true);
+      setSubmitText("Pending...")
     } catch (err) {
-      // Handle errors during form submission
-      console.error("Error submitting form:", err);
+      console.error("Error uploading file:", err);
+      alert("An error occurred while uploading the file. Please try again.");
       setSubmitText("Failed!");
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const ResetForm = async() => {
+    setPaymentMethods("")
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      empType: "Select",
+      date: "",
+      empName: "",
+      empId: "",
+      empMobile: "",
+      dateOfRequirement: "",
+      requirementType: "Select",
+      state: "Select",
+      district: "Select",
+      block: "Select",
+      siteName: "",
+      workType: "",
+      expensesAmount: "",
+      expensesType: "",
+      paymentMethod: "",
+      paymentStatus: "",
+      remarks: "",
+      
+    }));
+  };
+
+  useEffect(() => {
+    // console.log("form  success", formData);
+    if (isPaymentMethodReady) {
+      const submitFormData = async () => {
+        const url = `${serverUrl}/api/forms/submit-form`;
+        try {
+          const res = await axios.post(url, formData, {
+            headers: {
+              "Content-Type": "application/json", // Correct header for JSON
+            },
+          });
+
+          if (res.status >= 200 && res.status < 300) {
+            setSubmitText("Submitted");
+            console.log("Form Submitted Successfully:", res.data);
+            setIsPaymentMethodReady(false);
+            // setFormData((prevData) => ({}));
+            await ResetForm()
+            // setClearForm(clearForm+1)
+            // console.log("form clear success", formData);
+          } else {
+            console.error("Unexpected response:", res.status, res.data);
+            setSubmitText("Failed!");
+            alert("Failed to submit the form. Please try again.");
+          }
+        } catch (err) {
+          console.error("Error submitting form:", err);
+          setSubmitText("Failed!");
+          alert(
+            "An error occurred while submitting the form. Please try again."
+          );
+          // console.log("formdata",formData)
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      // Call the function to submit form data once paymentMethod is ready
+      submitFormData();
+    }
+  }, [isPaymentMethodReady]); // Effect runs when paymentMethod is ready
+
+  const uploadFileToAWS = async () => {
+    const cPath = formData.date || ""; // Ensure date is defined
+    const splitPath = cPath.split("/");
+    const currentTimeStamps = Date.now();
+
+    if (!paymentMethods) {
+      console.error("No payment method provided.");
+      return false;
+    }
+
+    const fileExtension = paymentMethods.type?.split("/")[1];
+    if (!fileExtension) {
+      console.error("Invalid file type.");
+      alert("Invalid file type. Please upload a valid file.");
+      return false;
+    }
+
+    const uploadParam = {
+      Bucket: S3_BUCKET,
+      Key: `requirementForms/${splitPath[0]}-${splitPath[1]}-${splitPath[2]}-${currentTimeStamps}.${fileExtension}`,
+      Body: paymentMethods,
+      ContentType: paymentMethods.type,
+    };
+
+    const s3 = new AWS.S3({
+      params: { Bucket: S3_BUCKET },
+      region: REGION,
+    });
+
+    return new Promise((resolve, reject) => {
+      s3.upload(uploadParam)
+        .on("httpUploadProgress", (evt) => {
+          setUploadProgress(Math.round((evt.loaded / evt.total) * 100));
+        })
+        .send((err, data) => {
+          if (err) {
+            console.error("Error uploading file to AWS:", err);
+            reject(null); // Reject the promise
+          } else {
+            console.log("File uploaded successfully to:", data.Location);
+            setFormData((prevData) => ({
+              ...prevData,
+              paymentMethod: data.Location,
+            }));
+            alert(`File uploaded successfully to: ${data.Location}`);
+            resolve(data.Location); // Resolve the promise
+          }
+        });
+    });
   };
 
   return (
@@ -159,7 +308,7 @@ const RequirementForm = () => {
         {/* Employee Type */}
         <div className="mb-4">
           <label htmlFor="empType" className="block text-sm font-medium mb-1">
-            Employee Type*
+            Designation*
           </label>
           <select
             id="empType"
@@ -358,8 +507,105 @@ const RequirementForm = () => {
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
           >
+            <option value="">Select</option>
             <option value="Material">Material</option>
             <option value="Amount">Amount</option>
+          </select>
+        </div>
+
+        {/* Expenses and Expenses Type */}
+        {/* <div className="grid grid-cols-2 gap-4"> */}
+        <div>
+          <label
+            htmlFor="expensesAmount"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Expenses Amount*
+          </label>
+          <input
+            type="number"
+            id="expensesAmount"
+            name="expensesAmount"
+            value={formData.expensesAmount}
+            onChange={handleChange}
+            placeholder="Enter Expenses"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="expensesType"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Expenses Type*
+          </label>
+          <select
+            id="expensesType"
+            name="expensesType"
+            value={formData.expensesType}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
+          >
+            <option value="">Select Expenses Type</option>
+            <option value="manpower">Manpower</option>
+            <option value="material">Material</option>
+            <option value="tools and machinery">Tools & Machinery</option>
+            <option value="repair">Repair</option>
+            <option value="ration">Ration</option>
+            <option value="vendor">Vendor</option>
+            <option value="vendor">Self</option>
+          </select>
+        </div>
+        {/* </div> */}
+
+        {/* Payments Status */}
+
+        <div>
+          <label
+            htmlFor="paymentMethod"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Upload QR Code/Passbook/UPI-Id picture
+          </label>
+          <input
+            type="file"
+            id="paymentMethod"
+            name="paymentMethod"
+            onChange={(e) => {
+              // setAccountDetails(e.target.files[0]);
+              setPaymentMethods(e.target.files[0]);
+            }}
+            accept="image/png, image/jpg, image/jpeg"
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Please upload a clear image(jpg, jpeg, png files only) of the
+            Account details.
+          </p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="paymentStatus"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Payment Status
+          </label>
+          <select
+            id="paymentStatus"
+            name="paymentStatus"
+            value={formData.paymentStatus}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            required
+          >
+            <option value="">Select Payment Status</option>
+            <option value="Received">Received</option>
+            <option value="Pending">Pending</option>
           </select>
         </div>
       </div>
