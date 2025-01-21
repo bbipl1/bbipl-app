@@ -13,7 +13,7 @@ import Home from "./layout/Home";
 import Error from "./Error.jsx";
 import Signup from "./authentication/officials/SignUp.jsx";
 import Login from "./authentication/officials/Login.jsx";
-import WorkerAttendance from "./pages/WorkerAttendance.jsx";
+// import WorkerAttendance from "./pages/WorkerAttendance.jsx";
 import About from "./pages/About.jsx";
 // import Services from './pages/Services.jsx';
 import MainServices from "./pages/services/MainService.jsx";
@@ -34,6 +34,8 @@ import UserSignUp from "./authentication/users/UserSignUp.jsx";
 import OfficialForgotPasswordForAdm from "./authentication/officials/OfficialForgotPasswordForAdm.jsx";
 import OfficialForgotPasswordForDev from "./authentication/officials/OfficialForgotPasswordForAdm.jsx";
 import OfficialForgotPasswordForConAndFin from "./authentication/officials/OfficialForgotPasswordForConAndFin.jsx";
+import ConstructionsDashBoard from "./pages/officials/constructions/ConstructionsDashBoard.jsx";
+import Logout from "./components/admin/Logout.jsx";
 // const routerFromelements=
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +46,8 @@ const router = createBrowserRouter(
         path="authentication/officials/officials-login"
         element={<Login />}
       ></Route>
+
+      <Route path="authentication/logout" element={<Logout/>}/>
       
       <Route
         path="authentication/officials/cons-and-fin-forgot-password"
@@ -83,9 +87,11 @@ const router = createBrowserRouter(
         path="pages/finance-attendance-form"
         element={<FinanceAttendanceForm />}
       ></Route>
+
+      {/* contructions -route */}
       <Route
-        path="pages/civil-attendance-form"
-        element={<WorkerAttendance />}
+        path="pages/construction-dashboard"
+        element={<ConstructionsDashBoard />}
       ></Route>
       <Route path="pages/about" element={<About />}></Route>
       <Route path="pages/services" element={<MainServices />}></Route>

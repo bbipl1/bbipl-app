@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import AWS from "aws-sdk";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { postData } from "../api/AttendanceUpload";
+import { postData } from "../../../api/AttendanceUpload";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const S3_BUCKET = "bpipl-attendance-image";
@@ -36,19 +36,26 @@ function AttendanceForm() {
   const [accountDetails, setAccountDetails] = useState(null);
 
   const [formData, setFormData] = useState({
-    selfie: null,
+    empType: null,
+    empPhoto: null,
+    empMobile: null,
     employeeName: "",
     employeeId: "",
     siteLocation: "",
     date: "",
     time: "",
     day: "",
-    expenses: "",
-    expensesType: "",
-    accountDetailsImageURL: null,
-    paymentsStatus: "",
     progressReportVideo: null,
     progressReportDescription: "",
+    workers: [
+      {
+        workerName: "",
+        workerMobile: "",
+        workerAadhaar: "",
+        workerPanCard: "",
+        workerAccountDetails: "",
+      },
+    ],
   });
 
   const s3Client = new S3Client({
@@ -335,8 +342,6 @@ function AttendanceForm() {
       alert("File upload failed!");
     }
   };
-
- 
 
   return (
     <div className="bg-gray-100 min-h-screen flex items-center justify-center w-full">

@@ -73,7 +73,7 @@ function Login() {
         } else if (role === "finance") {
           navigate("/pages/finance-attendance-form");
         } else if (role === "construction") {
-          navigate("/pages/civil-attendance-form");
+          navigate("/pages/construction-dashboard");
         }
       } catch (err) {
         setError(err.message);
