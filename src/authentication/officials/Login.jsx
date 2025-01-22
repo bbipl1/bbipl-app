@@ -71,7 +71,7 @@ function Login() {
         } else if (role === "developer") {
           navigate("/pages/developer-attendance-form");
         } else if (role === "finance") {
-          navigate("/pages/finance-attendance-form");
+          navigate("/pages/dashboard/finance" , { state: { data } });
         } else if (role === "construction") {
           navigate("/pages/construction-dashboard");
         }

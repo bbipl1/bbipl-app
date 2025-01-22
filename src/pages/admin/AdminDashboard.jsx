@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Details from "./Details"; // Import the Details component
 import Upload from "./UploadFiles"; // Import the Upload component
-import Others from "./Others"; // Import the Others component
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ContactUsMessages from "./ContactUsMessages";
 import FormRequirementDetails from "./FormRequirementDetails";
 import SiteManagement from "./SitesUpdateManagement";
+import ShowUserAttendance from "./ShowUserAttendance";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -26,6 +26,8 @@ const AdminDashboard = () => {
         return <FormRequirementDetails />;
       case "sites-management":
         return <SiteManagement />;
+      case "showUserAttendance":
+        return <ShowUserAttendance />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -42,7 +44,7 @@ const AdminDashboard = () => {
 
   const getButtonClass = (component) => {
     return activeComponent === component
-      ? "w-100 px-4 py-2 bg-gray-300 text-black rounded hover:bg-blue-700 transition duration-100"
+      ? "w-100 px-4 py-2 bg-gray-300 text-black rounded hover:bg-white hover:border-1 transition duration-100"
       : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
   };
 
@@ -53,7 +55,7 @@ const AdminDashboard = () => {
           Hi! {data?.user?.empName}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
         <button
           onClick={() => setActiveComponent("details")}
           className={getButtonClass("details")}
@@ -84,6 +86,12 @@ const AdminDashboard = () => {
           className={getButtonClass("contactUsMessages")}
         >
           Contact Us
+        </button>
+        <button
+          onClick={() => setActiveComponent("showUserAttendance")}
+          className={getButtonClass("showUserAttendance")}
+        >
+          Attendance
         </button>
         <button
           onClick={() => handleLogout()}

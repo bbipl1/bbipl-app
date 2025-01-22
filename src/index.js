@@ -19,7 +19,7 @@ import About from "./pages/About.jsx";
 import MainServices from "./pages/services/MainService.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import DeveloperAttendanceForm from "./pages/DeveloperAttendanceForm.jsx";
-import FinanceAttendanceForm from "./pages/FinanceAttendanceForm.jsx";
+import FinanceAttendanceForm from "./pages/DevAndFinAttendanceForm.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import RequirementForm from "./pages/forms/Requirements.jsx";
@@ -36,6 +36,7 @@ import OfficialForgotPasswordForDev from "./authentication/officials/OfficialFor
 import OfficialForgotPasswordForConAndFin from "./authentication/officials/OfficialForgotPasswordForConAndFin.jsx";
 import ConstructionsDashBoard from "./pages/officials/constructions/ConstructionsDashBoard.jsx";
 import Logout from "./components/admin/Logout.jsx";
+import FinanceDashBoard from "./pages/officials/finance/FinanceDashBoard.jsx";
 // const routerFromelements=
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -99,6 +100,10 @@ const router = createBrowserRouter(
       <Route
         path="pages/forms/requirements"
         element={<RequirementForm />}
+      ></Route>
+      <Route
+        path="pages/dashboard/finance"
+        element={<FinanceDashBoard/>}
       ></Route>
     </Route>
   )
