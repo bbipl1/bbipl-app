@@ -105,7 +105,7 @@ const Admin = () => {
 
         {/* Data Table */}
         <div>
-          <table className="w-full border-collapse border border-gray-200">
+          <table className="table-fixed border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-200">
                 <th className="border border-gray-300 p-3 text-left">Employee ID</th>
