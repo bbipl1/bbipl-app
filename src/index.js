@@ -13,7 +13,7 @@ import Home from "./layout/Home";
 import Error from "./Error.jsx";
 import Signup from "./authentication/officials/SignUp.jsx";
 import Login from "./authentication/officials/Login.jsx";
-// import WorkerAttendance from "./pages/WorkerAttendance.jsx";
+import WorkerAttendance from "./pages/officials/constructions/WorkerAttendance.jsx";
 import About from "./pages/About.jsx";
 // import Services from './pages/Services.jsx';
 import MainServices from "./pages/services/MainService.jsx";
@@ -104,6 +104,10 @@ const router = createBrowserRouter(
       <Route
         path="pages/dashboard/finance"
         element={<FinanceDashBoard/>}
+      ></Route>
+      <Route
+        path="worker"
+        element={<WorkerAttendance/>}
       ></Route>
     </Route>
   )
