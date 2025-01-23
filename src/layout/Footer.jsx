@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-200 text-black p-6 ">
       <div>
-        <h2 className="text-lg font-bold "><img src="../assets/logo/logo-png.png" 
+        <h2 className="text-lg font-bold "><img src="/assets/logo/logo-png.png" 
         alt="logo" 
         srcset="" 
         className="h-20 w-auto m-auto"/></h2>
