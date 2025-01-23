@@ -104,7 +104,7 @@ const Admin = () => {
         </div>
 
         {/* Data Table */}
-        <div>
+        <div className="w-full overflow-x-auto">
           <table className="w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-200">

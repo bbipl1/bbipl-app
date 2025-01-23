@@ -209,7 +209,7 @@ const ContactUsMessages = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 ">
       <div className="overflow-x-auto">
         <table className="table-auto w-full border-collapse border border-gray-300">
           <thead className="bg-gray-200">
