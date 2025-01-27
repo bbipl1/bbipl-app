@@ -9,7 +9,7 @@ import DailyProgress from "./DailyProgress";
 const SiteEngDashBoard = () => {
   const location = useLocation();
   const { data } = location.state || {};
-  console.log("data is", data);
+  // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
 
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const SiteEngDashBoard = () => {
       case "profile":
         return <SiteEngProfile siteEngineer={data?.user} />;
       case "RequirementsForm":
-        return <RequirementForm />;
+        return <RequirementForm user={data?.user} />;
       case "daily-progress-report":
         return <DailyProgress user={data?.user} />;
       case "siteEngAttendance":

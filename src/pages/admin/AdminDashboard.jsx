@@ -6,6 +6,7 @@ import ContactUsMessages from "./ContactUsMessages";
 import FormRequirementDetails from "./FormRequirementDetails";
 import SiteManagement from "./SitesUpdateManagement";
 import ShowUserAttendance from "./ShowUserAttendance";
+import DailyProgressReport from "./DailyProgressReport";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -28,6 +29,8 @@ const AdminDashboard = () => {
         return <SiteManagement />;
       case "showUserAttendance":
         return <ShowUserAttendance />;
+        case "dailyProgressReport":
+        return <DailyProgressReport />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -55,7 +58,7 @@ const AdminDashboard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
         <button
           onClick={() => setActiveComponent("details")}
           className={getButtonClass("details")}
@@ -92,6 +95,12 @@ const AdminDashboard = () => {
           className={getButtonClass("showUserAttendance")}
         >
           Attendance
+        </button>
+        <button
+          onClick={() => setActiveComponent("dailyProgressReport")}
+          className={getButtonClass("showUserAttendance")}
+        >
+          Daily Progress Report
         </button>
         <button
           onClick={() => handleLogout()}
