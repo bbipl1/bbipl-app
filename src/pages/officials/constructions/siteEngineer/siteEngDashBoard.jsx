@@ -63,7 +63,7 @@ const SiteEngDashBoard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <button
           onClick={() => setActiveComponent("profile")}
           className={getButtonClass("profile")}
