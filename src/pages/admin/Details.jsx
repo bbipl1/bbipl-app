@@ -108,8 +108,9 @@ const Admin = () => {
           <table className="w-full border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-200">
-                <th className="border border-gray-300 p-3 text-left">Employee ID</th>
+                <th className="border border-gray-300 p-3 text-left">ID</th>
                 <th className="border border-gray-300 p-3 text-left">Name</th>
+                <th className="border border-gray-300 p-3 text-left">Department</th>
                 <th className="border border-gray-300 p-3 text-left">Role</th>
                 <th className="border border-gray-300 p-3 text-left">Mobile</th>
                 <th className="border border-gray-300 p-3 text-left">Actions</th>
@@ -119,10 +120,11 @@ const Admin = () => {
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
                   <tr key={item.empId} className="odd:bg-white even:bg-gray-50">
-                    <td className="border border-gray-300 p-3">{item.empId}</td>
-                    <td className="border border-gray-300 p-3">{item.empName}</td>
-                    <td className="border border-gray-300 p-3">{item.empRole}</td>
-                    <td className="border border-gray-300 p-3">{item.empMobile}</td>
+                    <td className="border border-gray-300 p-3">{item.id}</td>
+                    <td className="border border-gray-300 p-3">{item.name}</td>
+                    <td className="border border-gray-300 p-3">{item.department}</td>
+                    <td className="border border-gray-300 p-3">{item.role}</td>
+                    <td className="border border-gray-300 p-3">{item.mobile}</td>
                     <td className="border border-gray-300 p-3">
                       <button
                         onClick={() => setSelectedEmployee(item)}
@@ -155,11 +157,14 @@ const Admin = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
               Employee Details
             </h2>
-            <p><strong>ID:</strong> {selectedEmployee.empId}</p>
-            <p><strong>Name:</strong> {selectedEmployee.empName}</p>
-            <p><strong>Role:</strong> {selectedEmployee.empRole}</p>
-            <p><strong>Email:</strong> {selectedEmployee.empEmail}</p>
-            <p><strong>Phone:</strong> {selectedEmployee.empMobile}</p>
+            <p><strong>ID:</strong> {selectedEmployee.id}</p>
+            <p><strong>Name:</strong> {selectedEmployee.name}</p>
+            <p><strong>Phone:</strong> {selectedEmployee.mobile}</p>
+            <p><strong>Email:</strong> {selectedEmployee.email}</p>
+            <p><strong>Department:</strong> {selectedEmployee.department}</p>
+            <p><strong>Role:</strong> {selectedEmployee.role}</p>
+            <p><strong>Gender:</strong> {selectedEmployee.gender}</p>
+            <p><strong>password:</strong> {selectedEmployee.password}</p>
             <div className="mt-4">
               <button
                 onClick={() => setSelectedEmployee(null)}

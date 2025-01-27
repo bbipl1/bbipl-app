@@ -1,6 +1,7 @@
 import axios from "axios";
 import AWS from "aws-sdk";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
 // const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -10,7 +11,9 @@ const access_key = process.env.REACT_APP_ACCESS_KEY;
 const secrect_access_key = process.env.REACT_APP_SECRECT_ACCESS_KEY;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-const RequirementForm = () => {
+const RequirementForm = ({user}) => {
+
+  const navigation=useNavigate();
 
   const [timeStamp, setTimeStamps] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -294,6 +297,10 @@ const RequirementForm = () => {
         });
     });
   };
+
+  if(!user){
+    navigation("/authentication/officials/officials-login")
+   }
 
   return (
     <form

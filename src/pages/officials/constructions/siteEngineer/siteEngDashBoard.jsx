@@ -1,26 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
-// import AttendanceForm from "./WorkerAttendance";
-import ConstructionsProfile from "./ConstructionsProfile";
-import RequirementForm from "./siteEngineer/Requirements";
-import SiteEngineerAttendanceForm from "./siteEngineer/SiteEngineerAttendanceForm";
-import SiteEngProfile from "./siteEngineer/profile/SiteEngineerProfile";
+import RequirementForm from "./Requirements";
+import SiteEngineerAttendanceForm from "./SiteEngineerAttendanceForm";
+import SiteEngProfile from "./profile/SiteEngineerProfile";
+import ManageWorker from "./profile/ManageWorkers";
+import DailyProgress from "./DailyProgress";
 
-const ConstructionsDashBoard = () => {
+const SiteEngDashBoard = () => {
   const location = useLocation();
   const { data } = location.state || {};
+  console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
 
   const navigate = useNavigate();
+  // const navigation = useNavigate();
+ useEffect(()=>{
+  if (!data) {
+    // console.log("login");
+    // navigate("/authentication/officials/officials-login");
+  } else {
+    // console.log("not login");
+  }
+ },[data, navigate])
 
   const renderComponent = () => {
     switch (activeComponent) {
       case "profile":
-        return <SiteEngProfile />;
-      case "dailyRequirementsForm":
+        return <SiteEngProfile siteEngineer={data?.user} />;
+      case "RequirementsForm":
         return <RequirementForm />;
+      case "daily-progress-report":
+        return <DailyProgress user={data?.user} />;
       case "siteEngAttendance":
-        return <SiteEngineerAttendanceForm />;
+        return <SiteEngineerAttendanceForm siteEngId={data?.user?.id} />;
+      case "workers":
+        return <ManageWorker siteEngineerId={data?.user?.id} />;
 
       default:
         return (
@@ -46,10 +60,10 @@ const ConstructionsDashBoard = () => {
     <div className="p-1 bg-gray-100 min-h-screen">
       <div>
         <h1 className="text-3xl font-bold text-gray-800 mb-6 ml-14">
-          Hi! {data?.user?.empName}
+          Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-5">
         <button
           onClick={() => setActiveComponent("profile")}
           className={getButtonClass("profile")}
@@ -58,11 +72,25 @@ const ConstructionsDashBoard = () => {
         </button>
 
         <button
-          onClick={() => setActiveComponent("dailyRequirementsForm")}
+          onClick={() => setActiveComponent("workers")}
           className={getButtonClass("upload")}
         >
-          Daily requirement Forms
+          Workers
         </button>
+
+        <button
+          onClick={() => setActiveComponent("RequirementsForm")}
+          className={getButtonClass("upload")}
+        >
+          Requirement Forms
+        </button>
+        <button
+          onClick={() => setActiveComponent("daily-progress-report")}
+          className={getButtonClass("upload")}
+        >
+          Daily Progress Report
+        </button>
+
         <button
           onClick={() => setActiveComponent("siteEngAttendance")}
           className={getButtonClass("sites-management")}
@@ -83,4 +111,4 @@ const ConstructionsDashBoard = () => {
   );
 };
 
-export default ConstructionsDashBoard;
+export default SiteEngDashBoard;

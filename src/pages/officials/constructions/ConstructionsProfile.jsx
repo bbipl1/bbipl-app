@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+const serverURL = process.env.REACT_APP_SERVER_URL;
+
 const ConstructionsProfile = (profile) => {
   // State to hold fetched data
   const [profileData, setProfileData] = useState(null);
@@ -11,13 +13,14 @@ const ConstructionsProfile = (profile) => {
   useEffect(() => {
     // Example API URL (replace with your actual API endpoint)
     const mobile=profile._id
-    const apiUrl = 'https://api.example.com/profile'; // Replace with your actual API URL
+    const apiUrl = `${serverURL}/api/site-engineer/get-all-site-engineers`; // Replace with your actual API URL
 
     // Fetch data from the API
     axios
       .get(apiUrl)
       .then((response) => {
         // Set the fetched data to state
+        console.log("user is",response)
         setProfileData(response.data);
         setLoading(false);
       })

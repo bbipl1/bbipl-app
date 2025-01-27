@@ -22,7 +22,7 @@ import DeveloperAttendanceForm from "./pages/DeveloperAttendanceForm.jsx";
 import FinanceAttendanceForm from "./pages/DevAndFinAttendanceForm.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
-import RequirementForm from "./pages/forms/Requirements.jsx";
+// import RequirementForm from "./pages/forms/Requirements.jsx";
 
 // login
 import UserForgotPassword from "./authentication/users/UserForgotPassword.jsx";
@@ -37,6 +37,7 @@ import OfficialForgotPasswordForConAndFin from "./authentication/officials/Offic
 import ConstructionsDashBoard from "./pages/officials/constructions/ConstructionsDashBoard.jsx";
 import Logout from "./components/admin/Logout.jsx";
 import FinanceDashBoard from "./pages/officials/finance/FinanceDashBoard.jsx";
+import SiteEngDashBoard from "./pages/officials/constructions/siteEngineer/siteEngDashBoard.jsx";
 // const routerFromelements=
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -89,7 +90,12 @@ const router = createBrowserRouter(
         element={<FinanceAttendanceForm />}
       ></Route>
 
-      {/* contructions -route */}
+      {/* contructions */}
+      {/* site-engineerroutes */}
+      <Route
+        path="pages/constructions/site-engineer-dashboard"
+        element={<SiteEngDashBoard />}
+      ></Route>
       <Route
         path="pages/construction-dashboard"
         element={<ConstructionsDashBoard />}
@@ -97,10 +103,10 @@ const router = createBrowserRouter(
       <Route path="pages/about" element={<About />}></Route>
       <Route path="pages/services" element={<MainServices />}></Route>
       <Route path="pages/contact-us" element={<ContactUs />}></Route>
-      <Route
+      {/* <Route
         path="pages/forms/requirements"
         element={<RequirementForm />}
-      ></Route>
+      ></Route> */}
       <Route
         path="pages/dashboard/finance"
         element={<FinanceDashBoard/>}

@@ -6,12 +6,12 @@ const serverURL = process.env.REACT_APP_SERVER_URL;
 
 function Login() {
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("admin");
+  const [department, setDepartment] = useState("admin"); // Updated from role to department
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     empMobileOrId: "", // Single field to accept either empId or empMobile
     empPassword: "",
-    empRole: "admin",
+    empDepartment: "admin", // Updated from empRole to empDepartment
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,30 +22,28 @@ function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleRole = (e) => {
-    setRole(e.target.value);
-    setFormData((prevData) => ({ ...prevData, empRole: e.target.value }));
+  const handleDepartment = (e) => {
+    setDepartment(e.target.value);
+    setFormData((prevData) => ({ ...prevData, empDepartment: e.target.value }));
   };
 
   const handleSubmit = async (e) => {
-    // navigate("/pages/civil-attendance-form");
     e.preventDefault();
     setError("");
     setSuccess("");
     setLoading(true);
 
-    // Extract empId or empMobile from the input field
-    const { empMobileOrId, empPassword, empRole } = formData;
+    const { empMobileOrId, empPassword, empDepartment } = formData;
     let dataToSend = {};
 
     if (empMobileOrId) {
       // Check if the input looks like a mobile number or empId
       if (empMobileOrId.length === 10 && /^[0-9]+$/.test(empMobileOrId)) {
         // It's a mobile number, send it as empMobile
-        dataToSend = { empMobile: empMobileOrId, empPassword, empRole };
+        dataToSend = { empMobile: empMobileOrId, empPassword, empDepartment };
       } else {
         // Otherwise, treat it as empId
-        dataToSend = { empId: empMobileOrId, empPassword, empRole };
+        dataToSend = { empId: empMobileOrId, empPassword, empDepartment };
       }
 
       try {
@@ -63,17 +61,26 @@ function Login() {
         const data = await response.json();
         setSuccess("Login successful!");
         console.log(data?.user);
-        alert("Login success.")
+        alert("Login success.");
 
-        // Redirect or perform additional actions upon successful login
-        if (role === "admin") {
-          navigate("/pages/admin-dashboard",{ state: { data } });
-        } else if (role === "developer") {
+        // Redirect based on department
+        if (department === "admin") {
+          navigate("/pages/admin-dashboard", { state: { data } });
+        } else if (department === "developer") {
           navigate("/pages/developer-attendance-form");
-        } else if (role === "finance") {
-          navigate("/pages/dashboard/finance" , { state: { data } });
-        } else if (role === "construction") {
-          navigate("/pages/construction-dashboard");
+        } else if (department === "finance") {
+          navigate("/pages/dashboard/finance", { state: { data } });
+        } else if (department === "construction") {
+          const role=data.user.role;
+          // console.log(data.role)
+          // console.log("d",data.user)
+          if(role==="site-engineer"){
+
+            navigate("/pages/constructions/site-engineer-dashboard",{ state: { data }});
+          }else{
+              alert("page not found")
+          }
+          // navigate("/pages/construction-dashboard");
         }
       } catch (err) {
         setError(err.message);
@@ -101,7 +108,7 @@ function Login() {
             </label>
             <input
               id="mobileOrId"
-              name="empMobileOrId" // We only use this field for either empId or empMobile
+              name="empMobileOrId"
               value={formData.empMobileOrId}
               onChange={handleChange}
               placeholder="Enter your employee ID or mobile number"
@@ -118,7 +125,7 @@ function Login() {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Toggle between password and text type
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="empPassword"
                 value={formData.empPassword}
@@ -130,7 +137,7 @@ function Login() {
               <button
                 type="button"
                 className="absolute top-2 right-3 text-gray-600"
-                onClick={() => setShowPassword((prevState) => !prevState)} // Toggle password visibility
+                onClick={() => setShowPassword((prevState) => !prevState)}
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
@@ -138,16 +145,16 @@ function Login() {
           </div>
           <div className="mb-6">
             <label
-              htmlFor="role"
-              className=" block text-sm font-medium text-gray-700 mb-2"
+              htmlFor="department"
+              className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Role
+              Department
             </label>
             <select
-              id="role"
-              name="empRole"
-              value={role}
-              onChange={handleRole}
+              id="department"
+              name="empDepartment"
+              value={department}
+              onChange={handleDepartment}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             >
@@ -163,7 +170,6 @@ function Login() {
               <ClipLoader color="#4A90E2" loading={loading} size={50} />
             )}
           </div>
-          
 
           <button
             type="submit"
@@ -172,15 +178,6 @@ function Login() {
             Login
           </button>
         </form>
-        {/* <p className="mt-6 text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <Link
-            to="/authentication/sign-up"
-            className="text-blue-500 hover:underline"
-          >
-            Sign Up
-          </Link>
-        </p>*/}
         <p className="my-2 text-sm text-gray-600 ">
           Didn’t remember password?{" "}
           <Link
@@ -190,7 +187,6 @@ function Login() {
             Forgot here
           </Link>
         </p>
-         
       </div>
     </div>
   );
