@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import StatesManagement from "./sitesManagement/StatesManagement";
-import DistrictsManagement from "./sitesManagement/DistrictsManagement";
-import BlocksManagement from "./sitesManagement/BlocksManagement";
-import SitesManagement from "./sitesManagement/SitesManagement";
-import WorkTypeManagement from "./sitesManagement/WorkTypeManagement";
+import StatesManagement from "./StatesManagement";
+import DistrictsManagement from "./DistrictsManagement";
+import BlocksManagement from "./BlocksManagement";
+import SitesManagement from "./SitesManagement";
+import WorkTypeManagement from "./WorkTypeManagement";
 
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 
@@ -47,7 +47,7 @@ const SitesUpdateManagement = () => {
 
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+      <div className="grid gap-2 grid-cols-4 md:grid-cols-4 lg:grid-cols-6">
         <button
           onClick={() => setActiveComponent("states")}
           className={getButtonClass("states")}

@@ -44,7 +44,7 @@ const DailyProgress = ({ user }) => {
     machinaryUsed: [],
     expenses: {
       type: [],
-      required: "5",
+      required: "0",
       status: "Unpaid",
     },
 
@@ -195,8 +195,9 @@ const DailyProgress = ({ user }) => {
       .then((response) => {
         if (response) {
           console.log("Submitted");
-          alert("Form submitted successfully")
+          alert("Form submitted successfully");
           setSubmitText("Submitted");
+          ResetForm();
         } else {
           setSubmitText("Failed");
           console.log("form not submitted.");
@@ -223,23 +224,24 @@ const DailyProgress = ({ user }) => {
     setPaymentMethods("");
     setFormData((prevFormData) => ({
       ...prevFormData,
-      id: `${user?.id}`,
-      name: `${user?.name}`,
-      mobile: `${user?.mobile}`,
+      id:  ` `,
+      name: ` `,
+      mobile: ` `,
       state: "Select",
       district: "Select", // Default value
-      siteName: "Select",
       block: "Select",
+      siteName: "Select",
       workType: "Select",
       todaysWork: [],
       machinaryUsed: [],
       expenses: {
         type: [],
-        required: "5",
-        status: "Unpaid",
+        required: "0",
+        status: "Select",
       },
 
       remarks: "",
+      qr: null,
     }));
   };
 
@@ -753,25 +755,12 @@ const DailyProgress = ({ user }) => {
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             required
           >
-            <option value="">Select Payment Status</option>
+            <option value="">Select</option>
             <option value="paid">Paid</option>
             <option value="partialPaid">PartialPaid</option>
             <option value="unpaid">Unpaid</option>
           </select>
         </div>
-        <div>
-          <label htmlFor="photo">Upload Progress Photo</label>
-          <input type="file" 
-          name="photo"
-          id="photo"
-
-          />
-        </div>
-        {photos.map((photo) => {
-          <>
-            <img src="" alt="" />
-          </>;
-        })}
       </div>
 
       {/* Remarks */}

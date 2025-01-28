@@ -4,7 +4,7 @@ import Upload from "./UploadFiles"; // Import the Upload component
 import { Navigate, useNavigate, useLocation } from "react-router-dom";
 import ContactUsMessages from "./ContactUsMessages";
 import FormRequirementDetails from "./FormRequirementDetails";
-import SiteManagement from "./SitesUpdateManagement";
+import SiteManagement from "./sitesManagement/SitesUpdateManagement";
 import ShowUserAttendance from "./ShowUserAttendance";
 import DailyProgressReport from "./DailyProgressReport";
 
@@ -58,7 +58,7 @@ const AdminDashboard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
+      <div className="grid gap-2 grid-cols-4 md:grid-cols-4 lg:grid-cols-8">
         <button
           onClick={() => setActiveComponent("details")}
           className={getButtonClass("details")}
@@ -98,9 +98,9 @@ const AdminDashboard = () => {
         </button>
         <button
           onClick={() => setActiveComponent("dailyProgressReport")}
-          className={getButtonClass("showUserAttendance")}
+          className={getButtonClass("dailyProgressReport")}
         >
-          Daily Progress Report
+          Daily  Report
         </button>
         <button
           onClick={() => handleLogout()}

@@ -13,7 +13,7 @@ const ShowProRepInDetail = ({ report ,isOpen,open}) => {
 
  
   return (
-    <div className="w-1/2 fixed left-96 top-16 h-5/6 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+    <div className="w-full h-full fixed top-16 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
         <button onClick={()=>{isOpen(false);}} className=" absolute right-0 mr-12 w-24 bg-white p-2 rounded-md border-2 border-red-400 font-bold text-lg">Close</button>
       <h1 className="text-2xl font-bold mb-4 text-gray-700">Daily Progress Report</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -83,18 +83,7 @@ const ShowProRepInDetail = ({ report ,isOpen,open}) => {
           </p>
           <p>
             <strong>QR URL:</strong>{" "}
-            {report.expenses.qrURL ? (
-              <a
-                href={report.expenses.qrURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-              >
-                View QR Code
-              </a>
-            ) : (
-              "N/A"
-            )}
+            <img className="w-28 h-28" src={report.expenses.qrURL} alt="" />
           </p>
           <p>
             <strong>Status:</strong>{" "}

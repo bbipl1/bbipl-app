@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ShowProRepInDetail from "./ShowProRepInDetail";
+import ImageShow from "../../components/admin/ImageShow";
+import ShowQR from "./ShowQR";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -8,6 +10,8 @@ const DailyProgressReport = () => {
   const [isShowDetailsOpen, setIsShowDetailsOpen] = useState(false);
   const [dailyProgressReport, setDailyProgressReport] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isQROpen, setIsQROpen] = useState(false);
+  const [selectedQR, setSelectedQR] = useState({});
 
   useEffect(() => {
     const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report`;
@@ -40,6 +44,7 @@ const DailyProgressReport = () => {
               <th className="px-4 py-2 text-left">Today's Work</th>
               <th className="px-4 py-2 text-left">Machinery Used</th>
               <th className="px-4 py-2 text-left">Expenses</th>
+              <th className="px-4 py-2 text-left">Required</th>
               <th className="px-4 py-2 text-left">Received</th>
               <th className="px-4 py-2 text-left">QR URL</th>
               <th className="px-4 py-2 text-left">Status</th>
@@ -67,9 +72,15 @@ const DailyProgressReport = () => {
                 <td className="px-4 py-2">
                   {item.expenses.Category && item.expenses.Category.join(", ")}
                 </td>
+                <td className="px-4 py-2">{item.expenses.required}</td>
                 <td className="px-4 py-2">{item.expenses.received}</td>
                 <td className="px-4 py-2">
                   <img
+                    onClick={() => {
+                      setIsQROpen(true);
+                      setIsShowDetailsOpen(false)
+                      setSelectedQR(item);
+                    }}
                     className="w-16 h-16"
                     src={item.expenses.qrURL}
                     alt="url"
@@ -87,6 +98,12 @@ const DailyProgressReport = () => {
           isOpen={setIsShowDetailsOpen}
           report={selectedItem}
         />
+      )}
+
+      {isQROpen && (
+        <>
+          <ShowQR item={selectedQR} isQROpen={setIsQROpen} />
+        </>
       )}
     </div>
   );
