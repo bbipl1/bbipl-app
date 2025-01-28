@@ -93,7 +93,7 @@ const SiteEngDashBoard = () => {
           onClick={() => setActiveComponent("workers")}
           className={getButtonClass("upload")}
         >
-          Men Power
+          Manpower
         </button>
 
         {/* <button
