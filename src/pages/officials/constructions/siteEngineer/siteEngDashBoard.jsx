@@ -4,33 +4,51 @@ import RequirementForm from "./Requirements";
 import SiteEngineerAttendanceForm from "./SiteEngineerAttendanceForm";
 import SiteEngProfile from "./profile/SiteEngineerProfile";
 import ManageWorker from "./profile/ManageWorkers";
-import DailyProgress from "./DailyProgress";
+import DailyProgress from "./dailyProgressReport/DailyProgress";
+import UpdateForm from "./dailyProgressReport/UpdateForm";
+import PaymentScreenShot from "./dailyProgressReport/PaymentScreenShot";
+import WorkProgress from "./dailyProgressReport/WorkProgress";
+import WorkProgressVideo from "./dailyProgressReport/WorkProgressVideo";
 
 const SiteEngDashBoard = () => {
   const location = useLocation();
   const { data } = location.state || {};
   // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
 
   const navigate = useNavigate();
   // const navigation = useNavigate();
- useEffect(()=>{
-  if (!data) {
-    // console.log("login");
-    // navigate("/authentication/officials/officials-login");
-  } else {
-    // console.log("not login");
-  }
- },[data, navigate])
+  useEffect(() => {
+    if (!data) {
+      // console.log("login");
+      // navigate("/authentication/officials/officials-login");
+    } else {
+      // console.log("not login");
+    }
+  }, [data, navigate]);
 
   const renderComponent = () => {
+    // setIsOpen(false);
     switch (activeComponent) {
       case "profile":
         return <SiteEngProfile siteEngineer={data?.user} />;
       case "RequirementsForm":
         return <RequirementForm user={data?.user} />;
-      case "daily-progress-report":
+      case "Fill-Form":
         return <DailyProgress user={data?.user} />;
+      case "Update-Form":
+        return <UpdateForm user={data?.user} />;
+      case "Upload-Payment-Screenshot":
+        return <PaymentScreenShot user={data?.user} />;
+      case "Upload-Work-Progress-photo":
+        return <WorkProgress user={data?.user} />;
+      case "Upload-Work-Progress-video":
+        return <WorkProgressVideo user={data?.user} />;
       case "siteEngAttendance":
         return <SiteEngineerAttendanceForm siteEngId={data?.user?.id} />;
       case "workers":
@@ -75,7 +93,7 @@ const SiteEngDashBoard = () => {
           onClick={() => setActiveComponent("workers")}
           className={getButtonClass("upload")}
         >
-          Workers
+          Main Powers
         </button>
 
         <button
@@ -84,8 +102,40 @@ const SiteEngDashBoard = () => {
         >
           Requirement Forms
         </button>
+
+        <div className="relative w-100 bg-blue-500">
+          <button
+            className={`px-4 py-2 bg-blue-500 text-white rounded ${
+              isOpen ? "rounded-b-none" : ""
+            }`}
+            onClick={toggleDropdown}
+          >
+           Daily Progress Report
+          </button>
+          {isOpen && (
+            <ul className="absolute left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
+              <li onClick={() => {setIsOpen(false);setActiveComponent("Fill-Form")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Fill Form
+              </li>
+              <li onClick={() => {setIsOpen(false);setActiveComponent("Update-Form")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Update Form
+              </li>
+              <li onClick={() => {setIsOpen(false); setActiveComponent("Upload-Payment-Screenshot")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Payment Screenshot
+              </li>
+              <li onClick={() => {setIsOpen(false);setActiveComponent("Upload-Work-Progress-photo")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Work Progress(Photo)
+              </li>
+              <li onClick={() =>{setIsOpen(false); setActiveComponent("Upload-Work-Progress-video")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Work Progress(Video)
+              </li>
+             
+              
+            </ul>
+          )}
+        </div>
         <button
-          onClick={() => setActiveComponent("daily-progress-report")}
+          
           className={getButtonClass("upload")}
         >
           Daily Progress Report

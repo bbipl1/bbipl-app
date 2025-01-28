@@ -21,6 +21,9 @@ const ShowProRepInDetail = ({ report ,isOpen,open}) => {
         <div>
           <h2 className="font-semibold text-lg text-gray-600">General Info</h2>
           <p>
+            <strong>ID:</strong> {report.id}
+          </p>
+          <p>
             <strong>Name:</strong> {report.name}
           </p>
           <p>

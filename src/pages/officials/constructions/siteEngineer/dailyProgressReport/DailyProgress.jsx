@@ -23,6 +23,10 @@ const DailyProgress = ({ user }) => {
   //todays work
   const [isTodaysWorkOpen, setIsTodaysWorkOpen] = useState(false);
   const [selectdTodaysWork, setSelectedTodaysWork] = useState([]);
+  //photos
+  const [photos, setPhotos] = useState([]);
+  //video
+  const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [paymentMethods, setPaymentMethods] = useState(null);
@@ -45,7 +49,7 @@ const DailyProgress = ({ user }) => {
     },
 
     remarks: "",
-    qr:null,
+    qr: null,
   });
 
   const [states, setStates] = useState([]);
@@ -148,14 +152,16 @@ const DailyProgress = ({ user }) => {
         expenses: { ...prevFormData.expenses, [name]: value },
       }));
       // setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-    } else if (name ==="qr") {
-      setFormData((prevFormData) => ({ ...prevFormData, [name]:  e.target.files[0] }));
+    } else if (name === "qr") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: e.target.files[0],
+      }));
       console.log("qr");
       // setFormData((prevFormData) => ({
       //   ...prevFormData,
       //   expenses: { ...prevFormData.expenses, [name]: e.target.files[0] },
       // }));
-
     } else {
       setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
     }
@@ -182,16 +188,17 @@ const DailyProgress = ({ user }) => {
     // console.log("Form Submitted:", formData);
     const url = `${serverUrl}/api/constructions/site-engineers/submit-daily-progress-report`;
     const headers = {
-      headers: { "Content-Type": "multipart/form-data" }
+      headers: { "Content-Type": "multipart/form-data" },
     };
     axios
       .post(url, formData, headers)
       .then((response) => {
         if (response) {
           console.log("Submitted");
-          setSubmitText("Submitted"); 
+          alert("Form submitted successfully")
+          setSubmitText("Submitted");
         } else {
-          setSubmitText("Failed"); 
+          setSubmitText("Failed");
           console.log("form not submitted.");
         }
         setLoading(false);
@@ -199,7 +206,7 @@ const DailyProgress = ({ user }) => {
       .catch((err) => {
         console.log(err);
         setLoading(false);
-        setSubmitText("Error"); 
+        setSubmitText("Error");
       });
 
     try {
@@ -310,8 +317,10 @@ const DailyProgress = ({ user }) => {
   const handleTodaysWorkAdd = (name, value) => {
     setIsTodaysWorkOpen(true);
 
+    // console.log(selectdTodaysWork)
+
     // Add to selectedExpenses
-    setSelectedTodaysWork((prev) => [...prev, { name, value }]);
+    setSelectedTodaysWork((prev) => ({ ...prev, [name]: value }));
 
     // Add to formData.machineryUsed (ensure uniqueness)
     setFormData((prevFormData) => ({
@@ -509,7 +518,7 @@ const DailyProgress = ({ user }) => {
           <select
             name="todaysWork"
             id="todaysWork"
-            value={selectdTodaysWork}
+            value={selectdTodaysWork.todaysWork}
             onChange={handleChange}
             className="w-full m-2 py-2"
           >
@@ -748,6 +757,19 @@ const DailyProgress = ({ user }) => {
             <option value="unpaid">Unpaid</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="photo">Upload Progress Photo</label>
+          <input type="file" 
+          name="photo"
+          id="photo"
+
+          />
+        </div>
+        {photos.map((photo) => {
+          <>
+            <img src="" alt="" />
+          </>;
+        })}
       </div>
 
       {/* Remarks */}
