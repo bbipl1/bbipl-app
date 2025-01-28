@@ -120,19 +120,19 @@ const ManageWorker = ({ siteEngineerId }) => {
           onClick={() => setView("list")}
           className="p-2 bg-blue-500 text-white rounded-md mr-2"
         >
-          Worker List
+          Manpower List
         </button>
         <button
           onClick={() => setView("add")}
           className="p-2 bg-blue-500 text-white rounded-md mr-2"
         >
-          Add Worker
+          Add Manpower
         </button>
         <button
           onClick={() => setView("delete")}
           className="p-2 bg-blue-500 text-white rounded-md"
         >
-          Deleted Worker
+          Deleted Manpower
         </button>
       </div>
 
