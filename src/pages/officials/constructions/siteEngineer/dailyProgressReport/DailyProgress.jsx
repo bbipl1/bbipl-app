@@ -534,6 +534,7 @@ const DailyProgress = ({ user }) => {
             <option value="Wall sluice">Wall sluice</option>
             <option value="Air valve">Air valve</option>
             <option value="Fire hydrant">Fire hydrant</option>
+            <option value="others">Others</option>
           </select>
           {isTodaysWorkOpen && (
             <div className=" w-full mt-2 pt-2 bg-white absolute z-10 border-2 border-slate-300">
@@ -593,6 +594,7 @@ const DailyProgress = ({ user }) => {
             <option value="generator">Generator</option>
             <option value="mixtureMachine">Mixture Machine</option>
             <option value="vibrator">Vibrator</option>
+            <option value="others">Others</option>
           </select>
 
           {isMachinaryOpen && (
