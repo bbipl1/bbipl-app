@@ -49,7 +49,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
         Daily Progress Report
       </h1>
       <hr />
-      <div className="grid grid-cols-5 gap-6 mt-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-8">
         {/* General Info */}
         <div>
           <h2 className="font-bold text-lg text-gray-600">General Info</h2>
