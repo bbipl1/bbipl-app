@@ -31,7 +31,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
   console.log(report);
 
   return (
-    <div className="w-full h-100 absolute top-20 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+    <div className="w-full h-100 absolute top-24 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
       <button
         onClick={() => {
           isOpen(false);
@@ -123,25 +123,25 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
 
       {/* <hr /> */}
       <div className="w-full flex flex-col md:flex-col lg:flex-row justify-center align-center gap-1 mt-8">
-        <div className="w-1/4">
+        <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center">QR </h2>
           <img onClick={()=>{  setIsQROpen(true);SetQRURL(report?.expenses?.qrURL)}} className="w-96 h-96 mt-6 border-2 border-blue-100" src={report?.expenses?.qrURL} alt="" />
         </div>
-        <div className="w-1/4">
+        <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6 ">
             Payment Screenshots
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.paymentScreenshots[0]?.url} alt="" /> */}
           <ImageSlider w={96} h={96} urls={ssURLS} />
         </div>
-        <div className="w-1/4">
+        <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Images
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.photos[0]?.url} alt="" /> */}
           <ImageSlider w={96} h={96} urls={workProgressPhotosURLS} />
         </div>
-        <div className="w-1/4">
+        <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Videoes
           </h2>
