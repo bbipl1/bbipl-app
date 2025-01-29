@@ -31,7 +31,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
   console.log(report);
 
   return (
-    <div className="w-full h-100 absolute top-20 md:top-16 lg:top-16 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+    <div className="w-full h-100 absolute top-20 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
       <button
         onClick={() => {
           isOpen(false);
