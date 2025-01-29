@@ -12,7 +12,7 @@ const ShowQR = ({ item,isQROpen,url }) => {
 
     const data = {
       newStatus: "Received", // Ensure the backend expects `newStatus`
-      objectId: item._id, // Pass the correct ObjectId
+      objectId: item?._id, // Pass the correct ObjectId
     };
 
     const url = `${serverURL}/api/forms/update-requirements-forms`;
@@ -21,7 +21,7 @@ const ShowQR = ({ item,isQROpen,url }) => {
       .put(url, data)
       .then((response) => {
         // Handle successful update
-        console.log("Payment status updated successfully:", response.data);
+        console.log("Payment status updated successfully:", response?.data);
         alert("Payment status updated successfully!");
         // Optional: Perform additional actions like refreshing data
       })
@@ -29,7 +29,7 @@ const ShowQR = ({ item,isQROpen,url }) => {
         // Handle errors
         console.error(
           "Error updating payment status:",
-          error.response?.data || error.message
+          error?.response?.data || error?.message
         );
         alert("Failed to update payment status. Please try again.");
       });
@@ -38,18 +38,18 @@ const ShowQR = ({ item,isQROpen,url }) => {
   return (
     <div className="bg-slate-100 fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-self-center  self-center flex-col w-11/12 md:w-9/12 lg:w-1/2 h-3/4 p-4 border-2 border-spacing-4 border-blue-600 rounded-lg">
         <div className="flex justify-between content-evenly">
-            <span className="text-xl font-bold ml-4">{item.name}</span>
-            <span className="text-xl font-bold mr-4">Requested: Rs. {item.expenses?.required}/-</span>
-            <span className="text-xl font-bold mr-4">Sent:     Rs. {item.expenses?.received}/-</span>
-            <span className="text-xl font-bold mr-4">To pay:   Rs. {item.expenses?.required-item.expenses?.received}/-</span>
+            <span className="text-xl font-bold ml-4">{item?.name}</span>
+            <span className="text-xl font-bold mr-4">Requested: Rs. {item?.expenses?.required}/-</span>
+            <span className="text-xl font-bold mr-4">Sent:     Rs. {item?.expenses?.received}/-</span>
+            <span className="text-xl font-bold mr-4">To pay:   Rs. {item?.expenses?.required-item?.expenses?.received}/-</span>
         </div>
       <div className="flex justify-center items-center p-4">
-        <img className="w-96 h-80 md:h-96 lg:h-96" src={`${item.expenses?.qrURL}`} alt={`url`} />
+        <img className="w-96 h-80 md:h-96 lg:h-96" src={`${item?.expenses?.qrURL}`} alt={`url`} />
       </div>
 
       <div className=" flex flex-col justify-center items-center gap-4 md:flex-row lg:flex-row">
         <div>
-          {item.expenses?.status === "Unpaid" ? (
+          {item?.expenses?.status === "Unpaid" ? (
             <div>
               <button
                 onClick={() => {
@@ -74,10 +74,10 @@ const ShowQR = ({ item,isQROpen,url }) => {
           )}
         </div>
         <div className="">
-          {item.expenses?.status === "Unpaid" ? (
+          {item?.expenses?.status === "Unpaid" ? (
             <>
               <button
-                disabled={item.paymentStatus === "Received"}
+                disabled={item?.paymentStatus === "Received"}
                 onClick={() => {
                   paymentDone();
                 }}
@@ -90,7 +90,7 @@ const ShowQR = ({ item,isQROpen,url }) => {
           ) : (
             <>
               <button
-                disabled={item.paymentStatus === "Received"}
+                disabled={item?.paymentStatus === "Received"}
                 onClick={() => {
                   paymentDone();
                 }}

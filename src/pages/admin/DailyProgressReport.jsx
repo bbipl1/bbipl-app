@@ -77,7 +77,7 @@ const DailyProgressReport = () => {
                 <td className="px-4 py-2">
                   <img
                     onClick={() => {
-                      setIsQROpen(true);
+                      setIsQROpen(false);
                       setIsShowDetailsOpen(false)
                       setSelectedQR(item);
                     }}

@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import ImageSlider from "../../components/ImageSlider";
+import ShowQR from "./ShowQR";
+import { X } from "lucide-react";
 
-const ShowProRepInDetail = ({ report ,isOpen,open}) => {
+const ShowProRepInDetail = ({ report, isOpen, open }) => {
+  const [ssURLS, SetSSURLS] = useState([]);
+  const [workProgressPhotosURLS, SetWorkProgressPhotosURLS] = useState([]);
+  const [workProgressVideosURLS, SetworkProgressVideosURLS] = useState([]);
+  const [isQROpen, setIsQROpen] = useState(false);
+  const [QRURL,SetQRURL]=useState(false);
+
+  useEffect(() => {
+    const ssurls = report?.paymentScreenshots?.map((ss) => ss?.url);
+    SetSSURLS(ssurls ? ssurls : []);
+    const wppurls = report?.photos?.map((ss) => ss?.url);
+    SetWorkProgressPhotosURLS(wppurls ? wppurls : []);
+    const wpvurls = report?.videos?.map((ss) => ss?.url);
+    SetworkProgressVideosURLS(wpvurls ? wpvurls : []);
+    console.log("ss", ssurls);
+  }, [report]);
+
   if (!report) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -9,48 +28,47 @@ const ShowProRepInDetail = ({ report ,isOpen,open}) => {
     );
   }
 
-  console.log(report)
+  console.log(report);
 
- 
   return (
-    <div className="w-full h-full fixed top-16 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
-        <button onClick={()=>{isOpen(false);}} className=" absolute right-0 mr-12 w-24 bg-white p-2 rounded-md border-2 border-red-400 font-bold text-lg">Close</button>
-      <h1 className="text-2xl font-bold mb-4 text-gray-700">Daily Progress Report</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div className="w-full h-100 absolute top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+      <button
+        onClick={() => {
+          isOpen(false);
+        }}
+        className="  absolute right-0 mr-12 w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
+      >
+        <X className="mx-auto" size={24} />
+      </button>
+      {isQROpen && (
+        <>
+          <ShowQR item={report} isQROpen={setIsQROpen}  url={QRURL}/>
+        </>
+      )}
+      <h1 className="text-2xl font-bold mb-4 text-gray-700 text-center">
+        Daily Progress Report
+      </h1>
+      <hr />
+      <div className="grid grid-cols-5 gap-6 mt-8">
         {/* General Info */}
         <div>
-          <h2 className="font-semibold text-lg text-gray-600">General Info</h2>
-          <p>
-            <strong>ID:</strong> {report.id}
-          </p>
-          <p>
-            <strong>Name:</strong> {report.name}
-          </p>
-          <p>
-            <strong>Site Name:</strong> {report.siteName}
-          </p>
-          <p>
-            <strong>Work Type:</strong> {report.workType}
-          </p>
+          <h2 className="font-bold text-lg text-gray-600">General Info</h2>
+          <p>ID: {report.id}</p>
+          <p>Name: {report.name}</p>
+          <p>Site Name: {report.siteName}</p>
+          <p>Work Type: {report.workType}</p>
         </div>
 
-        {/* Date & Time */}
-        <div>
-          <h2 className="font-semibold text-lg text-gray-600">Date & Time</h2>
-          <p>
-            <strong>Date:</strong> {report.date}
-          </p>
-          <p>
-            <strong>Time:</strong> {report.time}
-          </p>
-          <p>
-            <strong>Day:</strong> {report.day}
-          </p>
+        <div className="">
+          <h2 className="font-bold text-lg text-gray-600">Date & Time</h2>
+          <p className="mt-2">Date: {report.date}</p>
+          <p>Time: {report.time}</p>
+          <p>Day: {report.day}</p>
         </div>
 
         {/* Today's Work */}
         <div>
-          <h2 className="font-semibold text-lg text-gray-600">Today's Work</h2>
+          <h2 className="font-bold text-lg text-gray-600">Today's Work</h2>
           <ul className="list-disc list-inside">
             {report.todaysWork?.map((work, index) => (
               <li key={index}>{work}</li>
@@ -58,48 +76,77 @@ const ShowProRepInDetail = ({ report ,isOpen,open}) => {
           </ul>
         </div>
 
+        {/* Expenses */}
+        <div>
+          <h2 className="font-bold text-lg text-gray-600">Expenses</h2>
+          <p>Category: {report.expenses.Category?.join(", ") || "N/A"}</p>
+          <p>Required Amount: RS {report.expenses.required} /-</p>
+          <p>Received Amount: RS {report.expenses.received || "N/A"} /-</p>
+          <p>
+            pending Amount: RS{" "}
+            {report.expenses.required - report.expenses.received || "N/A"} /-
+          </p>
+        </div>
+
         {/* Machinery Used */}
         <div>
-          <h2 className="font-semibold text-lg text-gray-600">Machinery Used</h2>
-          <ul className="list-disc list-inside">
+          <h2 className="font-bold text-lg text-gray-600">Machinery Used</h2>
+          <ul className="list-disc list-inside mt-2">
             {report.machinaryUsed?.map((machinery, index) => (
               <li key={index}>{machinery}</li>
             ))}
           </ul>
         </div>
+      </div>
+      {/* Date & Time */}
 
-        {/* Expenses */}
-        <div className="col-span-1 sm:col-span-2">
-          <h2 className="font-semibold text-lg text-gray-600">Expenses</h2>
-          <p>
-            <strong>Category:</strong>{" "}
-            {report.expenses.Category?.join(", ") || "N/A"}
-          </p>
-          <p>
-            <strong>Required:</strong> {report.expenses.required}
-          </p>
-          <p>
-            <strong>Received:</strong> {report.expenses.received || "N/A"}
-          </p>
-          <p>
-            <strong>QR URL:</strong>{" "}
-            <img className="w-28 h-28" src={report.expenses.qrURL} alt="" />
-          </p>
-          <p>
-            <strong>Status:</strong>{" "}
-            <span
-              className={`${
-                report.expenses.status === "Paid"
-                  ? "text-green-500"
-                  : report.expenses.status === "PartialPaid"
-                  ? "text-blue-500"
-                  : "text-red-500"
-              }`}
-            >
-              {report.expenses.status}
-            </span>
-          </p>
-          <p>Remark: {report.remarks}</p>
+      <div className=" mt-8">
+        <p className=" mt-6">
+          Status:{" "}
+          <span
+            className={`${
+              report.expenses.status === "Paid"
+                ? "text-green-500"
+                : report.expenses.status === "PartialPaid"
+                ? "text-blue-500"
+                : "text-red-500"
+            }`}
+          >
+            {report.expenses.status}
+          </span>
+        </p>
+        <h2 className="font-semibold text-lg text-gray-600">Remarks</h2>
+        <ul className=" ">
+          <p>{report.remarks}</p>
+        </ul>
+      </div>
+
+      {/* <hr /> */}
+      <div className="w-full flex flex-row justify-center align-center gap-1 mt-8">
+        <div className="w-1/4">
+          <h2 className="font-bold text-lg text-gray-600 text-center">QR </h2>
+          <img onClick={()=>{  setIsQROpen(true);SetQRURL(report?.expenses?.qrURL)}} className="w-96 h-96 mt-6 border-2 border-blue-100" src={report?.expenses?.qrURL} alt="" />
+        </div>
+        <div className="w-1/4">
+          <h2 className="font-bold text-lg text-gray-600 text-center mb-6 ">
+            Payment Screenshots
+          </h2>
+          {/* <img className="w-96 h-96 mt-6" src={report?.paymentScreenshots[0]?.url} alt="" /> */}
+          <ImageSlider w={96} h={96} urls={ssURLS} />
+        </div>
+        <div className="w-1/4">
+          <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
+            Progress Report Images
+          </h2>
+          {/* <img className="w-96 h-96 mt-6" src={report?.photos[0]?.url} alt="" /> */}
+          <ImageSlider w={96} h={96} urls={workProgressPhotosURLS} />
+        </div>
+        <div className="w-1/4">
+          <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
+            Progress Report Videoes
+          </h2>
+          {/* <video autoPlay muted className="w-96 h-96 mt-6" src={report?.videos[0]?.url} alt="" /> */}
+          <ImageSlider w={96} h={96} urls={workProgressVideosURLS} />
         </div>
       </div>
     </div>
