@@ -36,7 +36,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
         onClick={() => {
           isOpen(false);
         }}
-        className="  absolute right-0 mr-12 w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
+        className="  absolute right-0 mr-4 md:mr-8 lg:mr-12 w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
       >
         <X className="mx-auto" size={24} />
       </button>
