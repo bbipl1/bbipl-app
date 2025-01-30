@@ -4,188 +4,270 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
-// const serverUrl = process.env.REACT_APP_SERVER_URL;
-const S3_BUCKET = "bpipl-attendance-image";
-const REGION = "ap-south-1";
-const access_key = process.env.REACT_APP_ACCESS_KEY;
-const secrect_access_key = process.env.REACT_APP_SECRECT_ACCESS_KEY;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const RequirementForm = ({ user }) => {
   const navigation = useNavigate();
-    const [timeStamp, setTimeStamps] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
-    const [paymentMethods, setPaymentMethods] = useState(null);
-    const [submitText, setSubmitText] = useState("Submit");
-    const [formData, setFormData] = useState({
-      empType: "Select",
-      date: "",
-      empName: "",
-      empId: "",
-      empMobile: "",
+  const [loading, setLoading] = useState(false);
+  const [submitText, setSubmitText] = useState("Submit");
+  const [selectedMaterial, setSelectMaterial] = useState();
+  // const [selectedMaterials, setSelectMaterials] = useState([
+  //   {
+  //     name: " ",
+  //     quantity: " ",
+  //     amount: "",
+  //     remarks: " ",
+  //   },
+  // ]);
+  const [materials, setMaterials] = useState({
+    name: " ",
+    quantity: " ",
+    price: "",
+    remarks: " ",
+  });
+
+  useEffect(() => {
+    console.log(materials);
+  }, [materials]);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    id: "",
+    mobile: "",
+    dateOfRequirement: "",
+    state: "Select",
+    district: "Select",
+    block: "Select",
+    siteName: "",
+    workType: "",
+    materialUsed: [],
+    requiremtns: [],
+    remarks: "",
+  });
+
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
+  const [siteNames, setSiteNames] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]);
+  const [isMaterialsOpen, setIsMaterialsOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetching states on component mount
+    // console.log
+    fetchStates();
+  }, []);
+
+  useEffect(() => {
+    const id = formData?.id;
+    const url = `${serverUrl}/api/get-user?id=${id}`;
+    axios
+      .get(url)
+      .then((res) => {
+        const user = res?.data?.data;
+        if (!user) {
+          return;
+        }
+        // console.log(user.department);
+        // console.log(user);
+        if (!(user.department === "construction")) {
+          setFormData((prevData) => ({
+            ...prevData,
+            name: "",
+            mobile: "",
+          }));
+          return;
+        }
+        let mobile = user.mobile;
+        const preFix = mobile.substring(0, 2);
+        const postFix = mobile.substring(8, 11);
+        mobile = preFix + "******" + postFix;
+        let name = user?.name;
+        let maskedName;
+        if (name && name.length > 6) {
+          const preName = name.substring(0, 3);
+          const postName = name.substring(name.length - 3, name.length);
+          let star = "*".repeat(name.length - 6); // Generate stars for middle characters
+          maskedName = preName + star + postName;
+          console.log(maskedName);
+        } else {
+          console.log("Name is too short to mask!");
+        }
+
+        setFormData((prevData) => ({
+          ...prevData,
+          name: maskedName,
+          mobile: mobile,
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [formData.id]);
+
+  // Fetch states data from API
+  const fetchStates = async () => {
+    try {
+      const res = await axios.get(
+        `${serverUrl}/api/site-management/find-site-details`
+      );
+      setStates(res.data.data[0].states); // Assuming response data format
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  // Fetch districts based on selected state
+  const fetchDistricts = (stateName) => {
+    const selectedState = states.find((state) => state.stateName === stateName);
+    setDistricts(selectedState ? selectedState.districts : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      district: "Select",
+      block: "Select",
+      siteName: "Select",
+      workType: "", // Reset workType when state or district changes
+    }));
+  };
+
+  // Fetch blocks based on selected district
+  const fetchBlocks = (districtName) => {
+    const selectedDistrict = districts.find(
+      (district) => district.districtName === districtName
+    );
+    setBlocks(selectedDistrict ? selectedDistrict.blocks : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      block: "select",
+      siteName: "select",
+      workType: "", // Reset workType when district or block changes
+    }));
+  };
+
+  // Fetch site names based on selected block
+  const fetchSiteNames = (blockName) => {
+    const selectedBlock = blocks.find((block) => block.blockName === blockName);
+    setSiteNames(selectedBlock ? selectedBlock.sites : []);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      siteName: "select",
+      workType: "", // Reset workType when block or siteName changes
+    }));
+  };
+
+  // Set work types based on selected site name
+  const fetchWorkTypes = (siteName) => {
+    const selectedSite = siteNames.find((site) => site.siteName === siteName);
+    if (selectedSite) {
+      setWorkTypes(selectedSite.workType || []);
+    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      workType: "select", // Reset workType if no workType available
+    }));
+  };
+
+  const handleChange = (e) => {
+    setSubmitText("Submit");
+    let { name, value } = e.target;
+    if (name === "id") {
+      value = value.toString().toUpperCase();
+    }
+
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+
+    // Fetch dependent data based on selected dropdown value
+    if (name === "state") {
+      fetchDistricts(value); // Fetch districts when state is selected
+    } else if (name === "district") {
+      fetchBlocks(value); // Fetch blocks when district is selected
+    } else if (name === "block") {
+      fetchSiteNames(value); // Fetch site names when block is selected
+    } else if (name === "siteName") {
+      fetchWorkTypes(value); // Fetch work types when site is selected
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // return ;
+    setLoading(true);
+    setSubmitText("Pending");
+    console.log(formData);
+    const url = `${serverUrl}/api/forms/submit-form`;
+    const payLoad = formData;
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    axios
+      .post(url, payLoad, headers)
+      .then((res) => {
+        setSubmitText("Submitted");
+        setLoading(false);
+        // resetForm();
+        alert("Form submitted successfully.");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Getting an error");
+        setLoading(false);
+        setSubmitText("Error");
+      });
+  };
+
+  const resetForm = async () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      name: "",
+      id: "",
+      mobile: "",
       dateOfRequirement: "",
-      materialUsed: [], // Default value
       state: "Select",
       district: "Select",
       block: "Select",
       siteName: "",
       workType: "",
-      expensesAmount: "",
-      expensesType: "",
-      paymentMethod: "",
-      paymentStatus: "",
+      materialUsed: [],
+      requiremtns: "",
       remarks: "",
-    });
+    }));
+  };
 
-    const [states, setStates] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [blocks, setBlocks] = useState([]);
-    const [siteNames, setSiteNames] = useState([]);
-    const [workTypes, setWorkTypes] = useState([]); // This will store workTypes fetched for a site
+  const handleMaterialsChange = (e) => {
+    const { name, value } = e.target;
+    setMaterials((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    useEffect(() => {
-      // Fetching states on component mount
-      fetchStates();
-    }, []);
+  const handleAddMaterials = () => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      materialUsed: [...prevFormData.materialUsed, materials],
+    }));
+    console.log(materials);
+    console.log(formData);
+  };
+  const handleRemoveMaterials = (materialToRemove) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      materialUsed: prevFormData.materialUsed.filter(
+        (item) => item?.name !== materialToRemove
+      ), // materialToRemove is the item you want to remove
+    }));
+  };
 
-    useEffect(() => {
-      // Set current date
-      // const dateNow = (new Date()).toLocaleDateString();
-      setTimeStamps(Date.now());
-      const dateNow = new Intl.DateTimeFormat("en-GB").format(new Date());
+  // if (!user) {
+  //   navigation("/authentication/officials/officials-login");
+  // }
 
-      // console.log(dateNow);
-      setFormData({ ...formData, date: dateNow });
-    }, [formData]);
-
-  
-
-    // Fetch states data from API
-    const fetchStates = async () => {
-      try {
-        const res = await axios.get(
-          `${serverUrl}/api/site-management/find-site-details`
-        );
-        setStates(res.data.data[0].states); // Assuming response data format
-      } catch (error) {
-        console.error("Error fetching states:", error);
-      }
-    };
-
-    // Fetch districts based on selected state
-    const fetchDistricts = (stateName) => {
-      const selectedState = states.find(
-        (state) => state.stateName === stateName
-      );
-      setDistricts(selectedState ? selectedState.districts : []);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        district: "Select",
-        block: "Select",
-        siteName: "Select",
-        workType: "", // Reset workType when state or district changes
-      }));
-    };
-
-    // Fetch blocks based on selected district
-    const fetchBlocks = (districtName) => {
-      const selectedDistrict = districts.find(
-        (district) => district.districtName === districtName
-      );
-      setBlocks(selectedDistrict ? selectedDistrict.blocks : []);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        block: "select",
-        siteName: "select",
-        workType: "", // Reset workType when district or block changes
-      }));
-    };
-
-    // Fetch site names based on selected block
-    const fetchSiteNames = (blockName) => {
-      const selectedBlock = blocks.find(
-        (block) => block.blockName === blockName
-      );
-      setSiteNames(selectedBlock ? selectedBlock.sites : []);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        siteName: "select",
-        workType: "", // Reset workType when block or siteName changes
-      }));
-    };
-
-    // Set work types based on selected site name
-    const fetchWorkTypes = (siteName) => {
-      const selectedSite = siteNames.find((site) => site.siteName === siteName);
-      if (selectedSite) {
-        setWorkTypes(selectedSite.workType || []);
-      }
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        workType: "select", // Reset workType if no workType available
-      }));
-    };
-
-    const handleChange = (e) => {
-      setSubmitText("Submit");
-      const { name, value } = e.target;
-      setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-
-      // Fetch dependent data based on selected dropdown value
-      if (name === "state") {
-        fetchDistricts(value); // Fetch districts when state is selected
-      } else if (name === "district") {
-        fetchBlocks(value); // Fetch blocks when district is selected
-      } else if (name === "block") {
-        fetchSiteNames(value); // Fetch site names when block is selected
-      } else if (name === "siteName") {
-        fetchWorkTypes(value); // Fetch work types when site is selected
-      }
-    };
-
-    const [isPaymentMethodReady, setIsPaymentMethodReady] = useState(false); // Flag for payment method ready
-
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setSubmitText(""); // Reset submission status
-
-    };
-
-    const ResetForm = async () => {
-      setPaymentMethods("");
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        empType: "Select",
-        date: "",
-        empName: "",
-        empId: "",
-        empMobile: "",
-        dateOfRequirement: "",
-        materialUsed: [],
-        state: "Select",
-        district: "Select",
-        block: "Select",
-        siteName: "",
-        workType: "",
-        expensesAmount: "",
-        expensesType: "",
-        paymentMethod: "",
-        paymentStatus: "",
-        remarks: "",
-      }));
-    };
-
- 
-    // if (!user) {
-    //   navigation("/authentication/officials/officials-login");
-    // }
-
-    return (
-      <>
-      <form
-        onSubmit={handleSubmit}
+  return (
+    <>
+      <div
+        onSubmit={(e) => {
+          // handleSubmit(e);
+        }}
         className="max-w-full w-full  mx-auto p-4 border rounded shadow-md "
       >
         <h2 className="text-2xl font-bold flex mt-16  justify-center  mb-10">
@@ -194,7 +276,7 @@ const RequirementForm = ({ user }) => {
 
         <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {/* designationType Type */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label htmlFor="designationType" className="block text-sm font-medium mb-1">
               Designation*
             </label>
@@ -208,24 +290,9 @@ const RequirementForm = ({ user }) => {
               <option value="select">Select</option>
               <option value="vendor">Vendor</option>
               <option value="employee">Employee</option>
-              {/* <option value="Contract">Contract</option> */}
+             
             </select>
-          </div>
-
-          {/* Employee Name */}
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Name*
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-            />
-          </div>
+          </div> */}
 
           {/* Employee ID */}
           <div className="mb-4">
@@ -241,22 +308,35 @@ const RequirementForm = ({ user }) => {
               className="w-full border rounded px-3 py-2"
             />
           </div>
+          {/* Employee Name */}
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-sm font-medium mb-1">
+              Name*
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled
+              className="w-full border rounded px-3 py-2 cursor-not-allowed"
+            />
+          </div>
 
           {/* Mobile No. */}
           <div className="mb-4">
-            <label
-              htmlFor="mobile"
-              className="block text-sm font-medium mb-1"
-            >
+            <label htmlFor="mobile" className="block text-sm font-medium mb-1">
               Mobile*
             </label>
             <input
               type="text"
               id="mobile"
               name="mobile"
+              disabled
               value={formData.mobile}
               onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
+              className="w-full border rounded px-3 py-2 cursor-not-allowed"
             />
           </div>
 
@@ -392,19 +472,49 @@ const RequirementForm = ({ user }) => {
             />
           </div>
 
+           <div>
+            <label
+              htmlFor="requiremtns"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Requirements*
+            </label>
+            <select
+              id="requiremtns"
+              name="requiremtns"
+              value={formData.requiremtns}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              
+            >
+              <option value="">Select requirements</option>
+              <option value="manpower">Manpower</option>
+              {/* <option value="material">Material</option> */}
+              <option value="tools and machinery">Tools & Machinery</option>
+              <option value="repair">Repair</option>
+              <option value="ration">Ration</option>
+              <option value="vendor">Vendor</option>
+              <option value="vendor">Self</option>
+            </select>
+          </div>
+
           {/* Requirement Type */}
           <div className="mb-4 relative">
             <label
               htmlFor="materialUsed"
               className="block text-sm font-medium mb-1"
             >
-              Material Used*
+              Materials*
             </label>
             <select
               id="materialUsed"
               name="materialUsed"
-              // value={selectedMaterialUsed}
-              onChange={handleChange}
+              value={selectedMaterial}
+              onChange={(e) => {
+                setMaterials((prev) => ({ ...prev, name: e.target.value }));
+                setSelectMaterial(e.target.value);
+                setIsMaterialsOpen(true);
+              }}
               className="w-full border rounded px-3 py-2"
             >
               <option value="">Select</option>
@@ -419,43 +529,121 @@ const RequirementForm = ({ user }) => {
               <option value="others">Others</option>
             </select>
 
-            
+            {isMaterialsOpen && (
+              <>
+                <div className="absolute z-10 border-2 border-blue-100 p-2 bg-neutral-100">
+                  <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
+                    {/* <div>
+                      <label htmlFor="name">Name*</label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={selectedMaterial}
+                        disabled
+                        onChange={handleMaterialsChange}
+                        className=" cursor-not-allowed w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      />
+                    </div> */}
+                    <div>
+                      <label htmlFor="quantity">Quantity*</label>
+                      <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        value={materials.quantity}
+                        onChange={handleMaterialsChange}
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="price">Price*</label>
+                      <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        value={materials.price}
+                        onChange={handleMaterialsChange}
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      />
+                    </div>
+                    
+                  </div>
+                  <div className="w-full">
+                      <label htmlFor="remarks">Remarks</label>
+                      <input
+                        type="text"
+                        id="remarks"
+                        name="remarks"
+                        value={materials.remarks}
+                        onChange={handleMaterialsChange}
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                      />
+                    </div>
+                  <div className="w-full flex justify-evenly">
+                    <button
+                      onClick={handleAddMaterials}
+                      className="bg-blue-600 m-2 p-2 rounded-lg w-24 text-white hover:bg-blue-800"
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleRemoveMaterials(selectedMaterial);
+                      }}
+                      className="bg-red-600 m-2 p-2 rounded-lg w-24 text-white hover:bg-red-700"
+                    >
+                      Remove
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMaterialsOpen(false);
+                      }}
+                      className="bg-blue-600 m-2 p-2 rounded-lg w-24 text-white hover:bg-red-700"
+                    >
+                      Hide
+                    </button>
+                  </div>
+                  <div className="w-1/4 h-screen overflow-y-auto  fixed z-50 top-24 left-0 bg-neutral-50 pb-24">
+                    {formData?.materialUsed.map((item,id) => {
+                      return (
+                        <>
+                          <div className="  z-10  p-2 rounded-md">
+                            <div className=" ">
+                              <div>
+                                <p>({id+1}) Name: {item.name}</p>
+                              </div>
+                              <div className="ml-5">
+                                <p>Quantity: {item.quantity}</p>
+                              </div>
+                              <div className="ml-5">
+                                <p>Price: {item.price}</p>
+                              </div>
+                              <div className="ml-5">
+                                <p>Remarks: {item.remarks}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-          <div>
-            <label
-              htmlFor="expensesType"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Requirement Type*
-            </label>
-            <select
-              id="expensesType"
-              name="expensesType"
-              value={formData.expensesType}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            >
-              <option value="">Select Expenses Type</option>
-              <option value="manpower">Manpower</option>
-              <option value="material">Material</option>
-              <option value="tools and machinery">Tools & Machinery</option>
-              <option value="repair">Repair</option>
-              <option value="ration">Ration</option>
-              <option value="vendor">Vendor</option>
-              <option value="vendor">Self</option>
-            </select>
-          </div>
+
+         
           {/* </div> */}
 
           {/* Payments Status */}
-
+          {/* 
           <div>
             <label
               htmlFor="paymentMethod"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Upload QR Code/Passbook/UPI-Id picture
+              others
             </label>
             <input
               type="file"
@@ -473,7 +661,7 @@ const RequirementForm = ({ user }) => {
               Please upload a clear image(jpg, jpeg, png files only) of the
               Account details.
             </p>
-          </div>
+          </div> */}
 
           {/* <div>
           <label
@@ -529,10 +717,9 @@ const RequirementForm = ({ user }) => {
             {submitText}
           </button>
         </div>
-      </form>
-      </>
-    );
-  
+      </div>
+    </>
+  );
 };
 
 export default RequirementForm;
