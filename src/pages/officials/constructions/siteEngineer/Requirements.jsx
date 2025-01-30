@@ -11,6 +11,8 @@ const RequirementForm = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [submitText, setSubmitText] = useState("Submit");
   const [selectedMaterial, setSelectMaterial] = useState();
+  const [maskedName,setMaskedName]=useState();
+  const [maskedMobile,setMaskedMobile]=useState();
   // const [selectedMaterials, setSelectMaterials] = useState([
   //   {
   //     name: " ",
@@ -41,7 +43,7 @@ const RequirementForm = ({ user }) => {
     siteName: "",
     workType: "",
     materialUsed: [],
-    requiremtns: [],
+    requirements: "",
     remarks: "",
   });
 
@@ -59,14 +61,14 @@ const RequirementForm = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     const id = formData?.id;
     const url = `${serverUrl}/api/get-user?id=${id}`;
     axios
       .get(url)
       .then((res) => {
         const user = res?.data?.data;
-        setLoading(false)
+        setLoading(false);
         if (!user) {
           // setLoading(false)
           return;
@@ -85,7 +87,8 @@ const RequirementForm = ({ user }) => {
         let mobile = user.mobile;
         const preFix = mobile.substring(0, 2);
         const postFix = mobile.substring(8, 11);
-        mobile = preFix + "******" + postFix;
+        const maskedMob = preFix + "******" + postFix;
+        setMaskedMobile(maskedMob);
         let name = user?.name;
         let maskedName;
         if (name && name.length > 6) {
@@ -93,6 +96,7 @@ const RequirementForm = ({ user }) => {
           const postName = name.substring(name.length - 3, name.length);
           let star = "*".repeat(name.length - 6); // Generate stars for middle characters
           maskedName = preName + star + postName;
+          setMaskedName(maskedName);
           console.log(maskedName);
         } else {
           console.log("Name is too short to mask!");
@@ -100,28 +104,28 @@ const RequirementForm = ({ user }) => {
 
         setFormData((prevData) => ({
           ...prevData,
-          name: maskedName,
+          name: name,
           mobile: mobile,
         }));
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
-        setLoading(false)
+        setLoading(false);
         console.log(err);
       });
   }, [formData.id]);
 
   // Fetch states data from API
   const fetchStates = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await axios.get(
         `${serverUrl}/api/site-management/find-site-details`
       );
       setStates(res.data.data[0].states); // Assuming response data format
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.error("Error fetching states:", error);
     }
   };
@@ -203,7 +207,7 @@ const RequirementForm = ({ user }) => {
     setLoading(true);
     setSubmitText("Pending");
     console.log(formData);
-    const url = `${serverUrl}/api/forms/submit-form`;
+    const url = `${serverUrl}/api/forms/submit-requirements-form`;
     const payLoad = formData;
     const headers = {
       "Content-Type": "application/json",
@@ -213,7 +217,7 @@ const RequirementForm = ({ user }) => {
       .then((res) => {
         setSubmitText("Submitted");
         setLoading(false);
-        // resetForm();
+        resetForm();
         alert("Form submitted successfully.");
       })
       .catch((err) => {
@@ -279,7 +283,7 @@ const RequirementForm = ({ user }) => {
         }}
         className="max-w-full w-full  mx-auto p-4 border rounded shadow-md "
       >
-        <h2 className="text-2xl font-bold flex mt-16  justify-center  mb-10">
+        <h2 className="text-2xl font-bold flex  justify-center  mb-10">
           Requirement Form
         </h2>
 
@@ -326,7 +330,7 @@ const RequirementForm = ({ user }) => {
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              value={maskedName}
               onChange={handleChange}
               disabled
               className="w-full border rounded px-3 py-2 cursor-not-allowed"
@@ -343,7 +347,7 @@ const RequirementForm = ({ user }) => {
               id="mobile"
               name="mobile"
               disabled
-              value={formData.mobile}
+              value={maskedMobile}
               onChange={handleChange}
               className="w-full border rounded px-3 py-2 cursor-not-allowed"
             />
@@ -481,20 +485,19 @@ const RequirementForm = ({ user }) => {
             />
           </div>
 
-           <div>
+          <div>
             <label
-              htmlFor="requiremtns"
+              htmlFor="requirements"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               Requirements*
             </label>
             <select
-              id="requiremtns"
-              name="requiremtns"
-              value={formData.requiremtns}
+              id="requirements"
+              name="requirements"
+              value={formData.requirements}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              
             >
               <option value="">Select requirements</option>
               <option value="manpower">Manpower</option>
@@ -507,7 +510,7 @@ const RequirementForm = ({ user }) => {
             </select>
           </div>
 
-          {/* Requirement Type */}
+          {/* Materials Type */}
           <div className="mb-4 relative">
             <label
               htmlFor="materialUsed"
@@ -540,8 +543,8 @@ const RequirementForm = ({ user }) => {
 
             {isMaterialsOpen && (
               <>
-                <div className="absolute z-10 border-2 border-blue-100 p-2 bg-neutral-100">
-                  <div className="grid grid-cols-2 lg:grid-cols-2 gap-2">
+                <div className="absolute z-10 border-2 border-blue-100 p-0 bg-neutral-100">
+                  <div className="grid grid-cols-2 lg:grid-cols-2 gap-2 p-2">
                     {/* <div>
                       <label htmlFor="name">Name*</label>
                       <input
@@ -576,19 +579,18 @@ const RequirementForm = ({ user }) => {
                         className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       />
                     </div>
-                    
                   </div>
-                  <div className="w-full">
-                      <label htmlFor="remarks">Remarks</label>
-                      <input
-                        type="text"
-                        id="remarks"
-                        name="remarks"
-                        value={materials.remarks}
-                        onChange={handleMaterialsChange}
-                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                      />
-                    </div>
+                  <div className="w-full p-2">
+                    <label htmlFor="remarks">Remarks</label>
+                    <input
+                      type="text"
+                      id="remarks"
+                      name="remarks"
+                      value={materials.remarks}
+                      onChange={handleMaterialsChange}
+                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
                   <div className="w-full flex justify-evenly">
                     <button
                       onClick={handleAddMaterials}
@@ -613,36 +615,57 @@ const RequirementForm = ({ user }) => {
                       Hide
                     </button>
                   </div>
-                  <div className="w-1/4 h-screen overflow-y-auto  fixed z-50 top-24 left-0 bg-neutral-50 pb-24">
-                    {formData?.materialUsed.map((item,id) => {
-                      return (
-                        <>
-                          <div className="  z-10  p-2 rounded-md">
-                            <div className=" ">
-                              <div>
-                                <p>({id+1}) Name: {item.name}</p>
-                              </div>
-                              <div className="ml-5">
-                                <p>Quantity: {item.quantity}</p>
-                              </div>
-                              <div className="ml-5">
-                                <p>Price: {item.price}</p>
-                              </div>
-                              <div className="ml-5">
-                                <p>Remarks: {item.remarks}</p>
+
+                  <div  className="ml-0 w-full lg:w-1/4 lg:h-screen lg:overflow-y-auto absolute lg:fixed z-50 lg:top-24 lg:left-0 bg-neutral-50 pb-24">
+                    <div className="w-full">
+                      <h1 className="w-full flex justify-center text-lg font-bold">
+                        Materials Required-
+                      </h1>
+                    </div>
+
+                    <div className="w-full  grid grid-cols-2 ">
+                      {formData?.materialUsed.map((item, id) => {
+                        return (
+                          <>
+                            <div className="  z-10  p-2 rounded-md">
+                              <div className=" ">
+                                <div>
+                                  <p>
+                                    ({id + 1}) Name: {item.name}
+                                  </p>
+                                </div>
+                                <div className="ml-5">
+                                  <p>Quantity: {item.quantity}</p>
+                                </div>
+                                <div className="ml-5">
+                                  <p>Price: {item.price}</p>
+                                </div>
+                                <div className="ml-5">
+                                  <p>Remarks: {item.remarks}</p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </>
-                      );
-                    })}
+                          </>
+                        );
+                      })}
+
+                      <div className="sticky bottom-0 z-10">
+                        <button
+                          onClick={() => {
+                            setIsMaterialsOpen(false);
+                          }}
+                          className="bg-red-600 m-2 p-2 rounded-lg w-24 text-white hover:bg-red-700"
+                        >
+                          Hide
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>
             )}
           </div>
 
-         
           {/* </div> */}
 
           {/* Payments Status */}
@@ -721,6 +744,7 @@ const RequirementForm = ({ user }) => {
           {/* Submit Button */}
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-1/4  bg-blue-500 text-white py-2 rounded hover:bg-blue-600 "
           >
             {submitText}
