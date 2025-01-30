@@ -1,12 +1,13 @@
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import ShowProRepInDetail from "./ShowProRepInDetail";
+import ShowReportDetails from "./ShowReportDetails";
 
-import ShowQR from "./ShowQR";
+import ShowQR from "../../../../admin/ShowQR";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
-const DailyProgressReport = () => {
+const ShowAllReports = ({user}) => {
   const [isShowDetailsOpen, setIsShowDetailsOpen] = useState(false);
   const [dailyProgressReport, setDailyProgressReport] = useState();
   const [selectedItem, setSelectedItem] = useState(null);
@@ -14,11 +15,12 @@ const DailyProgressReport = () => {
   const [selectedQR, setSelectedQR] = useState({});
 
   useEffect(() => {
-    const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report`;
+    const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report?id=${user.id}`;
     axios
-      .get(url)
-      .then((res) => {
+    .get(url)
+    .then((res) => {
         setDailyProgressReport(res?.data?.data);
+        // console.log(res)
       })
       .catch((error) => {
         console.log(error);
@@ -93,7 +95,7 @@ const DailyProgressReport = () => {
         </table>
       </div>
       {isShowDetailsOpen && (
-        <ShowProRepInDetail
+        <ShowReportDetails
           open={isShowDetailsOpen}
           isOpen={setIsShowDetailsOpen}
           report={selectedItem}
@@ -109,4 +111,4 @@ const DailyProgressReport = () => {
   );
 };
 
-export default DailyProgressReport;
+export default ShowAllReports;

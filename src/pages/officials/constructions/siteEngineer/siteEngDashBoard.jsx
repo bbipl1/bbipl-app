@@ -9,6 +9,8 @@ import UpdateForm from "./dailyProgressReport/UpdateForm";
 import PaymentScreenShot from "./dailyProgressReport/PaymentScreenShot";
 import WorkProgress from "./dailyProgressReport/WorkProgress";
 import WorkProgressVideo from "./dailyProgressReport/WorkProgressVideo";
+import ShowAllReports from "./showAllReports/ShowAllReports";
+
 
 const SiteEngDashBoard = () => {
   const location = useLocation();
@@ -49,6 +51,8 @@ const SiteEngDashBoard = () => {
         return <WorkProgress user={data?.user} />;
       case "Upload-Work-Progress-video":
         return <WorkProgressVideo user={data?.user} />;
+      case "Show-all-reports":
+        return <ShowAllReports user={data?.user} />;
       case "siteEngAttendance":
         return <SiteEngineerAttendanceForm siteEngId={data?.user?.id} />;
       case "workers":
@@ -81,7 +85,7 @@ const SiteEngDashBoard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <button
           onClick={() => setActiveComponent("profile")}
           className={getButtonClass("profile")}
@@ -113,7 +117,7 @@ const SiteEngDashBoard = () => {
            Daily Progress Report
           </button>
           {isOpen && (
-            <ul className="absolute left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
+            <ul className="absolute z-10 left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
               <li onClick={() => {setIsOpen(false);setActiveComponent("Fill-Form")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 Fill Form
               </li>
@@ -128,6 +132,9 @@ const SiteEngDashBoard = () => {
               </li>
               <li onClick={() =>{setIsOpen(false); setActiveComponent("Upload-Work-Progress-video")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 Work Progress(Video)
+              </li>
+              <li onClick={() =>{setIsOpen(false); setActiveComponent("Show-all-reports")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                Show all reports
               </li>
              
               

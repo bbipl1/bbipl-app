@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const ManageWorker = ({ siteEngineerId }) => {
+  const [deletedWorker, setDeletedWorkers] = useState();
   const [workers, setWorkers] = useState([]);
+  const [isManpowerAdded, setIsManPowerAdded] = useState(false);
+  const [addManPowerText, setAddManPowerText] = useState("Add Manpower");
   const [siteEngObjectId, setSiteEngObjectId] = useState();
   const [newWorker, setNewWorker] = useState({
     name: "",
@@ -26,7 +29,7 @@ const ManageWorker = ({ siteEngineerId }) => {
       .catch((err) => {
         console.error(err);
       });
-  }, [siteEngineerId]);
+  }, [serverURL, siteEngineerId]);
 
   // Fetch workers assigned to the site engineer
   useEffect(() => {
@@ -34,14 +37,31 @@ const ManageWorker = ({ siteEngineerId }) => {
       try {
         const url = `${serverURL}/api/constructions/site-engineers/get-all-workers?siteEngineerId=${siteEngineerId}`;
         const response = await axios.get(url);
-        // console.log(response);
+        console.log(response);
         setWorkers(response.data);
       } catch (error) {
         console.error("Error fetching workers:", error);
       }
     };
     fetchWorkers();
-  }, [siteEngineerId]);
+  }, [serverURL, siteEngineerId]);
+  //fetch deleted workers
+  useEffect(() => {
+    if (!siteEngObjectId) {
+      return; // Skip fetching if siteEngObjectId is not yet defined or still loading
+    }
+    const fetchWorkers = async () => {
+      try {
+        const url = `${serverURL}/api/constructions/site-engineers/get-all-deleted-workers?siteEngId=${siteEngineerId}&siteEngObjId=${siteEngObjectId}`;
+        const response = await axios.get(url);
+        // console.log("meurl", response?.data?.deletedWorkers);
+        setDeletedWorkers(response?.data?.deletedWorkers);
+      } catch (error) {
+        console.error("Error fetching workers:", error);
+      }
+    };
+    fetchWorkers();
+  }, [serverURL, siteEngObjectId, siteEngineerId]);
 
   // Handle file input changes
   const handleFileChange = (e, field) => {
@@ -54,13 +74,7 @@ const ManageWorker = ({ siteEngineerId }) => {
   const handleAddWorker = async () => {
     const { name, mobile, aadhaarPhoto, panPhoto, accountDetailsPhoto } =
       newWorker;
-    if (
-      !name ||
-      !mobile ||
-      !aadhaarPhoto ||
-      !panPhoto ||
-      !accountDetailsPhoto
-    ) {
+    if (!name || !mobile) {
       alert("Please fill in all fields and upload all required documents");
       return;
     }
@@ -79,7 +93,6 @@ const ManageWorker = ({ siteEngineerId }) => {
     //   console.log("loop", key, value);
     // }
     // console.log("wl", formData);
-   
 
     try {
       const response = await axios.post(
@@ -87,26 +100,51 @@ const ManageWorker = ({ siteEngineerId }) => {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      setWorkers([...workers, response.data]);
-      setNewWorker({
-        name: "",
-        mobile: "",
-        aadhaarPhoto: null,
-        panPhoto: null,
-        accountDetailsPhoto: null,
-      });
+      if (response) {
+        setWorkers([...workers, response.data]);
+        setNewWorker({
+          name: "",
+          mobile: "",
+          aadhaarPhoto: null,
+          panPhoto: null,
+          accountDetailsPhoto: null,
+        });
+        setIsManPowerAdded(true);
+        setAddManPowerText("Success");
+        alert("Manpower added successfully.");
+      }
     } catch (error) {
+      alert("Error");
       console.error("Error adding worker:", error);
     }
   };
 
   // Handle deleting a worker
   const handleDeleteWorker = async (workerId) => {
+    const res = window.confirm("Are you sure?");
+    if (!res) {
+      return;
+    }
     try {
-      await axios.delete(
-        `${serverURL}/api/siteengineer/${siteEngineerId}/workers/${workerId}`
-      );
-      setWorkers(workers.filter((worker) => worker._id !== workerId));
+      const url = `${serverURL}/api/constructions/site-engineers/delete-worker`;
+      const filterData = {
+        workerId,
+        siteEngObjId: siteEngObjectId,
+        siteEngId: siteEngineerId,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      await axios
+        .put(url, filterData, headers)
+        .then((res) => {
+          console.log("Manpower deleted");
+          alert("Manpower deleted successfully.");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // setWorkers(workers.filter((worker) => worker._id !== workerId));
     } catch (error) {
       console.error("Error deleting worker:", error);
     }
@@ -139,15 +177,45 @@ const ManageWorker = ({ siteEngineerId }) => {
       {/* Conditional Rendering for different views */}
       {view === "list" && (
         <div>
-          <h3 className="text-lg font-semibold mb-4">Workers List</h3>
-          <ul className="space-y-3">
+          <h3 className="text-lg font-semibold mb-4">Manpower List</h3>
+          <ul className="space-y-1">
             {workers.map((worker) => (
               <li
                 key={worker._id}
-                className="flex items-center justify-between p-2 bg-white rounded-md shadow"
+                className="flex items-center justify-between p-2  bg-white rounded-md shadow"
               >
-                <span>
-                  {worker.name} - {worker.mobile}
+                <span className="flex-1">
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                    <div>Name: {worker.name}</div>
+                    <div>Mobile: {worker.mobile}</div>
+                    </div>
+                    <div>
+                      Aadhaar Card
+                      <img
+                        className="w-32 h-32"
+                        src={worker?.aadhaarURL}
+                        alt="Aadhaar"
+                      />
+                    </div>
+                    <div>
+                      PAN Card
+                      <img
+                        className="w-32 h-32"
+                        src={worker?.panCardURL}
+                        alt="PAN Card"
+                      />
+                    </div>
+                    <div>
+                      Account Details
+                      <img
+                        className="w-32 h-32"
+                        src={worker?.accountDetailsURL}
+                        alt="Account Details"
+                      />
+                    </div>
+                  </div>
                 </span>
                 <button
                   onClick={() => handleDeleteWorker(worker._id)}
@@ -163,10 +231,10 @@ const ManageWorker = ({ siteEngineerId }) => {
 
       {view === "add" && (
         <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-2">Add New Worker</h3>
+          <h3 className="text-lg font-semibold mb-2">Add New Manpower</h3>
           <div className="space-y-4">
             <div>
-              <label htmlFor="name">Worker Name</label>
+              <label htmlFor="name">Name*</label>
               <input
                 id="name"
                 type="text"
@@ -179,7 +247,7 @@ const ManageWorker = ({ siteEngineerId }) => {
               />
             </div>
             <div>
-              <label htmlFor="mobile">Worker Mobile</label>
+              <label htmlFor="mobile">Mobile*</label>
               <input
                 id="mobile"
                 type="text"
@@ -233,19 +301,41 @@ const ManageWorker = ({ siteEngineerId }) => {
 
             <button
               onClick={handleAddWorker}
-              className="mt-4 p-2 bg-blue-500 text-white rounded-md"
+              disabled={isManpowerAdded}
+              className={`mt-4 p-2 text-white rounded-md transition ${
+                isManpowerAdded
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
             >
-              Add Worker
+              {addManPowerText}
             </button>
           </div>
         </div>
       )}
 
       {view === "delete" && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">Deleted Worker</h3>
-          <p>Coming soon</p>
-        </div>
+        <>
+          {deletedWorker && deletedWorker.length > 0 ? (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Deleted Workers</h3>
+              <ul>
+                {deletedWorker.map((worker) => (
+                  <li
+                    key={worker._id}
+                    className="flex items-center justify-between p-2 m-1 bg-white rounded-md shadow"
+                  >
+                    <span>
+                      Name: {worker.name} - Mobile: {worker.mobile}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <p>No deleted workers found.</p>
+          )}
+        </>
       )}
     </div>
   );
