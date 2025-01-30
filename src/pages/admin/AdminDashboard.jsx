@@ -12,6 +12,7 @@ const AdminDashboard = () => {
   const location = useLocation();
   const { data } = location.state || {};
   const [activeComponent, setActiveComponent] = useState("details"); // State to track active component
+  const [showMenu, setShowMenu] = useState("hidden");
 
   const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ const AdminDashboard = () => {
         return <SiteManagement />;
       case "showUserAttendance":
         return <ShowUserAttendance />;
-        case "dailyProgressReport":
+      case "dailyProgressReport":
         return <DailyProgressReport />;
       default:
         return (
@@ -51,14 +52,34 @@ const AdminDashboard = () => {
       : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
   };
 
+
+
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 ml-14">
+      
+      <div className="flex justify-between">
+        <div className="text-3xl font-bold text-gray-800 mb-6 ml-2">
           Hi! {data?.user?.name}
-        </h1>
+        </div>
+        {showMenu === "hidden" && window.innerWidth <= 480 && (
+          <div
+            onClick={() => {
+              setShowMenu("flex");
+            }}
+            className="mr-4 bg-blue-600 hover:bg-blue-800 flex items-center px-4 rounded-md text-white"
+          >
+            <p className="text-2xl font-bold">Menu</p>
+          </div>
+        )}
       </div>
-      <div className="grid gap-2 grid-cols-4 md:grid-cols-4 lg:grid-cols-8">
+      <div
+        onClick={() => {
+          setShowMenu("hidden");
+        }}
+        className={`fixed flex flex-col  lg:pb-12 gap-1 transition-all duration-1000 ease-in-out ${
+          showMenu!=="hidden" ? "w-3/4" : "w-0 translate-x-[-350%]"}   lg:w-full h-screen  px-4 top-24 pt-4  bg-gray-100 lg:static  lg:grid lg:grid-cols-8 lg:h-16 lg:my-auto lg:align-middle `}
+      >
+  
         <button
           onClick={() => setActiveComponent("details")}
           className={getButtonClass("details")}
@@ -100,7 +121,7 @@ const AdminDashboard = () => {
           onClick={() => setActiveComponent("dailyProgressReport")}
           className={getButtonClass("dailyProgressReport")}
         >
-          Daily  Report
+          Daily Report
         </button>
         <button
           onClick={() => handleLogout()}
