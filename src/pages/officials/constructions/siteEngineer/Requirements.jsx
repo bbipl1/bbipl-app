@@ -59,13 +59,16 @@ const RequirementForm = ({ user }) => {
   }, []);
 
   useEffect(() => {
+    setLoading(true)
     const id = formData?.id;
     const url = `${serverUrl}/api/get-user?id=${id}`;
     axios
       .get(url)
       .then((res) => {
         const user = res?.data?.data;
+        setLoading(false)
         if (!user) {
+          // setLoading(false)
           return;
         }
         // console.log(user.department);
@@ -76,6 +79,7 @@ const RequirementForm = ({ user }) => {
             name: "",
             mobile: "",
           }));
+          // setLoading(false)
           return;
         }
         let mobile = user.mobile;
@@ -99,20 +103,25 @@ const RequirementForm = ({ user }) => {
           name: maskedName,
           mobile: mobile,
         }));
+        setLoading(false)
       })
       .catch((err) => {
+        setLoading(false)
         console.log(err);
       });
   }, [formData.id]);
 
   // Fetch states data from API
   const fetchStates = async () => {
+    setLoading(true)
     try {
       const res = await axios.get(
         `${serverUrl}/api/site-management/find-site-details`
       );
       setStates(res.data.data[0].states); // Assuming response data format
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.error("Error fetching states:", error);
     }
   };
