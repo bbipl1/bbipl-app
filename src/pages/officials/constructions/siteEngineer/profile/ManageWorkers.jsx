@@ -152,25 +152,25 @@ const ManageWorker = ({ siteEngineerId }) => {
 
   return (
     <div className="p-4 bg-gray-100 rounded-md shadow">
-      <div className="mb-4">
+      <div className="mb-4 flex justify-evenly">
         {/* Navigation for different views */}
         <button
           onClick={() => setView("list")}
-          className="p-2 bg-blue-500 text-white rounded-md mr-2"
+          className="p-2 bg-blue-500 text-white rounded-md mr-2 w-20"
         >
-          Manpower List
+          List
         </button>
         <button
           onClick={() => setView("add")}
-          className="p-2 bg-blue-500 text-white rounded-md mr-2"
+          className="p-2 bg-blue-500 text-white rounded-md mr-2 w-20"
         >
-          Add Manpower
+          Add
         </button>
         <button
           onClick={() => setView("delete")}
-          className="p-2 bg-blue-500 text-white rounded-md"
+          className="p-2 bg-blue-500 text-white rounded-md w-20"
         >
-          Deleted Manpower
+          Deleted
         </button>
       </div>
 

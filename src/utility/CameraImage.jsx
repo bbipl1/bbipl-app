@@ -62,20 +62,22 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
         ref={videoRef}
         autoPlay
         playsInline
-        className="w-64 h-64 border border-gray-300 rounded-md"
+        className="w-64 h-64 border border-gray-300 rounded-md bg-neutral-200"
       ></video>
-      <button
+      <div>
+        <button
         onClick={captureImage}
-        className="mt-4 bg-blue-500 text-white p-2 rounded-md"
+        className="mt-4 bg-blue-500 text-white p-2 rounded-md mr-1 ml-2"
       >
         Capture Image
       </button>
       <button
         onClick={close}
-        className="mt-4 bg-red-600 text-white p-2 rounded-md"
+        className="mt-4 bg-red-600 text-white p-2 rounded-md ml-1"
       >
         Close
       </button>
+      </div>
       {capturedImage && (
         <div className="mt-4">
           <h3 className="text-sm font-medium">Captured Image:</h3>

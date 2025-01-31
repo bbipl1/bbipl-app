@@ -77,7 +77,7 @@ const AdminDashboard = () => {
           setShowMenu("hidden");
         }}
         className={`fixed flex flex-col  lg:pb-12 gap-1 transition-all duration-1000 ease-in-out ${
-          showMenu!=="hidden" ? "w-3/4" : "w-0 translate-x-[-350%]"}   lg:w-full h-screen  px-4 top-24 pt-4  bg-gray-100 lg:static  lg:grid lg:grid-cols-8 lg:h-16 lg:my-auto lg:align-middle `}
+          showMenu!=="hidden" ? "w-3/4" : "w-0 translate-x-[-350%] lg:translate-x-0"}   lg:w-full h-screen  px-4 top-24 pt-4  bg-gray-100   lg:grid lg:grid-cols-8 lg:h-16  `}
       >
   
         <button

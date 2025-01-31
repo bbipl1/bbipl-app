@@ -54,7 +54,7 @@ const SiteEngDashBoard = () => {
       case "Show-all-reports":
         return <ShowAllReports user={data?.user} />;
       case "siteEngAttendance":
-        return <SiteEngineerAttendanceForm siteEngId={data?.user?.id} />;
+        return <SiteEngineerAttendanceForm siteEng={data?.user} />;
       case "workers":
         return <ManageWorker siteEngineerId={data?.user?.id} />;
 

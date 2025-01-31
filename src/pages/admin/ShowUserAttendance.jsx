@@ -4,10 +4,14 @@ import axios from "axios";
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const ShowUserAttendance = () => {
+  const [siteEng, setSiteEng] = useState();
+  const [siteEngId, setSiteEngId] = useState();
   const [attendanceData, setAttendanceData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedWorker, setSelectedWorker] = useState();
 
   // Filter state
   const [filters, setFilters] = useState({
@@ -17,14 +21,30 @@ const ShowUserAttendance = () => {
     date: "",
   });
 
+  //fetch site eng details
+
+  useEffect(() => {
+    const url = `${serverURL}/api/constructions/site-engineers/get-site-engineer?id=${siteEngId}`;
+    axios
+      .get(url)
+      .then((res) => {
+        console.log("id", res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [siteEngId]);
+
   // Fetch attendance data from server
   const fetchAttendanceData = async () => {
     try {
       const response = await axios.get(
-        `${serverURL}/api/attendance/dev-and-fin/get-all-attendances`
+        `${serverURL}/api/constructions/site-engineers/get-manpower-attendance`
       );
-      setAttendanceData(response.data || []);
-      setFilteredData(response.data || []);
+      console.log(response.data.data);
+      setSiteEngId(response?.data?.data?.siteEngId);
+      setAttendanceData(response?.data?.data || []);
+      setFilteredData(response?.data?.data || []);
       setLoading(false);
     } catch (err) {
       setError(
@@ -63,8 +83,36 @@ const ShowUserAttendance = () => {
     applyFilters();
   }, [filters, attendanceData]);
 
+  const showWorkersDetails = (workers) => {
+    return (
+      <>
+        <div className="fixed left-20 top-40 bg-neutral-200 overflow-y-auto">
+          <div className="grid grid-cols-6 gap-4">
+            {workers?.map((worker) => {
+              return (
+                <>
+                  <div>
+                    <div className="m-4">Name:</div>
+                    <div>
+                      <img
+                        className="w-48 h-48"
+                        src={`${worker.photoURL}`}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                </>
+              );
+            })}
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="w-full mx-auto p-6 bg-gray-200 rounded-lg shadow-md">
+      {isOpen && showWorkersDetails(selectedWorker)}
       <h1 className="text-2xl font-bold text-center text-blue-600 mb-6">
         Attendance Records
       </h1>
@@ -75,7 +123,7 @@ const ShowUserAttendance = () => {
           type="text"
           name="empId"
           placeholder="Filter by Employee ID"
-          value={filters.empId}
+          // value={filters.empId}
           onChange={handleFilterChange}
           className="p-2 border border-gray-300 rounded"
         />
@@ -83,7 +131,7 @@ const ShowUserAttendance = () => {
           type="text"
           name="empMobile"
           placeholder="Filter by Mobile"
-          value={filters.empMobile}
+          // value={filters.empMobile}
           onChange={handleFilterChange}
           className="p-2 border border-gray-300 rounded"
         />
@@ -91,14 +139,14 @@ const ShowUserAttendance = () => {
           type="text"
           name="empRole"
           placeholder="Filter by Role"
-          value={filters.empRole}
+          // value={filters.empRole}
           onChange={handleFilterChange}
           className="p-2 border border-gray-300 rounded"
         />
         <input
           type="date"
           name="date"
-          value={filters.date}
+          // value={filters.date}
           onChange={handleFilterChange}
           className="p-2 border border-gray-300 rounded"
         />
@@ -112,7 +160,7 @@ const ShowUserAttendance = () => {
           </p>
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
-        ) : filteredData.length === 0 ? (
+        ) : filteredData?.length === 0 ? (
           <p className="text-center text-gray-500">
             No attendance records found.
           </p>
@@ -120,13 +168,11 @@ const ShowUserAttendance = () => {
           <table className="w-full table-auto border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-100">
+                <th className="border border-gray-300 px-4 py-2">ID</th>
+                {/* <th className="border border-gray-300 px-4 py-2">Name</th> */}
                 <th className="border border-gray-300 px-4 py-2">
-                  Employee ID
+                  SiteEngName
                 </th>
-                <th className="border border-gray-300 px-4 py-2">Name</th>
-                <th className="border border-gray-300 px-4 py-2">Mobile</th>
-                <th className="border border-gray-300 px-4 py-2">Email</th>
-                <th className="border border-gray-300 px-4 py-2">Role</th>
                 <th className="border border-gray-300 px-4 py-2">Date</th>
                 <th className="border border-gray-300 px-4 py-2">Day</th>
                 <th className="border border-gray-300 px-4 py-2">Time</th>
@@ -134,23 +180,22 @@ const ShowUserAttendance = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((record, index) => (
-                <tr key={index} className="text-center">
+              {filteredData?.map((record, index) => (
+                <tr
+                  key={index}
+                  className="text-center"
+                  onClick={() => {
+                    setIsOpen(true);
+                    setSelectedWorker(record?.workers);
+                  }}
+                >
                   <td className="border border-gray-300 px-4 py-2">
-                    {record.empId}
+                    {record.siteEngId}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {record.empName}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.empMobile}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.empEmail}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.empRole}
-                  </td>
+
                   <td className="border border-gray-300 px-4 py-2">
                     {record.date}
                   </td>
@@ -161,10 +206,9 @@ const ShowUserAttendance = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {record.time}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {record.geoCoordinates[0]
-                      ? `Lat: ${record.geoCoordinates[0].latitude}, Lng: ${record.geoCoordinates[0].longitude}`
-                      : "N/A"}
+                  <td>
+                    <h1>Latitude: {record?.siteLocation.latitude} </h1>
+                    <h1>Longitude: {record?.siteLocation.longitude} </h1>
                   </td>
                 </tr>
               ))}
