@@ -146,7 +146,7 @@ const SiteEngineerAttendanceForm = ({ siteEng }) => {
           <p className="text-sm font-medium text-gray-700">Site Engineer Name: {siteEng?.name}</p>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Select Workers</label>
+          <label className="block text-sm font-medium text-gray-700">Select Manpower</label>
           <select multiple onChange={handleWorkerSelect} className="mt-1 p-2 w-full border border-gray-300 rounded-md">
             {workers.map((worker) => (
               <option key={worker._id} value={worker._id} data-name={worker.name}>{worker.name}</option>

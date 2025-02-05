@@ -10,6 +10,7 @@ import PaymentScreenShot from "./dailyProgressReport/PaymentScreenShot";
 import WorkProgress from "./dailyProgressReport/WorkProgress";
 import WorkProgressVideo from "./dailyProgressReport/WorkProgressVideo";
 import ShowAllReports from "./showAllReports/ShowAllReports";
+import HDDForms from "./HDDForms";
 
 
 const SiteEngDashBoard = () => {
@@ -57,6 +58,8 @@ const SiteEngDashBoard = () => {
         return <SiteEngineerAttendanceForm siteEng={data?.user} />;
       case "workers":
         return <ManageWorker siteEngineerId={data?.user?.id} />;
+      case "hdd":
+        return <HDDForms siteEngineerId={data?.user?.id} />;
 
       default:
         return (
@@ -88,7 +91,7 @@ const SiteEngDashBoard = () => {
       <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <button
           onClick={() => setActiveComponent("profile")}
-          className={getButtonClass("profile")}
+          className={getButtonClass("profiles")}
         >
           Profile
         </button>
@@ -107,9 +110,9 @@ const SiteEngDashBoard = () => {
           Requirement Forms
         </button> */}
 
-        <div className="relative w-100 bg-blue-500">
+        <div className="relative w-100 bg-blue-500 hover:bg-blue-600">
           <button
-            className={`px-4 py-2 bg-blue-500 text-white rounded ${
+            className={`w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
               isOpen ? "rounded-b-none" : ""
             }`}
             onClick={toggleDropdown}
@@ -153,6 +156,12 @@ const SiteEngDashBoard = () => {
           className={getButtonClass("sites-management")}
         >
           Attendance
+        </button>
+        <button
+          onClick={() => setActiveComponent("hdd")}
+          className={getButtonClass("hdds")}
+        >
+          HDD
         </button>
 
         <button

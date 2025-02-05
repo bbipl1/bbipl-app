@@ -5,6 +5,7 @@ import ConstructionsProfile from "./ConstructionsProfile";
 import RequirementForm from "./siteEngineer/Requirements";
 import SiteEngineerAttendanceForm from "./siteEngineer/SiteEngineerAttendanceForm";
 import SiteEngProfile from "./siteEngineer/profile/SiteEngineerProfile";
+import HDDForms from "./siteEngineer/HDDForms";
 
 const ConstructionsDashBoard = () => {
   const location = useLocation();
@@ -21,6 +22,8 @@ const ConstructionsDashBoard = () => {
         return <RequirementForm />;
       case "siteEngAttendance":
         return <SiteEngineerAttendanceForm />;
+      case "hdd":
+        return <HDDForms/>;
 
       default:
         return (
@@ -68,6 +71,12 @@ const ConstructionsDashBoard = () => {
           className={getButtonClass("sites-management")}
         >
           Attendance
+        </button>
+        <button
+          onClick={() => setActiveComponent("hdd")}
+          className={getButtonClass("hdd")}
+        >
+        HDD
         </button>
 
         <button
