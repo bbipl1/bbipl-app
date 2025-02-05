@@ -6,7 +6,7 @@ const Admin = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [filters, setFilters] = useState({
-    role: "",
+    department: "",
     mobile: "",
     employeeId: "",
   });
@@ -32,15 +32,15 @@ const Admin = () => {
   useEffect(() => {
     const applyFilters = () => {
       const filtered = data.filter((item) => {
-        const roleMatch =
-          filters.role === "" ||
-          item.empRole.toLowerCase().includes(filters.role.toLowerCase());
+        const departmentMatch =
+          filters.department === "" ||
+          item?.department?.toLowerCase().includes(filters?.department?.toLowerCase());
         const mobileMatch =
-          filters.mobile === "" || item.empMobile.includes(filters.mobile);
+          filters.mobile === "" || item?.mobile?.includes(filters.mobile);
         const idMatch =
-          filters.employeeId === "" || String(item.empId).includes(filters.employeeId);
+          filters.employeeId === "" || String(item?.id).includes(filters.employeeId);
 
-        return roleMatch && mobileMatch && idMatch;
+        return departmentMatch && mobileMatch && idMatch;
       });
       setFilteredData(filtered); // Update the filtered data based on the filters
     };
@@ -55,20 +55,20 @@ const Admin = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Filter by Role
+              Filter by department
             </label>
             <select
-              value={filters.role}
+              value={filters.department}
               onChange={(e) =>
-                setFilters({ ...filters, role: e.target.value })
+                setFilters({ ...filters, department: e.target.value })
               }
               className="w-full p-3 border rounded-md text-gray-700"
             >
-              <option value="">All Roles</option>
+              <option value="">All Departments</option>
               <option value="admin">Admin</option>
               <option value="developer">Developer</option>
-              <option value="finance">Finance</option>
-              <option value="civil">Civil</option>
+              {/* <option value="finance">Finance</option> */}
+              <option value="construction">Construction</option>
             </select>
           </div>
 

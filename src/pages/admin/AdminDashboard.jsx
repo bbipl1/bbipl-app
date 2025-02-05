@@ -61,12 +61,12 @@ const AdminDashboard = () => {
         <div className="text-3xl font-bold text-gray-800 mb-6 ml-2">
           Hi! {data?.user?.name}
         </div>
-        {showMenu === "hidden" && window.innerWidth <= 480 && (
+        {showMenu === "hidden" && window.innerWidth <= 600 && (
           <div
             onClick={() => {
               setShowMenu("flex");
             }}
-            className="mr-4 bg-blue-600 hover:bg-blue-800 flex items-center px-4 rounded-md text-white"
+            className="cursor-pointer mr-4 bg-blue-600 hover:bg-blue-800 flex items-center px-4 rounded-md text-white"
           >
             <p className="text-2xl font-bold">Menu</p>
           </div>
@@ -76,8 +76,10 @@ const AdminDashboard = () => {
         onClick={() => {
           setShowMenu("hidden");
         }}
-        className={`fixed flex flex-col  lg:pb-12 gap-1 transition-all duration-1000 ease-in-out ${
-          showMenu!=="hidden" ? "w-3/4" : "w-0 translate-x-[-350%] lg:translate-x-0"}   lg:w-full h-screen  px-4 top-24 pt-4  bg-gray-100   lg:grid lg:grid-cols-8 lg:h-16  `}
+        className={`fixed flex flex-col gap-1 transition-all duration-1000 ease-in-out 
+          ${showMenu !=='hidden'? "w-3/4" : "w-0 -translate-x-[350%]"} 
+          lg:w-full lg:translate-x-0 md:translate-x-0 lg:pb-12 h-screen px-4 top-24 pt-4 
+          bg-gray-100 lg:grid lg:grid-cols-8 lg:h-16`}
       >
   
         <button

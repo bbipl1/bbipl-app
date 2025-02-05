@@ -5,22 +5,29 @@ import axios from "axios";
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const SiteEngProfile = ({ siteEngineer }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit } = useForm();
   const [profile, setProfile] = useState(null);
   const [profilePic, setProfilePic] = useState(null); // Store selected file
   const [siteEngImage, setSiteEngImage] = useState(""); // Profile picture URL
   const fileInputRef = useRef(null); // Ref for file input
+  //update password
+  const [updatePassActive, setUpdatePassActive] = useState(false);
+  const [idOrMob, setIdOrMob] = useState(null);
+  const [oldPass, setOldPass] = useState(null);
+  const [newpass, setNewPass] = useState(null);
+  const [confirmNewpass, setConfirmNewPass] = useState(null);
 
   // Fetch Site Engineer details on mount
   useEffect(() => {
     if (siteEngineer) {
       setProfile(siteEngineer);
-      setSiteEngImage(siteEngineer.profilePicURL || ""); // Load existing profile pic
+      setSiteEngImage(siteEngineer?.profilePicURL || ""); // Load existing profile pic
     }
   }, [siteEngineer]);
 
   useEffect(() => {
-    const url = `${serverURL}/api/constructions/site-engineers/get-site-engineer?id=${siteEngineer.id}`;
+    const url = `${serverURL}/api/constructions/site-engineers/get-site-engineer?id=${siteEngineer?.id}`;
     axios
       .get(url)
       .then((res) => {
@@ -76,7 +83,10 @@ const SiteEngProfile = ({ siteEngineer }) => {
     };
 
     try {
-      await axios.post(`${serverURL}/api/siteengineer/${siteEngineer?.id}`, payload);
+      await axios.post(
+        `${serverURL}/api/siteengineer/${siteEngineer?.id}`,
+        payload
+      );
       alert("Profile updated successfully.");
     } catch (error) {
       console.error("Error updating profile", error);
@@ -86,8 +96,114 @@ const SiteEngProfile = ({ siteEngineer }) => {
 
   if (!profile || !siteEngineer) return <div>Loading...</div>;
 
+  const updatePassword = () => {
+    return (
+      <>
+        <div className="w-full h-full">
+          <div>
+            <label htmlFor="">Id/Mobile No*</label>
+            <input
+              type="text"
+              className="w-full border-2 p-2"
+              value={idOrMob}
+              onChange={(e) => {
+                setIdOrMob(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="">Old password*</label>
+            <input
+              type="text"
+              className="w-full border-2 p-2"
+              value={oldPass}
+              onChange={(e) => {
+                setOldPass(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="">New password*</label>
+            <input
+              type="text"
+              className="w-full border-2 p-2"
+              value={newpass}
+              onChange={(e) => {
+                setNewPass(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="">Confirm new password *</label>
+            <input
+              type="text"
+              className="w-full border-2 p-2"
+              value={confirmNewpass}
+              onChange={(e) => {
+                setConfirmNewPass(e.target.value);
+              }}
+            />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleupdate}
+              className="bg-green-600 hover:bg-green-800 p-2 rounded-lg w-24 text-white mt-4"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const handleupdate = (e) => {
+    const userChoice = window.confirm("Are you sure?");
+    if (!userChoice) {
+      return;
+    }
+
+    if (!oldPass) {
+      alert("Old password is required.");
+      return;
+    }
+    if (!newpass) {
+      alert("New password is required.");
+      return;
+    }
+    if (!confirmNewpass) {
+      alert("Confirm new password is required.");
+      return;
+    }
+    if (newpass !== confirmNewpass) {
+      alert("New password and confirm new password should be matched.");
+      return;
+    }
+
+    const url = `${serverURL}/api/officials/users/update-password`;
+    const data = {};
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    setIsLoading(true);
+
+    axios
+      .put(url, data, headers)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error");
+      })
+      .finally((final) => {
+        setIsLoading(true);
+      });
+  };
+
   return (
-    <div className="w-full max-w-xl mx-auto p-8 bg-white rounded-xl shadow-md mt-8">
+    <div className="w-full  mx-auto p-8 bg-white rounded-xl shadow-md mt-2">
       {/* <h2 className="text-3xl font-semibold text-center mb-8">Edit Profile</h2> */}
 
       {/* Profile Picture Section */}
@@ -111,7 +227,9 @@ const SiteEngProfile = ({ siteEngineer }) => {
         {/* Show selected file name */}
         {profilePic && (
           <div className="mt-2 text-sm text-gray-600">
-            <p><strong>Selected File:</strong> {profilePic.name}</p>
+            <p>
+              <strong>Selected File:</strong> {profilePic.name}
+            </p>
             <button
               onClick={uploadProfilePic}
               className="mt-4 bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
@@ -124,10 +242,30 @@ const SiteEngProfile = ({ siteEngineer }) => {
 
       {/* Site Engineer Info */}
       <div className="space-y-4 mb-6 ">
-        <p><strong className="text-gray-700">Name:</strong> {profile?.name}</p>
-        <p><strong className="text-gray-700">ID:</strong> {profile?.id}</p>
-        <p><strong className="text-gray-700">Mobile:</strong> {profile?.mobile}</p>
+        <p>
+          <strong className="text-gray-700">Name:</strong> {profile?.name}
+        </p>
+        <p>
+          <strong className="text-gray-700">ID:</strong> {profile?.id}
+        </p>
+        <p>
+          <strong className="text-gray-700">Mobile:</strong> {profile?.mobile}
+        </p>
       </div>
+      {!updatePassActive && (
+        <div>
+          <button
+            onClick={() => {
+              setUpdatePassActive(true);
+            }}
+            className="p-2 rounded-lg w-36 text-white bg-blue-600"
+          >
+            Update password
+          </button>
+        </div>
+      )}
+      {/* {updatePassword()} */}
+      <div>{updatePassActive && updatePassword()}</div>
 
       {/* Form to update other profile details */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

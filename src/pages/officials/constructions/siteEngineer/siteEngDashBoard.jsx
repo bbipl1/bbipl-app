@@ -15,7 +15,7 @@ import HDDForms from "./HDDForms";
 
 const SiteEngDashBoard = () => {
   const location = useLocation();
-  const { data } = location.state || {};
+  const { data } = location?.state || {};
   // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
   const [isOpen, setIsOpen] = useState(false);
