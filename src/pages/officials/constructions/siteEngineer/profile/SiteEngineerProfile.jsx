@@ -15,12 +15,13 @@ const SiteEngProfile = ({ siteEngineer }) => {
   const [updatePassActive, setUpdatePassActive] = useState(false);
   const [idOrMob, setIdOrMob] = useState(null);
   const [oldPass, setOldPass] = useState(null);
-  const [newpass, setNewPass] = useState(null);
-  const [confirmNewpass, setConfirmNewPass] = useState(null);
+  const [newPass, setNewPass] = useState(null);
+  const [confirmNewPass, setConfirmNewPass] = useState(null);
 
   // Fetch Site Engineer details on mount
   useEffect(() => {
     if (siteEngineer) {
+      setIdOrMob(siteEngineer.id);
       setProfile(siteEngineer);
       setSiteEngImage(siteEngineer?.profilePicURL || ""); // Load existing profile pic
     }
@@ -99,13 +100,14 @@ const SiteEngProfile = ({ siteEngineer }) => {
   const updatePassword = () => {
     return (
       <>
-        <div className="w-full h-full">
+        <div className="w-full h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label htmlFor="">Id/Mobile No*</label>
             <input
               type="text"
-              className="w-full border-2 p-2"
+              className="w-full border-2 p-2 cursor-not-allowed"
               value={idOrMob}
+              disabled
               onChange={(e) => {
                 setIdOrMob(e.target.value);
               }}
@@ -127,7 +129,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
             <input
               type="text"
               className="w-full border-2 p-2"
-              value={newpass}
+              value={newPass}
               onChange={(e) => {
                 setNewPass(e.target.value);
               }}
@@ -138,7 +140,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
             <input
               type="text"
               className="w-full border-2 p-2"
-              value={confirmNewpass}
+              value={confirmNewPass}
               onChange={(e) => {
                 setConfirmNewPass(e.target.value);
               }}
@@ -150,6 +152,12 @@ const SiteEngProfile = ({ siteEngineer }) => {
               className="bg-green-600 hover:bg-green-800 p-2 rounded-lg w-24 text-white mt-4"
             >
               Update
+            </button>
+            <button
+              onClick={()=>{setUpdatePassActive(false)}}
+              className="bg-red-600 hover:bg-red-800 p-2 rounded-lg w-24 text-white mt-4 ml-4"
+            >
+              Close
             </button>
           </div>
         </div>
@@ -167,21 +175,26 @@ const SiteEngProfile = ({ siteEngineer }) => {
       alert("Old password is required.");
       return;
     }
-    if (!newpass) {
+    if (!newPass) {
       alert("New password is required.");
       return;
     }
-    if (!confirmNewpass) {
+    if (!confirmNewPass) {
       alert("Confirm new password is required.");
       return;
     }
-    if (newpass !== confirmNewpass) {
+    if (newPass !== confirmNewPass) {
       alert("New password and confirm new password should be matched.");
       return;
     }
 
-    const url = `${serverURL}/api/officials/users/update-password`;
-    const data = {};
+    const url = `${serverURL}/api/user-update-password`;
+    const data = {
+      idOrMob,
+      oldPass,
+      newPass,
+      confirmNewPass
+    };
     const headers = {
       "Content-Type": "application/json",
     };
@@ -192,6 +205,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
       .put(url, data, headers)
       .then((res) => {
         console.log(res);
+        alert(res?.data?.message)
       })
       .catch((err) => {
         console.log(err);
@@ -203,7 +217,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
   };
 
   return (
-    <div className="w-full  mx-auto p-8 bg-white rounded-xl shadow-md mt-2">
+    <div className="w-full  mx-auto p-8 bg-white rounded-xl shadow-md mt-2 ">
       {/* <h2 className="text-3xl font-semibold text-center mb-8">Edit Profile</h2> */}
 
       {/* Profile Picture Section */}
@@ -241,7 +255,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
       </div>
 
       {/* Site Engineer Info */}
-      <div className="space-y-4 mb-6 ">
+      <div className="space-y-4 mb-6 grid lg:grid-cols-3 gap-4 ">
         <p>
           <strong className="text-gray-700">Name:</strong> {profile?.name}
         </p>
@@ -269,22 +283,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
 
       {/* Form to update other profile details */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* <div>
-          <label className="block text-gray-700">Video URL (optional)</label>
-          <input
-            {...register("videoURL")}
-            type="text"
-            placeholder="Enter video URL"
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
-        </div> */}
-
-        {/* <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
-        >
-          Update Profile
-        </button> */}
+       
       </form>
     </div>
   );
