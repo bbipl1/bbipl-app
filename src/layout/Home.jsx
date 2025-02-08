@@ -1,41 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import MainServices from '../pages/services/MainService'
+import ImageSlider from "../components/ImageSlider";
+import MainServices from "../pages/services/MainService";
+import home1 from "../../src/assets/home/home1.jpg";
+import home2 from "../../src/assets/home/home2.jpg";
+import home3 from "../../src/assets/home/home3.jpg";
 
 const Home = () => {
+  let imageURL = [home1,home2,home3];
+
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-white text-black text-center py-20">
+
+      <section className="bg-white text-black text-center relative">
         <div className="container mx-auto">
-          <h1 className="text-4xl font-bold leading-tight mb-4">
-            Welcome to Business Basket
-          </h1>
-          <p className="text-xl mb-6">
-            We provide top-notch services to help your business grow. Explore
-            our offerings and get in touch with us today!
-          </p>
-          <div className="flex justify-center gap-6">
-            {/* <Link
-              to="/pages/services"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
-            >
-              Our Services
-            </Link> */}
-            {/* <Link
-              to="/pages/contact-us"
-              className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
-            >
-              Contact Us
-            </Link> */}
-          </div>
+          <ImageSlider styles={"w-screen h-screen"} urls={imageURL}/>
         </div>
       </section>
 
-      <MainServices/>
+      <MainServices />
 
       {/* About Section */}
-      {/* <section className="py-16 bg-gray-100">
+      <section className="py-16 bg-gray-100">
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">About Us</h2>
           <p className="text-lg mb-6">
@@ -50,7 +37,7 @@ const Home = () => {
             Learn More About Us
           </Link>
         </div>
-      </section> */}
+      </section>
 
       {/* Testimonials Section */}
       {/* <section className="py-16 bg-blue-50 text-center">

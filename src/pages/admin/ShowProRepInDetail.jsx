@@ -8,7 +8,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
   const [workProgressPhotosURLS, SetWorkProgressPhotosURLS] = useState([]);
   const [workProgressVideosURLS, SetworkProgressVideosURLS] = useState([]);
   const [isQROpen, setIsQROpen] = useState(false);
-  const [QRURL,SetQRURL]=useState(false);
+  const [QRURL, SetQRURL] = useState(false);
 
   useEffect(() => {
     const ssurls = report?.paymentScreenshots?.map((ss) => ss?.url);
@@ -42,7 +42,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
       </button>
       {isQROpen && (
         <>
-          <ShowQR item={report} isQROpen={setIsQROpen}  url={QRURL}/>
+          <ShowQR item={report} isQROpen={setIsQROpen} url={QRURL} />
         </>
       )}
       <h1 className="text-2xl font-bold mb-4 text-gray-700 text-center">
@@ -122,31 +122,42 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
       </div>
 
       {/* <hr /> */}
-      <div className="w-full flex flex-col md:flex-col lg:flex-row justify-center align-center gap-1 mt-8">
-        <div className="w-full lg:w-1/4">
+      <div className="w-full grid grid-cols-4 gap-1">
+        <div className="">
           <h2 className="font-bold text-lg text-gray-600 text-center">QR </h2>
-          <img onClick={()=>{  setIsQROpen(true);SetQRURL(report?.expenses?.qrURL)}} className="w-96 h-96 mt-6 border-2 border-blue-100" src={report?.expenses?.qrURL} alt="" />
+          <img
+            onClick={() => {
+              setIsQROpen(true);
+              SetQRURL(report?.expenses?.qrURL);
+            }}
+            className="w-96 h-96 mt-6 border-2 border-blue-100"
+            src={report?.expenses?.qrURL}
+            alt=""
+          />
         </div>
-        <div className="w-full lg:w-1/4">
+        <div className="w-full">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6 ">
             Payment Screenshots
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.paymentScreenshots[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={ssURLS} />
+          <ImageSlider
+            styles={`w-96 h-96 object-cover rounded-lg shadow-lg`}
+            urls={ssURLS}
+          />
         </div>
-        <div className="w-full lg:w-1/4">
+        <div className="w-full">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Images
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.photos[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={workProgressPhotosURLS} />
+          <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressPhotosURLS} />
         </div>
-        <div className="w-full lg:w-1/4">
+        <div className="w-full">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Videoes
           </h2>
           {/* <video autoPlay muted className="w-96 h-96 mt-6" src={report?.videos[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={workProgressVideosURLS} />
+          <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressVideosURLS} />
         </div>
       </div>
     </div>

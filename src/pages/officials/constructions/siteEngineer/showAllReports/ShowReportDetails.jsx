@@ -133,21 +133,23 @@ const ShowReportDetails = ({ report, isOpen, open }) => {
             Payment Screenshots
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.paymentScreenshots[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={ssURLS} />
+          {/* <ImageSlider w={96} h={96} urls={ssURLS} /> */}
+           <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={ssURLS} />
         </div>
         <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Images
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.photos[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={workProgressPhotosURLS} />
+          {/* <ImageSlider w={96} h={96} urls={workProgressPhotosURLS} /> */}
+           <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressPhotosURLS} />
         </div>
         <div className="w-full lg:w-1/4">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Videoes
           </h2>
           {/* <video autoPlay muted className="w-96 h-96 mt-6" src={report?.videos[0]?.url} alt="" /> */}
-          <ImageSlider w={96} h={96} urls={workProgressVideosURLS} />
+           <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressVideosURLS} />
         </div>
       </div>
     </div>

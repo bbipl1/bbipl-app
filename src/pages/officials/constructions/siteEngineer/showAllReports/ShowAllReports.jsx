@@ -14,18 +14,7 @@ const ShowAllReports = ({user}) => {
   const [isQROpen, setIsQROpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState({});
 
-  useEffect(() => {
-    const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report?id=${user.id}`;
-    axios
-    .get(url)
-    .then((res) => {
-        setDailyProgressReport(res?.data?.data);
-        // console.log(res)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [setDailyProgressReport]);
+  
 
   const getStatusClass = (status) => {
     if (status === "Paid") return "text-green-500";

@@ -38,6 +38,7 @@ const DailyProgressReport = () => {
         <table className="min-w-full table-auto">
           <thead className="bg-gray-100">
             <tr>
+              <th className="px-4 py-2 text-left">Date</th>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Site Name</th>
               <th className="px-4 py-2 text-left">Work Type</th>
@@ -60,6 +61,7 @@ const DailyProgressReport = () => {
                 }}
                 className={`border-b ${getStatusClass(item.expenses.status)}`}
               >
+                <td className="px-4 py-2">{item.date}</td>
                 <td className="px-4 py-2">{item.name}</td>
                 <td className="px-4 py-2">{item.siteName}</td>
                 <td className="px-4 py-2">{item.workType}</td>

@@ -11,6 +11,7 @@ import WorkProgress from "./dailyProgressReport/WorkProgress";
 import WorkProgressVideo from "./dailyProgressReport/WorkProgressVideo";
 import ShowAllReports from "./showAllReports/ShowAllReports";
 import HDDForms from "./HDDForms";
+import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm";
 
 
 const SiteEngDashBoard = () => {
@@ -45,7 +46,7 @@ const SiteEngDashBoard = () => {
       case "Fill-Form":
         return <DailyProgress user={data?.user} />;
       case "Update-Form":
-        return <UpdateForm user={data?.user} />;
+        return <UpdateDailyProgressReport user={data?.user} />;
       case "Upload-Payment-Screenshot":
         return <PaymentScreenShot user={data?.user} />;
       case "Upload-Work-Progress-photo":

@@ -174,7 +174,7 @@ const SiteEngineerAttendanceForm = ({ siteEng }) => {
         )}
         <div>
           <label htmlFor="siteLocation">Site Location</label>
-          <input type="text" id="siteLocation" className="mt-1 p-2 w-full border border-gray-300 rounded-md" />
+          <input disabled value={latitude+" "+longitude} type="text" id="siteLocation" className="mt-1 p-2 w-full border border-gray-300 rounded-md cursor-not-allowed" />
         </div>
         <button type="button" onClick={handleSubmit} className="mt-6 w-full bg-blue-500 text-white p-2 rounded-md">
           {isLoading ? "Submitting..." : "Submit Attendance"}

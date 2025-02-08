@@ -86,17 +86,17 @@ const ShowUserAttendance = () => {
   const showWorkersDetails = (workers) => {
     return (
       <>
-        <div className="fixed left-20 top-40 bg-neutral-200 overflow-y-auto">
+        <div className="fixed left-20 top-40 bg-neutral-200 overflow-y-auto border-2 border-blue-200 p-2">
           <div className="grid grid-cols-6 gap-4">
             {workers?.map((worker) => {
               return (
                 <>
                   <div>
-                    <div className="m-4">Name:</div>
+                    <div className="m-4">Name: {worker?.objId?.name}</div>
                     <div>
                       <img
                         className="w-48 h-48"
-                        src={`${worker.photoURL}`}
+                        src={`${worker?.photoURL}`}
                         alt=""
                       />
                     </div>
@@ -104,6 +104,9 @@ const ShowUserAttendance = () => {
                 </>
               );
             })}
+          </div>
+          <div className="flex justify-center">
+            <button onClick={()=>{setIsOpen(false)}} className="m-2 p-2 w-28 bg-red-500 rounded-lg text-white hover:bg-red-600">Close</button>
           </div>
         </div>
       </>
