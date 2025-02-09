@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+
+// protected routes
 import Layout from "./layout/Layout";
 import Home from "./layout/Home";
 import Error from "./Error.jsx";
@@ -38,10 +40,19 @@ import ConstructionsDashBoard from "./pages/officials/constructions/Construction
 import Logout from "./components/admin/Logout.jsx";
 import FinanceDashBoard from "./pages/officials/finance/FinanceDashBoard.jsx";
 import SiteEngDashBoard from "./pages/officials/constructions/siteEngineer/siteEngDashBoard.jsx";
+import PrivacyPolicy from "./conditions/Privacy&Policy.jsx";
+import TermsAndConditions from "./conditions/Terms&Conditions.jsx";
+import Disclaimer from "./conditions/Dislaimers.jsx";
+import RefundPolicy from "./conditions/RefundPolicy.jsx";
+import CookiesPolicy from "./conditions/CookiesPolicy.jsx";
 // const routerFromelements=
+
+// Non-protected-routes
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />} errorElement={<Error />}>
+      {/* protected-routes */}
       <Route path="" element={<Home />}></Route>
       {/* login */}
       <Route
@@ -49,8 +60,8 @@ const router = createBrowserRouter(
         element={<Login />}
       ></Route>
 
-      <Route path="authentication/logout" element={<Logout/>}/>
-      
+      <Route path="authentication/logout" element={<Logout />} />
+
       <Route
         path="authentication/officials/cons-and-fin-forgot-password"
         element={<OfficialForgotPasswordForConAndFin />}
@@ -63,7 +74,6 @@ const router = createBrowserRouter(
         path="bbipl-adm-forgot"
         element={<OfficialForgotPasswordForAdm />}
       ></Route>
-
 
       {/* user */}
       <Route
@@ -109,12 +119,17 @@ const router = createBrowserRouter(
       ></Route>
       <Route
         path="pages/dashboard/finance"
-        element={<FinanceDashBoard/>}
+        element={<FinanceDashBoard />}
       ></Route>
-      <Route
-        path="worker"
-        element={<WorkerAttendance/>}
-      ></Route>
+      <Route path="worker" element={<WorkerAttendance />}></Route>
+
+      {/* Non-protected-routes */}
+
+      <Route path="pages/privacy-policy" element={<PrivacyPolicy/>}></Route>
+      <Route path="pages/terms-and-conditions" element={<TermsAndConditions/>}></Route>
+      <Route path="pages/disclaimers" element={<Disclaimer/>}></Route>
+      <Route path="pages/refund-policy" element={<RefundPolicy/>}></Route>
+      <Route path="pages/cookies-policy" element={<CookiesPolicy/>}></Route>
     </Route>
   )
 );

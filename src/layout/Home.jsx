@@ -21,23 +21,6 @@ const Home = () => {
 
       <MainServices />
 
-      {/* About Section */}
-      <section className="py-16 bg-gray-100">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">About Us</h2>
-          <p className="text-lg mb-6">
-            Our team is dedicated to providing the best solutions for your
-            business. With years of experience in the industry, we help our
-            clients achieve their goals.
-          </p>
-          <Link
-            to="/about"
-            className="bg-cyan-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-cyan-800 transition duration-300"
-          >
-            Learn More About Us
-          </Link>
-        </div>
-      </section>
 
       {/* Testimonials Section */}
       {/* <section className="py-16 bg-blue-50 text-center">

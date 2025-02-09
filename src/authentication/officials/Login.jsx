@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+import axios from "axios";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -48,42 +49,42 @@ function Login() {
 
       try {
         const url = `${serverURL}/api/user-login`;
-        const response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dataToSend),
-        });
+        const header = { headers: { "Content-Type": "application/json" } };
 
-        if (!response.ok) {
-          throw new Error("Invalid credentials");
-        }
+        axios
+          .post(url, JSON.stringify(dataToSend), header)
+          .then((res) => {
+            const data = res?.data;
+            setSuccess("Login successful!");
+            console.log(data?.user);
+            alert(data?.message);
+            // Redirect based on department
+            if (department === "admin") {
+              navigate("/pages/admin-dashboard", { state: { data } });
+            } else if (department === "developer") {
+              navigate("/pages/developer-attendance-form");
+            } else if (department === "finance") {
+              navigate("/pages/dashboard/finance", { state: { data } });
+            } else if (department === "construction") {
+              const role = data?.user?.role;
 
-        const data = await response.json();
-        setSuccess("Login successful!");
-        console.log(data?.user);
-        alert("Login success.");
-
-        // Redirect based on department
-        if (department === "admin") {
-          navigate("/pages/admin-dashboard", { state: { data } });
-        } else if (department === "developer") {
-          navigate("/pages/developer-attendance-form");
-        } else if (department === "finance") {
-          navigate("/pages/dashboard/finance", { state: { data } });
-        } else if (department === "construction") {
-          const role=data.user.role;
-          // console.log(data.role)
-          // console.log("d",data.user)
-          if(role==="site-engineer"){
-
-            navigate("/pages/constructions/site-engineer-dashboard",{ state: { data }});
-          }else{
-              alert("page not found")
-          }
-          // navigate("/pages/construction-dashboard");
-        }
+              if (role === "site-engineer") {
+                navigate("/pages/constructions/site-engineer-dashboard", {
+                  state: { data },
+                });
+              } else {
+                alert("page not found");
+              }
+            }
+          })
+          .catch((err) => {
+            alert(err?.response?.data?.message)
+            console.log(err?.response?.data?.message)
+          })
+          .finally((final) => {});
       } catch (err) {
-        setError(err.message);
+        setError(err?.message);
+        console.log(err)
       }
     }
 
