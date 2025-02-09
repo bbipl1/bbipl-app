@@ -50,7 +50,8 @@ function Login() {
       try {
         const url = `${serverURL}/api/user-login`;
         const header = { headers: { "Content-Type": "application/json" } };
-
+        
+        setLoading(true);
         axios
           .post(url, JSON.stringify(dataToSend), header)
           .then((res) => {
@@ -81,14 +82,17 @@ function Login() {
             alert(err?.response?.data?.message)
             console.log(err?.response?.data?.message)
           })
-          .finally((final) => {});
+          .finally((final) => {
+            setLoading(false);
+          });
       } catch (err) {
         setError(err?.message);
         console.log(err)
+        setLoading(false);
       }
     }
 
-    setLoading(false);
+    // setLoading(false);
   };
 
   return (
