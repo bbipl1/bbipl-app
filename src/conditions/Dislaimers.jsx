@@ -34,7 +34,7 @@ const Disclaimer = () => {
 
       <h2 className="text-xl font-semibold mb-2">Contact Us</h2>
       <p>
-        If you have any questions about this disclaimer, please contact us at <strong>support@example.com</strong>.
+        If you have any questions about this disclaimer, please contact us at <strong>support@businessbasket.in </strong>.
       </p>
     </div>
   );
