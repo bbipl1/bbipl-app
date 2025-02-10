@@ -87,6 +87,20 @@ const ShowReportDetails = ({ report, isOpen, open }) => {
             pending Amount: RS{" "}
             {report.expenses.required - report.expenses.received || "N/A"} /-
           </p>
+          <p className=" mt-1">
+          Status:{" "}
+          <span
+            className={`${
+              report.expenses.status === "Paid"
+                ? "text-green-500"
+                : report.expenses.status === "PartialPaid"
+                ? "text-blue-500"
+                : "text-red-500"
+            }`}
+          >
+            {report.expenses.status}
+          </span>
+        </p>
         </div>
 
         {/* Machinery Used */}
@@ -102,20 +116,7 @@ const ShowReportDetails = ({ report, isOpen, open }) => {
       {/* Date & Time */}
 
       <div className=" mt-8">
-        <p className=" mt-6">
-          Status:{" "}
-          <span
-            className={`${
-              report.expenses.status === "Paid"
-                ? "text-green-500"
-                : report.expenses.status === "PartialPaid"
-                ? "text-blue-500"
-                : "text-red-500"
-            }`}
-          >
-            {report.expenses.status}
-          </span>
-        </p>
+        
         <h2 className="font-semibold text-lg text-gray-600">Remarks</h2>
         <ul className=" ">
           <p>{report.remarks}</p>
