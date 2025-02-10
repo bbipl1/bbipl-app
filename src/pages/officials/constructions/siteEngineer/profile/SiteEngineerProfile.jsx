@@ -263,6 +263,9 @@ const SiteEngProfile = ({ siteEngineer }) => {
           <strong className="text-gray-700">ID:</strong> {profile?.id}
         </p>
         <p>
+          <strong className="text-gray-700">ObjID:</strong> {profile?.objId}
+        </p>
+        <p>
           <strong className="text-gray-700">Mobile:</strong> {profile?.mobile}
         </p>
       </div>

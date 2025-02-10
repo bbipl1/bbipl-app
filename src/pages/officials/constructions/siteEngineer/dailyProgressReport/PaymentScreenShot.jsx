@@ -1,14 +1,12 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-
-
+import axios from "axios";
+import React, { useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
-
-
-const PaymentScreenShot = ({user}) => {
+const PaymentScreenShot = ({ user }) => {
   const [screenshots, setScreenshots] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Handle file upload
   const handleFileChange = (e) => {
@@ -20,29 +18,32 @@ const PaymentScreenShot = ({user}) => {
 
   // Remove a file by index
   const removeFile = (index) => {
-    setScreenshots((prevScreenshots) => prevScreenshots.filter((_, i) => i !== index));
+    setScreenshots((prevScreenshots) =>
+      prevScreenshots.filter((_, i) => i !== index)
+    );
   };
 
   const handleUpload = () => {
-    const url = `${serverUrl}/api/constructions/site-engineers/upload-payment-screenshots`;
-    
+    setIsLoading(true);
+    const url = `${serverUrl}/api/constructions/site-engineers/upload-payment-screenshots?`;
+
     // Create FormData instance
     const formData = new FormData();
-    
+
     // Append the file(s)
     if (screenshots && screenshots.length > 0) {
       screenshots.forEach((file) => {
-        formData.append("ss", file);  // 'ss' is the field name for the file
+        formData.append("ss", file); // 'ss' is the field name for the file
       });
     }
-    
+
     // Append the other form fields
     formData.append("id", user?.id);
     formData.append("objId", user?._id);
-    
+
     // Log to check the data being sent
     console.log("FormData: ", formData);
-  
+
     axios
       .post(url, formData, {
         headers: {
@@ -55,16 +56,25 @@ const PaymentScreenShot = ({user}) => {
       .catch((err) => {
         alert("Error uploading screenshots.");
         console.error("Error: ", err);
+      })
+      .finally((final) => {
+        setIsLoading(false);
       });
   };
-  
 
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4">Upload your payment screenshots here</h1>
-      
+    <div className="flex flex-col items-center">
       <div>
-        <label htmlFor="ss" className="block mb-2 text-sm font-medium text-gray-700">
+        <h1 className="text-lg font-bold mb-4">
+          Upload your payment screenshots here
+        </h1>
+      </div>
+
+      <div>
+        <label
+          htmlFor="ss"
+          className="block mb-2 text-sm font-medium text-gray-700"
+        >
           Select Screenshot:
         </label>
         <input
@@ -76,19 +86,31 @@ const PaymentScreenShot = ({user}) => {
         />
       </div>
 
-      <button
-        onClick={handleUpload}
-        className="w-32 mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-      >
-        Upload
-      </button>
+      <div className="flex flex-col items-center justify-center mb-4">
+        <div>
+          {isLoading && (
+            <ClipLoader color="#4A90E2" loading={isLoading} size={50} />
+          )}
+        </div>
+        <div>
+          <button
+            onClick={handleUpload}
+            className="w-32 mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Upload
+          </button>
+        </div>
+      </div>
 
       {screenshots.length > 0 && (
         <div className="mt-6">
           <h2 className="text-md font-semibold mb-2">Uploaded Screenshots:</h2>
           <ul className="list-disc pl-5">
             {screenshots.map((file, index) => (
-              <li key={index} className="flex justify-between items-center text-sm text-gray-700 mb-2">
+              <li
+                key={index}
+                className="flex justify-between items-center text-sm text-gray-700 mb-2"
+              >
                 <span>{file.name}</span>
                 <button
                   onClick={() => removeFile(index)}

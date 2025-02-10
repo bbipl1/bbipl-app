@@ -4,11 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
-// const serverUrl = process.env.REACT_APP_SERVER_URL;
-const S3_BUCKET = "bpipl-attendance-image";
-const REGION = "ap-south-1";
-const access_key = process.env.REACT_APP_ACCESS_KEY;
-const secrect_access_key = process.env.REACT_APP_SECRECT_ACCESS_KEY;
+
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const DailyProgress = ({ user }) => {
@@ -23,12 +19,10 @@ const DailyProgress = ({ user }) => {
   //todays work
   const [isTodaysWorkOpen, setIsTodaysWorkOpen] = useState(false);
   const [selectdTodaysWork, setSelectedTodaysWork] = useState([]);
-  //photos
-  const [photos, setPhotos] = useState([]);
-  //video
-  const [video, setVideo] = useState(null);
+ 
+
   const [loading, setLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [paymentMethods, setPaymentMethods] = useState(null);
   const [submitText, setSubmitText] = useState("Submit");
   const [formData, setFormData] = useState({
@@ -67,13 +61,16 @@ const DailyProgress = ({ user }) => {
 
   // Fetch states data from API
   const fetchStates = async () => {
+    setLoading(true)
     try {
       const res = await axios.get(
         `${serverUrl}/api/site-management/find-site-details`
       );
       setStates(res.data.data[0].states); // Assuming response data format
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching states:", error);
+      setLoading(false)
     }
   };
 
@@ -181,8 +178,8 @@ const DailyProgress = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setSubmitText(""); // Reset submission status
-    console.log(formData);
+    setSubmitText("Submitting"); // Reset submission status
+    // console.log(formData);
     // return;
 
     // console.log("Form Submitted:", formData);
@@ -208,16 +205,10 @@ const DailyProgress = ({ user }) => {
         console.log(err);
         setLoading(false);
         setSubmitText("Error");
-      });
-
-    try {
-    } catch (err) {
-      console.error("Error uploading form:", err);
-      alert("An error occurred while uploading the file. Please try again.");
-      setSubmitText("Failed!");
-      setLoading(false);
-    }
-    // setLoading(true);
+      })
+      .finally((final)=>{
+        setLoading(false);
+      })
   };
 
   const ResetForm = async () => {
@@ -756,9 +747,9 @@ const DailyProgress = ({ user }) => {
             required
           >
             <option value="">Select</option>
-            <option value="paid">Paid</option>
-            <option value="partialPaid">PartialPaid</option>
-            <option value="unpaid">Unpaid</option>
+            <option value="Paid">Paid</option>
+            <option value="PartialPaid">PartialPaid</option>
+            <option value="Unpaid">Unpaid</option>
           </select>
         </div>
       </div>

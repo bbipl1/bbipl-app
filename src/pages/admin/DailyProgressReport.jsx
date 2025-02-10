@@ -14,11 +14,13 @@ const DailyProgressReport = () => {
   const [selectedQR, setSelectedQR] = useState({});
 
   useEffect(() => {
+    // console.log("fetching")
     const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report`;
     axios
       .get(url)
       .then((res) => {
         setDailyProgressReport(res?.data?.data);
+        // console.log(res?.data?.data)
       })
       .catch((error) => {
         console.log(error);

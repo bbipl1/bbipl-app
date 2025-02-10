@@ -14,7 +14,19 @@ const ShowAllReports = ({user}) => {
   const [isQROpen, setIsQROpen] = useState(false);
   const [selectedQR, setSelectedQR] = useState({});
 
-  
+  useEffect(() => {
+    console.log("fetching",user.id)
+    const url = `${serverURL}/api/constructions/site-engineers/get-all-daily-progress-report?id=${user.id}`;
+    axios
+      .get(url)
+      .then((res) => {
+        setDailyProgressReport(res?.data?.data);
+        // console.log(res?.data?.data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [setDailyProgressReport, user.id]);
 
   const getStatusClass = (status) => {
     if (status === "Paid") return "text-green-500";

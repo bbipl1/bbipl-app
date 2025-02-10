@@ -4,15 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
-// const serverUrl = process.env.REACT_APP_SERVER_URL;
-const S3_BUCKET = "bpipl-attendance-image";
-const REGION = "ap-south-1";
-const access_key = process.env.REACT_APP_ACCESS_KEY;
-const secrect_access_key = process.env.REACT_APP_SECRECT_ACCESS_KEY;
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const UpdateDailyProgressReport = ({ user }) => {
   const navigation = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   //expenses
   const [isExpensesTypeOpen, setIsExpenseTypeOpen] = useState(false);
@@ -23,12 +20,9 @@ const UpdateDailyProgressReport = ({ user }) => {
   //todays work
   const [isTodaysWorkOpen, setIsTodaysWorkOpen] = useState(false);
   const [selectdTodaysWork, setSelectedTodaysWork] = useState([]);
-  //photos
-  const [toUpdateReport, setToUpdateReport] = useState([]);
+
   //video
-  const [video, setVideo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [paymentMethods, setPaymentMethods] = useState(null);
   const [submitText, setSubmitText] = useState("Submit");
   const [formData, setFormData] = useState({
@@ -65,36 +59,37 @@ const UpdateDailyProgressReport = ({ user }) => {
     fetchStates();
   }, []);
 
-
-
-//   useEffect(() => {
-//     console.log("d")
-//     const url = `${serverUrl}/api/constructions/site-engineers/get-daily-progress-report-by-today-date?id=${user.id}`;
-//     axios
-//     .get(url)
-//     .then((res) => {
-//         setToUpdateReport(res?.data?.data);
-//         console.log("data:",res.data.data);
-//         const fetchedData=res?.data?.data;
-//         setFormData((prev)=>({...prev,"state":fetchedData.state}));
-//         setFormData((prev)=>({...prev,"district":fetchedData.district}));
-//         setFormData((prev)=>({...prev,"block":fetchedData.block}));
-//         setFormData((prev)=>({...prev,"siteName":fetchedData.siteName}));
-//         setFormData((prev)=>({...prev,"todaysWork":fetchedData.todaysWork}));
-//       })
-//       .catch((error) => {
-//         console.log("data:",error);
-//       });
-//   }, [user.id]);
+  //   useEffect(() => {
+  //     console.log("d")
+  //     const url = `${serverUrl}/api/constructions/site-engineers/get-daily-progress-report-by-today-date?id=${user.id}`;
+  //     axios
+  //     .get(url)
+  //     .then((res) => {
+  //         setToUpdateReport(res?.data?.data);
+  //         console.log("data:",res.data.data);
+  //         const fetchedData=res?.data?.data;
+  //         setFormData((prev)=>({...prev,"state":fetchedData.state}));
+  //         setFormData((prev)=>({...prev,"district":fetchedData.district}));
+  //         setFormData((prev)=>({...prev,"block":fetchedData.block}));
+  //         setFormData((prev)=>({...prev,"siteName":fetchedData.siteName}));
+  //         setFormData((prev)=>({...prev,"todaysWork":fetchedData.todaysWork}));
+  //       })
+  //       .catch((error) => {
+  //         console.log("data:",error);
+  //       });
+  //   }, [user.id]);
 
   // Fetch states data from API
   const fetchStates = async () => {
     try {
+      setIsLoading(true);
       const res = await axios.get(
         `${serverUrl}/api/site-management/find-site-details`
       );
       setStates(res.data.data[0].states); // Assuming response data format
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching states:", error);
     }
   };
@@ -202,9 +197,9 @@ const UpdateDailyProgressReport = ({ user }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setSubmitText(""); // Reset submission status
-    console.log(formData);
+    setIsLoading(true);
+    setSubmitText("Submitting"); // Reset submission status
+    // console.log(formData);
     // return;
 
     // console.log("Form Submitted:", formData);
@@ -224,29 +219,26 @@ const UpdateDailyProgressReport = ({ user }) => {
           setSubmitText("Failed");
           console.log("form not submitted.");
         }
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false);
+        // setLoading(false);
         setSubmitText("Error");
+      })
+      .finally((final) => {
+        console.log();
+        setIsLoading(false);
       });
 
-    try {
-    } catch (err) {
-      console.error("Error uploading form:", err);
-      alert("An error occurred while uploading the file. Please try again.");
-      setSubmitText("Failed!");
-      setLoading(false);
-    }
-    // setLoading(true);
+    
   };
 
   const ResetForm = async () => {
     setPaymentMethods("");
     setFormData((prevFormData) => ({
       ...prevFormData,
-      id:  ` `,
+      id: ` `,
       name: ` `,
       mobile: ` `,
       state: "Select",
@@ -357,7 +349,9 @@ const UpdateDailyProgressReport = ({ user }) => {
 
   const handleTodaysWorkDelete = (value) => {
     // Remove the value from selectedExpenses
-    setSelectedTodaysWork(formData?.todaysWork[formData?.todaysWork?.length-1]);
+    setSelectedTodaysWork(
+      formData?.todaysWork[formData?.todaysWork?.length - 1]
+    );
 
     // Remove the value from formData.machineryUsed (ensuring uniqueness after deletion)
     setFormData((prevFormData) => ({
@@ -776,9 +770,9 @@ const UpdateDailyProgressReport = ({ user }) => {
             required
           >
             <option value="">Select</option>
-            <option value="paid">Paid</option>
-            <option value="partialPaid">PartialPaid</option>
-            <option value="unpaid">Unpaid</option>
+            <option value="Paid">Paid</option>
+            <option value="PartialPaid">PartialPaid</option>
+            <option value="Unpaid">Unpaid</option>
           </select>
         </div>
       </div>
@@ -801,7 +795,7 @@ const UpdateDailyProgressReport = ({ user }) => {
       </div>
 
       <div className="flex items-center justify-center mb-4">
-        {loading && <ClipLoader color="#4A90E2" loading={loading} size={50} />}
+        {isLoading && <ClipLoader color="#4A90E2" loading={isLoading} size={50} />}
       </div>
 
       <div className="flex justify-center">
