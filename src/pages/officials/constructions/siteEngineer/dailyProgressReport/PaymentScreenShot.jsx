@@ -6,7 +6,7 @@ const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const PaymentScreenShot = ({ user }) => {
   const [screenshots, setScreenshots] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle file upload
   const handleFileChange = (e) => {
