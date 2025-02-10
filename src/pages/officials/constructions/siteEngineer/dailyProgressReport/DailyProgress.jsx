@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 
-
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const DailyProgress = ({ user }) => {
@@ -19,7 +18,6 @@ const DailyProgress = ({ user }) => {
   //todays work
   const [isTodaysWorkOpen, setIsTodaysWorkOpen] = useState(false);
   const [selectdTodaysWork, setSelectedTodaysWork] = useState([]);
- 
 
   const [loading, setLoading] = useState(false);
 
@@ -51,6 +49,7 @@ const DailyProgress = ({ user }) => {
   const [blocks, setBlocks] = useState([]);
   const [siteNames, setSiteNames] = useState([]);
   const [workTypes, setWorkTypes] = useState([]); // This will store workTypes fetched for a site
+  const [todaysWork, setTodaysWork] = useState();
 
   useEffect(() => {
     // Fetching states on component mount
@@ -61,16 +60,16 @@ const DailyProgress = ({ user }) => {
 
   // Fetch states data from API
   const fetchStates = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await axios.get(
         `${serverUrl}/api/site-management/find-site-details`
       );
       setStates(res.data.data[0].states); // Assuming response data format
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching states:", error);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -206,16 +205,16 @@ const DailyProgress = ({ user }) => {
         setLoading(false);
         setSubmitText("Error");
       })
-      .finally((final)=>{
+      .finally((final) => {
         setLoading(false);
-      })
+      });
   };
 
   const ResetForm = async () => {
     setPaymentMethods("");
     setFormData((prevFormData) => ({
       ...prevFormData,
-      id:  ` `,
+      id: ` `,
       name: ` `,
       mobile: ` `,
       state: "Select",
@@ -340,6 +339,43 @@ const DailyProgress = ({ user }) => {
   if (!user) {
     navigation("/authentication/officials/officials-login");
   }
+
+  //----------------------handle todays work---------------
+
+  useEffect(() => {
+    function find() {
+      if (formData?.workType.toLowerCase() !== "civil") {
+        return [
+          "Excuvation",
+          "Laying Pipe",
+          "Jointing",
+          "Back Filling",
+          "Dismentaling",
+          "Restoration",
+          "Connection",
+          "Cmmissioning",
+          "wall sluice",
+          "Air Valve",
+          "Fire Hydrant",
+          "Others",
+        ];
+      } else {
+        return [
+          "PCC",
+          "Column Casting",
+          "Raft Casting",
+          "Desetring",
+          "Beam Casting",
+          "Steel Making",
+          "Steel Binding",
+          "Others"
+        ];
+      }
+    }
+
+    setTodaysWork(find());
+  }, [formData?.workType]);
+
 
   return (
     <form
@@ -483,7 +519,7 @@ const DailyProgress = ({ user }) => {
           </select>
         </div>
 
-        {/* Work Type */}
+        {/* Work Category */}
         <div className="mb-4">
           <label htmlFor="workType" className="block text-sm font-medium mb-1">
             Work Category*
@@ -504,6 +540,7 @@ const DailyProgress = ({ user }) => {
           </select>
         </div>
 
+        {/* today-s work */}
         <div className="relative">
           <label className="w-full m-2" htmlFor="todaysWork">
             Today's Work*
@@ -516,7 +553,16 @@ const DailyProgress = ({ user }) => {
             className="w-full m-2 py-2"
           >
             <option value="">select</option>
-            <option value="Excuvation">Excuvation</option>
+
+            {todaysWork &&
+              todaysWork.map((tw) => {
+                return (
+                  <>
+                    <option value={tw}>{tw}</option>
+                  </>
+                );
+              })}
+            {/* <option value="Excuvation">Excuvation</option>
             <option value="Laying pipe">Laying pipe</option>
             <option value="Jointing">Jointing</option>
             <option value="Back filling">Back filling</option>
@@ -527,7 +573,7 @@ const DailyProgress = ({ user }) => {
             <option value="Wall sluice">Wall sluice</option>
             <option value="Air valve">Air valve</option>
             <option value="Fire hydrant">Fire hydrant</option>
-            <option value="others">Others</option>
+            <option value="others">Others</option> */}
           </select>
           {isTodaysWorkOpen && (
             <div className=" w-full mt-2 pt-2 bg-white absolute z-10 border-2 border-slate-300">
