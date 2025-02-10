@@ -87,7 +87,7 @@ const Footer = () => {
 
       <hr />
 
-      <div className="grid grid-cols-6 bg-slate-800 w-full p-0 text-white">
+      <div className="grid grid-cols-3 lg:grid-cols-6 bg-slate-800 w-full p-0 text-white">
         <div className="text-center mt-6 text-sm">
           &copy; {new Date().getFullYear()} Our Company. All rights reserved.
         </div>
