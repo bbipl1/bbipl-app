@@ -70,12 +70,12 @@ const PaymentScreenShot = ({ user }) => {
         </h1>
       </div>
 
-      <div>
+      <div className="flex flex-col items-center">
         <label
           htmlFor="ss"
           className="block mb-2 text-sm font-medium text-gray-700"
         >
-          Select Screenshot:
+          Select Screenshot (jpg,jpeg,png only)
         </label>
         <input
           type="file"
@@ -102,27 +102,31 @@ const PaymentScreenShot = ({ user }) => {
         </div>
       </div>
 
-      {screenshots.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-md font-semibold mb-2">Uploaded Screenshots:</h2>
-          <ul className="list-disc pl-5">
-            {screenshots.map((file, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center text-sm text-gray-700 mb-2"
-              >
-                <span>{file.name}</span>
-                <button
-                  onClick={() => removeFile(index)}
-                  className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-xs"
+      <div className="flex flex-col items-center">
+        {screenshots.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-md font-semibold mb-2">
+              Uploaded Screenshots:
+            </h2>
+            <ul className="list-disc pl-5">
+              {screenshots.map((file, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center text-sm text-gray-700 mb-2"
                 >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                  <span>{file.name}</span>
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="px-2 ml-4 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-xs"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
