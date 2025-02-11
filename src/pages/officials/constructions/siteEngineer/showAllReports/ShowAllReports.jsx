@@ -41,6 +41,7 @@ const ShowAllReports = ({user}) => {
         <table className="min-w-full table-auto">
           <thead className="bg-gray-100">
             <tr>
+              <th className="px-4 py-2 text-left">Date</th>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Site Name</th>
               <th className="px-4 py-2 text-left">Work Type</th>
@@ -49,7 +50,7 @@ const ShowAllReports = ({user}) => {
               <th className="px-4 py-2 text-left">Expenses</th>
               <th className="px-4 py-2 text-left">Required</th>
               <th className="px-4 py-2 text-left">Received</th>
-              <th className="px-4 py-2 text-left">QR URL</th>
+              {/* <th className="px-4 py-2 text-left">QR URL</th> */}
               <th className="px-4 py-2 text-left">Status</th>
             </tr>
           </thead>
@@ -63,6 +64,7 @@ const ShowAllReports = ({user}) => {
                 }}
                 className={`border-b ${getStatusClass(item.expenses.status)}`}
               >
+                <td className="px-4 py-2">{item.date}</td>
                 <td className="px-4 py-2">{item.name}</td>
                 <td className="px-4 py-2">{item.siteName}</td>
                 <td className="px-4 py-2">{item.workType}</td>
@@ -77,7 +79,7 @@ const ShowAllReports = ({user}) => {
                 </td>
                 <td className="px-4 py-2">{item.expenses.required}</td>
                 <td className="px-4 py-2">{item.expenses.received}</td>
-                <td className="px-4 py-2">
+                {/* <td className="px-4 py-2">
                   <img
                     onClick={() => {
                       setIsQROpen(false);
@@ -88,7 +90,7 @@ const ShowAllReports = ({user}) => {
                     src={item.expenses.qrURL}
                     alt="url"
                   />
-                </td>
+                </td> */}
                 <td className="px-4 py-2">{item.expenses.status}</td>
               </tr>
             ))}

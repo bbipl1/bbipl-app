@@ -5,7 +5,7 @@ const ManageWorker = ({ siteEngineerId }) => {
   const [deletedWorker, setDeletedWorkers] = useState();
   const [workers, setWorkers] = useState([]);
   const [isManpowerAdded, setIsManPowerAdded] = useState(false);
-  const [addManPowerText, setAddManPowerText] = useState("Add Manpower");
+  const [addManPowerText, setAddManPowerText] = useState("Add new");
   const [siteEngObjectId, setSiteEngObjectId] = useState();
   const [newWorker, setNewWorker] = useState({
     name: "",
@@ -150,6 +150,11 @@ const ManageWorker = ({ siteEngineerId }) => {
     }
   };
 
+  const handleAddManpower = () => {
+    setAddManPowerText("Add new");
+    setIsManPowerAdded(false);
+  };
+
   return (
     <div className="p-4 bg-gray-100 rounded-md shadow">
       <div className="mb-4 flex justify-evenly">
@@ -185,11 +190,13 @@ const ManageWorker = ({ siteEngineerId }) => {
                 className="flex items-center justify-between p-2  bg-white rounded-md shadow"
               >
                 <span className="flex-1">
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                     <div>
-                    <div>Name: {worker.name}</div>
-                    <div>Mobile: {worker.mobile}</div>
+                      <div>Name: {worker.name}</div>
+                      <div>Mobile: {worker.mobile}</div>
+                      <div>Joining date: {worker.date}</div>
+                      <div>Joining time: {worker.time}</div>
+                      <div>Joining day: {worker.day}</div>
                     </div>
                     <div>
                       Aadhaar Card
@@ -240,9 +247,10 @@ const ManageWorker = ({ siteEngineerId }) => {
                 type="text"
                 placeholder="Worker Name"
                 value={newWorker.name}
-                onChange={(e) =>
-                  setNewWorker({ ...newWorker, name: e.target.value })
-                }
+                onChange={(e) => {
+                  setNewWorker({ ...newWorker, name: e.target.value });
+                  handleAddManpower();
+                }}
                 className="p-2 w-full border border-gray-300 rounded-md"
               />
             </div>
@@ -253,9 +261,10 @@ const ManageWorker = ({ siteEngineerId }) => {
                 type="text"
                 placeholder="Mobile"
                 value={newWorker.mobile}
-                onChange={(e) =>
-                  setNewWorker({ ...newWorker, mobile: e.target.value })
-                }
+                onChange={(e) => {
+                  handleAddManpower();
+                  setNewWorker({ ...newWorker, mobile: e.target.value });
+                }}
                 className="p-2 w-full border border-gray-300 rounded-md"
               />
             </div>
@@ -268,7 +277,10 @@ const ManageWorker = ({ siteEngineerId }) => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "aadhaarPhoto")}
+                onChange={(e) => {
+                  handleAddManpower();
+                  handleFileChange(e, "aadhaarPhoto");
+                }}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
               />
             </div>
@@ -281,7 +293,10 @@ const ManageWorker = ({ siteEngineerId }) => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "panPhoto")}
+                onChange={(e) => {
+                  handleAddManpower();
+                  handleFileChange(e, "panPhoto");
+                }}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
               />
             </div>
@@ -294,7 +309,10 @@ const ManageWorker = ({ siteEngineerId }) => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleFileChange(e, "accountDetailsPhoto")}
+                onChange={(e) => {
+                  handleAddManpower();
+                  handleFileChange(e, "accountDetailsPhoto");
+                }}
                 className="mt-1 p-2 w-full border border-gray-300 rounded-md"
               />
             </div>

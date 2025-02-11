@@ -33,6 +33,7 @@ const ShowReportDetails = ({ report, isOpen, open }) => {
 
   return (
     <div className="w-full h-100 absolute top-24 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
+       
       <button
         onClick={() => {
           isOpen(false);
@@ -153,6 +154,7 @@ const ShowReportDetails = ({ report, isOpen, open }) => {
            <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressVideosURLS} />
         </div>
       </div>
+     
     </div>
   );
 };

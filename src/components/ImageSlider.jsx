@@ -4,16 +4,20 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function MediaSlider({ urls, styles }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHover, setIsHover] = useState(false);
   const length = urls?.length;
 
   // Auto-slide logic
   useEffect(() => {
+    if (isHover) {
+      return;
+    }
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % length);
     }, 3000);
 
     return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [currentIndex, length]);
+  }, [currentIndex, isHover, length]);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? length - 1 : prev - 1));
@@ -35,13 +39,27 @@ export default function MediaSlider({ urls, styles }) {
         >
           {urls[currentIndex]?.endsWith(".mp4") ? (
             <video
+              onMouseEnter={() => {
+                setIsHover(true);
+              }}
+              onMouseLeave={() => {
+                setIsHover(false);
+              }}
               src={urls[currentIndex]}
               controls
               muted
+              id="video"
               className={`${styles}`}
             />
           ) : (
             <img
+              onMouseEnter={() => {
+                setIsHover(true);
+              }}
+              onMouseLeave={() => {
+                setIsHover(false);
+              }}
+              id="image"
               src={urls[currentIndex]}
               alt={`Slide ${currentIndex + 1}`}
               className={`${styles}`}

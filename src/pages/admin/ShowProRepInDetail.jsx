@@ -28,18 +28,33 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
     );
   }
 
-  console.log(report);
+  // console.log(report);
+
+  //handle delete all details
+
+  const handleDelete=()=>{
+    const userRes=window.confirm("Are you sure? All data will be deleted permanently.");
+    if(!userRes){
+      return ;
+    }
+    alert("Coming soon");
+  }
 
   return (
-    <div className="w-full h-100 absolute top-24 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg">
-      <button
-        onClick={() => {
-          isOpen(false);
-        }}
-        className="  absolute right-0 mr-4 md:mr-8 lg:mr-12 w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
-      >
-        <X className="mx-auto" size={24} />
-      </button>
+    <div className="w-full h-100 absolute top-24 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg ">
+      <div className="flex  items-center justify-end">
+        <button onClick={handleDelete} className="w-24 text-white m-2 p-1 bg-red-600 rounded-lg ">
+          Delete
+        </button>
+        <button
+          onClick={() => {
+            isOpen(false);
+          }}
+          className=" w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
+        >
+          <X className="mx-auto" size={24} />
+        </button>
+      </div>
       {isQROpen && (
         <>
           <ShowQR item={report} isQROpen={setIsQROpen} url={QRURL} />
@@ -86,6 +101,20 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
             pending Amount: RS{" "}
             {report.expenses.required - report.expenses.received || "N/A"} /-
           </p>
+          <p className=" mt-1">
+          Status:{" "}
+          <span
+            className={`${
+              report.expenses.status === "Paid"
+                ? "text-green-500"
+                : report.expenses.status === "PartialPaid"
+                ? "text-blue-500"
+                : "text-red-500"
+            }`}
+          >
+            {report.expenses.status}
+          </span>
+        </p>
         </div>
 
         {/* Machinery Used */}
@@ -101,20 +130,7 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
       {/* Date & Time */}
 
       <div className=" mt-8">
-        <p className=" mt-6">
-          Status:{" "}
-          <span
-            className={`${
-              report.expenses.status === "Paid"
-                ? "text-green-500"
-                : report.expenses.status === "PartialPaid"
-                ? "text-blue-500"
-                : "text-red-500"
-            }`}
-          >
-            {report.expenses.status}
-          </span>
-        </p>
+        
         <h2 className="font-semibold text-lg text-gray-600">Remarks</h2>
         <ul className=" ">
           <p>{report.remarks}</p>
@@ -150,14 +166,20 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
             Progress Report Images
           </h2>
           {/* <img className="w-96 h-96 mt-6" src={report?.photos[0]?.url} alt="" /> */}
-          <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressPhotosURLS} />
+          <ImageSlider
+            styles={`w-96 h-96 object-cover rounded-lg shadow-lg`}
+            urls={workProgressPhotosURLS}
+          />
         </div>
         <div className="w-full">
           <h2 className="font-bold text-lg text-gray-600 text-center mb-6">
             Progress Report Videoes
           </h2>
           {/* <video autoPlay muted className="w-96 h-96 mt-6" src={report?.videos[0]?.url} alt="" /> */}
-          <ImageSlider styles={`w-96 h-96 object-cover rounded-lg shadow-lg`} urls={workProgressVideosURLS} />
+          <ImageSlider
+            styles={`w-96 h-96 object-cover rounded-lg shadow-lg`}
+            urls={workProgressVideosURLS}
+          />
         </div>
       </div>
     </div>

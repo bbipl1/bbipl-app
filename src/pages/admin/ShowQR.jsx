@@ -1,50 +1,221 @@
 import axios from "axios";
-import React from "react";
+import { header } from "framer-motion/client";
+import React, { useEffect, useState } from "react";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
-const ShowQR = ({ item,isQROpen,url }) => {
+const ShowQR = ({ item, isQROpen, url }) => {
+  const [showAmt, setShowAmt] = useState(false);
+  const [backBtn, setBackBtn] = useState(false);
+  const [okBtn, setOKBtn] = useState(false);
+  const [amount, setAmount] = useState(0);
+  const [toPay, setToPay] = useState(0);
   const paymentNotDone = () => {
-    isQROpen(false)
+    isQROpen(false);
   };
-  const paymentDone = () => {
-     // Resetting URL (optional, depending on your use case)
 
-    const data = {
-      newStatus: "Received", // Ensure the backend expects `newStatus`
-      objectId: item?._id, // Pass the correct ObjectId
+  const paymentDone = async () => {
+    setShowAmt(true); // Now show the amount input
+    // setToPay(toPay+1);
+  };
+
+  const doPayment = async () => {
+    try {
+      // const res = await waitForAmountBtnCheck();
+
+      console.log("i", item?._id, "a", amount);
+
+      if (!item?._id) {
+        alert("Something went wrong.");
+        return;
+      }
+      if (amount < 0) {
+        return alert("Amount should be greater than 0.");
+      }
+
+      const data = {
+        objectId: item._id,
+        amount,
+      };
+
+      const url = `${serverURL}/api/constructions/site-engineers/update-amount-for-requirements-forms`;
+
+      const headers = {
+        headers: { "Content-Type": "application/json" },
+      };
+
+      axios
+        .put(url, data, headers)
+        .then((res) => {
+          console.log(res);
+          alert(res?.data?.message);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err?.response?.data?.message);
+        });
+
+      // const response = await axios.put(url, data, headers);
+
+      // console.log("Payment status updated successfully:", response?.data);
+      // alert("Payment status updated successfully!");
+    } catch (error) {
+      console.error(
+        "Error updating payment status:",
+        error?.response?.data || error?.message
+      );
+      alert(error?.response?.data?.message);
+    }
+  };
+
+  // handle amount input
+
+  const waitForAmountBtnCheck = async () => {
+    // setShowAmt(true);
+    const promise = new Promise((resolve, reject) => {
+      const backBtn = document.getElementById("backBtn");
+      const okBtn = document.getElementById("oKBtn");
+      const timeout = setTimeout(() => {
+        reject("Time out.");
+        setShowAmt(false);
+        clearTimeout(timeout);
+        clearLister();
+      }, 30000);
+
+      const handleBack = async () => {
+        setShowAmt(false);
+        resolve("backBtn");
+        clearLister();
+        clearTimeout(timeout);
+      };
+      const handleOK = async () => {
+        // await doPayment();
+        setShowAmt(false);
+        resolve("oKBtn");
+        clearLister();
+        clearTimeout(timeout);
+        setToPay(toPay + 1);
+        // alert("ok clicked", toPay);
+        console.log(toPay);
+      };
+
+      const clearLister = () => {
+        backBtn?.removeEventListener("click", handleBack);
+        okBtn?.removeEventListener("click", handleOK);
+      };
+
+      if (backBtn) {
+        backBtn?.addEventListener(
+          "click",
+          () => {
+            handleBack();
+          },
+          { once: true }
+        );
+      } else {
+        alert("Error in backButton");
+      }
+
+      if (okBtn) {
+        okBtn.addEventListener(
+          "click",
+          () => {
+            handleOK();
+          },
+          { once: true }
+        );
+      } else {
+        alert("Error in ok button");
+      }
+    });
+
+    return promise;
+  };
+
+  useEffect(() => {
+    if (showAmt) {
+      waitForAmountBtnCheck()
+        .then((res) => {
+          if (res === "oKBtn") {
+            // setToPay(toPay + 1);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [showAmt]);
+
+  useEffect(() => {
+    const pay = async () => {
+      if (toPay === 1) {
+        await doPayment();
+        setToPay(0);
+      }
     };
 
-    const url = `${serverURL}/api/forms/update-requirements-forms`;
+    console.log("pay", toPay);
 
-    axios
-      .put(url, data)
-      .then((response) => {
-        // Handle successful update
-        console.log("Payment status updated successfully:", response?.data);
-        alert("Payment status updated successfully!");
-        // Optional: Perform additional actions like refreshing data
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error(
-          "Error updating payment status:",
-          error?.response?.data || error?.message
-        );
-        alert("Failed to update payment status. Please try again.");
-      });
-  };
+    pay();
+  }, [toPay]);
 
   return (
     <div className="bg-slate-100 fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-self-center  self-center flex-col w-11/12 md:w-9/12 lg:w-1/2 h-3/4 p-4 border-2 border-spacing-4 border-blue-600 rounded-lg">
-        <div className="flex justify-between content-evenly">
-            <span className="text-xl font-bold ml-4">{item?.name}</span>
-            <span className="text-xl font-bold mr-4">Requested: Rs. {item?.expenses?.required}/-</span>
-            <span className="text-xl font-bold mr-4">Sent:     Rs. {item?.expenses?.received}/-</span>
-            <span className="text-xl font-bold mr-4">To pay:   Rs. {item?.expenses?.required-item?.expenses?.received}/-</span>
-        </div>
+      {showAmt && (
+        <>
+          <div className="w-full h-full  absolute flex flex-col justify-center items-center">
+            <div className="flex flex-col bg-cyan-100 border-2 border-blue-200 py-16 rounded-lg justify-center items-center w-1/2">
+              <label htmlFor="amount" className="">
+                Amount*
+              </label>
+              <input
+                id="amount"
+                name="amount"
+                value={amount} // Ensure controlled component
+                onChange={(e) => setAmount(e.target.value)}
+                type="number"
+                className="p-1 rounded-lg"
+              />
+
+              <div>
+                <button
+                  id="backBtn"
+                  // onClick={handleBack}
+                  className="bg-blue-600 hover:bg-blue-700  text-white w-20 m-2 my-2 p-1 rounded-full"
+                >
+                  Back
+                </button>
+                <button
+                  id="oKBtn"
+                  // onClick={handleOK}
+                  className="bg-green-600 hover:bg-green-700  text-white w-20 m-2 my-2 p-1 rounded-full"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+            <div></div>
+          </div>
+        </>
+      )}
+      <div className="flex justify-between content-evenly">
+        <span className="text-md font-bold ml-4">{item?.name}</span>
+        <span className="text-md font-bold mr-4">
+          Requested: Rs. {item?.expenses?.required}/-
+        </span>
+        <span className="text-md font-bold mr-4">
+          Sent: Rs. {item?.expenses?.received}/-
+        </span>
+        <span className="text-md font-bold mr-4">
+          To pay: Rs. {item?.expenses?.required - item?.expenses?.received}/-
+        </span>
+      </div>
       <div className="flex justify-center items-center p-4">
-        <img className="w-96 h-80 md:h-96 lg:h-96" src={`${item?.expenses?.qrURL}`} alt={`url`} />
+        <img
+          className="w-96 h-80 md:h-96 lg:h-96"
+          src={`${item?.expenses?.qrURL}`}
+          alt={`url`}
+        />
       </div>
 
       <div className=" flex flex-col justify-center items-center gap-4 md:flex-row lg:flex-row">

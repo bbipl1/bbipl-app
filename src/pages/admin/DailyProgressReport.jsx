@@ -20,7 +20,7 @@ const DailyProgressReport = () => {
       .get(url)
       .then((res) => {
         setDailyProgressReport(res?.data?.data);
-        // console.log(res?.data?.data)
+        // console.log(res.data)
       })
       .catch((error) => {
         console.log(error);
@@ -49,12 +49,12 @@ const DailyProgressReport = () => {
               <th className="px-4 py-2 text-left">Expenses</th>
               <th className="px-4 py-2 text-left">Required</th>
               <th className="px-4 py-2 text-left">Received</th>
-              <th className="px-4 py-2 text-left">QR URL</th>
+              {/* <th className="px-4 py-2 text-left">QR URL</th> */}
               <th className="px-4 py-2 text-left">Status</th>
             </tr>
           </thead>
           <tbody>
-            {dailyProgressReport?.map((item, index) => (
+            { Array.isArray(dailyProgressReport) && dailyProgressReport?.map((item, index) => (
               <tr
                 key={index}
                 onClick={() => {
@@ -78,7 +78,7 @@ const DailyProgressReport = () => {
                 </td>
                 <td className="px-4 py-2">{item.expenses.required}</td>
                 <td className="px-4 py-2">{item.expenses.received}</td>
-                <td className="px-4 py-2">
+                {/* <td className="px-4 py-2">
                   <img
                     onClick={() => {
                       setIsQROpen(false);
@@ -89,7 +89,7 @@ const DailyProgressReport = () => {
                     src={item.expenses.qrURL}
                     alt="url"
                   />
-                </td>
+                </td> */}
                 <td className="px-4 py-2">{item.expenses.status}</td>
               </tr>
             ))}

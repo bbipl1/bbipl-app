@@ -128,85 +128,62 @@ const ContactUsMessages = () => {
 
   const handleSendReply = async (method, contact, message) => {
     try {
-        // setIsLoading(true)
       const responseData = {
-        id: contact._id, // The contact's ID
-        responseMethod: method, // The selected response method (phone, email, or both)
-        responseMessage: message, // The message being sent as the reply
-        status: "Complete", // Status is set to 'Complete' after the reply
+        id: contact._id,
+        responseMethod: method,
+        responseMessage: message,
+        status: "Complete",
       };
-
-      const response = await fetch(
+  
+      // Create both API request promises
+      const updateContactPromise = fetch(
         `${process.env.REACT_APP_SERVER_URL}/api/update-contact-us-messages`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(responseData),
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to send reply");
-      }
-
-      const data = await response.json();
-      console.log("Reply sent successfully:", data.message);
-      try {
-        const result = await sendEmail(
-          contact.email,
-          "Test Email",
-          message,
-          "<h1>Test Email</h1>"
-        );
-        if(result){
-            setFetchMe(fetchMe+1)
-            alert("Response sent.");
-            console.log("Email sent successfully:", result);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-
-    //   alert(`Reply sent via ${method}: ${message}`);
-    } catch (err) {
-      console.error("Error sending reply:", err);
-      alert("Error sending reply. Please try again.");
-    }
-  };
-
-  //send email function
-  const sendEmail = async (to, subject, text, html) => {
-    try {
-      const response = await fetch(
+      ).then((res) => {
+        if (!res.ok) throw new Error("Failed to update contact status");
+        return res.json();
+      });
+  
+      const sendEmailPromise = fetch(
         `${process.env.REACT_APP_SERVER_URL}/api/email/send-email`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            to,
-            subject,
-            text,
-            html,
+            to: contact.email,
+            subject: "reply from support team",
+            text: message,
+            html: "<h1>Test Email</h1>",
           }),
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to send email");
-      }
-
-      const data = await response.json();
-      console.log("Email sent successfully:", data.message);
-      return data; // You can return the response if needed
+      ).then((res) => {
+        if (!res.ok) throw new Error("Failed to send email");
+        return res.json();
+      });
+  
+      // Run both requests in parallel
+      const [updateResponse, emailResponse] = await Promise.all([
+        updateContactPromise,
+        sendEmailPromise,
+      ]);
+  
+      console.log("Contact updated:", updateResponse.message);
+      console.log("Email sent successfully:", emailResponse.message);
+  
+      // Update state only if both are successful
+      setFetchMe(fetchMe + 1);
+      alert("Response sent successfully!");
+  
     } catch (err) {
-      console.error("Error sending email:", err);
-      throw new Error("Error sending email");
+      console.error("Error handling reply:", err);
+      alert("Error handling reply. Please try again.");
     }
   };
+  
 
   return (
     <div className="container mx-auto p-4 ">
