@@ -15,16 +15,22 @@ const DynamicMap = ({ role, trackedUsers = [] }) => {
   const [defaultCenter, setDefaultCenter] = useState(null);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
+    // Start watching the user's location
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setDefaultCenter([latitude, longitude]);
+        setDefaultCenter([latitude, longitude]); // Update the center position
       },
       (error) => {
         console.error("Error fetching location:", error);
       },
       { enableHighAccuracy: true }
     );
+
+    // Cleanup function to stop watching the location when the component unmounts
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
   }, []);
 
   useEffect(() => {

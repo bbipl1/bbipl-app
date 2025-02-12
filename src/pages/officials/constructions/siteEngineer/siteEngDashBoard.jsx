@@ -60,7 +60,7 @@ const SiteEngDashBoard = () => {
       case "workers":
         return <ManageWorker siteEngineerId={data?.user?.id} />;
       case "hdd":
-        return <HDDForms siteEngineerId={data?.user?.id} />;
+        return <HDDForms siteEngineerId={data?.user} />;
 
       default:
         return (
