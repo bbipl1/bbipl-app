@@ -213,7 +213,7 @@ const HDDForms = ({ siteEngineerId }) => {
             <input
               className="w-full p-1"
               value={meter}
-              placeholder="KiloMeter"
+              placeholder="Meter"
               name="km"
               id="km"
               type="number"
@@ -225,7 +225,7 @@ const HDDForms = ({ siteEngineerId }) => {
 
           <div>
             <label className="pl-2" htmlFor="Rate">
-              Rate/meter
+              Rate/meter (INR)
             </label>
             <input
               placeholder="Rate/meter"
