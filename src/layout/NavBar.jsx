@@ -87,10 +87,10 @@ const NavBar = () => {
           <li>
             <Link
               onClick={handleMenuItemClick}
-              to="/pages/services"
+              to="/pages/map"
               className="hover:text-blue-600 transition"
             >
-              Services
+              Map
             </Link>
           </li>
           <li>

@@ -1,3 +1,8 @@
+
+/* custom map css */
+import 'leaflet/dist/leaflet.css';
+
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {
@@ -45,6 +50,7 @@ import TermsAndConditions from "./conditions/Terms&Conditions.jsx";
 import Disclaimer from "./conditions/Dislaimers.jsx";
 import RefundPolicy from "./conditions/RefundPolicy.jsx";
 import CookiesPolicy from "./conditions/CookiesPolicy.jsx";
+import CustomMap from "./pages/map/CustomMap.jsx";
 // const routerFromelements=
 
 // Non-protected-routes
@@ -130,6 +136,9 @@ const router = createBrowserRouter(
       <Route path="pages/disclaimers" element={<Disclaimer/>}></Route>
       <Route path="pages/refund-policy" element={<RefundPolicy/>}></Route>
       <Route path="pages/cookies-policy" element={<CookiesPolicy/>}></Route>
+
+      {/* custom map */}
+      <Route path="pages/map" element={<CustomMap/>}/>
     </Route>
   )
 );
