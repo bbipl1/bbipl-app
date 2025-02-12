@@ -366,11 +366,20 @@ const HDDForms = ({ siteEngineerId }) => {
             <option name="select" value="">
               Select
             </option>
+            <option name="deisel" value="deisel">
+              Deisel
+            </option>
+            <option name="petrol" value="petrol">
+              Petrol
+            </option>
             <option name="fooding" value="fooding">
               Fooding
             </option>
             <option name="advance" value="advance">
               Advance
+            </option>
+            <option name="labourExpense" value="labourExpense">
+              Labour expense
             </option>
             <option name="others" value="others">
               Others
