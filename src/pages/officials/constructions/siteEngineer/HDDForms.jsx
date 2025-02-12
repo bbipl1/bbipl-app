@@ -335,7 +335,7 @@ const HDDForms = ({ siteEngineerId }) => {
           </div>
           {paymentRec === "Yes" && (
             <>
-              <div className="absolute z-20 bg-neutral-200 w-full p-2">
+              <div className="absolute z-20 bg-neutral-200 w-5/6 p-2">
                 <label htmlFor="">Amount*</label>
                 <input
                   onChange={(e) => {
