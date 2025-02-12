@@ -1,12 +1,13 @@
 import axios from "axios";
 import { header } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const ShowQR = ({ item, isQROpen, url }) => {
   const [showAmt, setShowAmt] = useState(false);
-  const [backBtn, setBackBtn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [okBtn, setOKBtn] = useState(false);
   const [amount, setAmount] = useState(0);
   const [toPay, setToPay] = useState(0);
@@ -23,7 +24,8 @@ const ShowQR = ({ item, isQROpen, url }) => {
     try {
       // const res = await waitForAmountBtnCheck();
 
-      console.log("i", item?._id, "a", amount);
+      // console.log("i", item?._id, "a", amount);
+      setIsLoading(true);
 
       if (!item?._id) {
         alert("Something went wrong.");
@@ -38,7 +40,7 @@ const ShowQR = ({ item, isQROpen, url }) => {
         amount,
       };
 
-      const url = `${serverURL}/api/constructions/site-engineers/update-amount-for-requirements-forms`;
+      const url = `${serverURL}/api/constructions/site-engineers/update-amount-for-daily-progress-report`;
 
       const headers = {
         headers: { "Content-Type": "application/json" },
@@ -53,6 +55,9 @@ const ShowQR = ({ item, isQROpen, url }) => {
         .catch((err) => {
           console.log(err);
           alert(err?.response?.data?.message);
+        })
+        .finally((final) => {
+          setIsLoading(false);
         });
 
       // const response = await axios.put(url, data, headers);
@@ -65,6 +70,7 @@ const ShowQR = ({ item, isQROpen, url }) => {
         error?.response?.data || error?.message
       );
       alert(error?.response?.data?.message);
+      setIsLoading(false);
     }
   };
 
@@ -160,7 +166,7 @@ const ShowQR = ({ item, isQROpen, url }) => {
   }, [toPay]);
 
   return (
-    <div className="bg-slate-100 fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-self-center  self-center flex-col w-11/12 md:w-9/12 lg:w-1/2 h-3/4 p-4 border-2 border-spacing-4 border-blue-600 rounded-lg">
+    <div className="bg-slate-100 fixed z-50 left-0 right-0 top-0 bottom-0 flex justify-self-center  self-center flex-col w-11/12 md:w-9/12 lg:w-1/2 h-4/5 p-4 border-2 border-spacing-4 border-blue-600 rounded-lg">
       {showAmt && (
         <>
           <div className="w-full h-full  absolute flex flex-col justify-center items-center">
@@ -207,7 +213,7 @@ const ShowQR = ({ item, isQROpen, url }) => {
           Sent: Rs. {item?.expenses?.received}/-
         </span>
         <span className="text-md font-bold mr-4">
-          To pay: Rs. {item?.expenses?.required - item?.expenses?.received}/-
+          To pay: Rs. {Number(item?.expenses?.required) - Number(item?.expenses?.received)}/-
         </span>
       </div>
       <div className="flex justify-center items-center p-4">
@@ -217,10 +223,15 @@ const ShowQR = ({ item, isQROpen, url }) => {
           alt={`url`}
         />
       </div>
+      <div className="flex items-center justify-center mb-4">
+        {isLoading && (
+          <ClipLoader color="#4A90E2" loading={isLoading} size={50} />
+        )}
+      </div>
 
       <div className=" flex flex-col justify-center items-center gap-4 md:flex-row lg:flex-row">
         <div>
-          {item?.expenses?.status === "Unpaid" ? (
+          {item?.expenses?.status === "UnPaid" || item?.expenses?.status === "PartialPaid" ? (
             <div>
               <button
                 onClick={() => {
@@ -245,10 +256,10 @@ const ShowQR = ({ item, isQROpen, url }) => {
           )}
         </div>
         <div className="">
-          {item?.expenses?.status === "Unpaid" ? (
+          {item?.expenses?.status === "UnPaid" || item?.expenses?.status === "PartialPaid"? (
             <>
               <button
-                disabled={item?.paymentStatus === "Received"}
+                
                 onClick={() => {
                   paymentDone();
                 }}
@@ -261,7 +272,7 @@ const ShowQR = ({ item, isQROpen, url }) => {
           ) : (
             <>
               <button
-                disabled={item?.paymentStatus === "Received"}
+                disabled
                 onClick={() => {
                   paymentDone();
                 }}

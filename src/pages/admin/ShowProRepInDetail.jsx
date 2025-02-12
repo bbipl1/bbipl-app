@@ -2,13 +2,20 @@ import React, { useEffect, useState } from "react";
 import ImageSlider from "../../components/ImageSlider";
 import ShowQR from "./ShowQR";
 import { X } from "lucide-react";
+import { header } from "framer-motion/client";
+import axios from "axios";
+import { ClipLoader } from "react-spinners";
+
+const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const ShowProRepInDetail = ({ report, isOpen, open }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [ssURLS, SetSSURLS] = useState([]);
   const [workProgressPhotosURLS, SetWorkProgressPhotosURLS] = useState([]);
   const [workProgressVideosURLS, SetworkProgressVideosURLS] = useState([]);
   const [isQROpen, setIsQROpen] = useState(false);
   const [QRURL, SetQRURL] = useState(false);
+  const [deleted,setDeleted]=useState(0);
 
   useEffect(() => {
     const ssurls = report?.paymentScreenshots?.map((ss) => ss?.url);
@@ -17,8 +24,8 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
     SetWorkProgressPhotosURLS(wppurls ? wppurls : []);
     const wpvurls = report?.videos?.map((ss) => ss?.url);
     SetworkProgressVideosURLS(wpvurls ? wpvurls : []);
-    console.log("ss", ssurls);
-  }, [report]);
+    // console.log("ss", ssurls);
+  }, [report,deleted]);
 
   if (!report) {
     return (
@@ -32,18 +39,54 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
 
   //handle delete all details
 
-  const handleDelete=()=>{
-    const userRes=window.confirm("Are you sure? All data will be deleted permanently.");
-    if(!userRes){
-      return ;
+  const handleDelete = () => {
+    const userRes = window.confirm(
+      "Are you sure? All data will be deleted permanently."
+    );
+    if (!userRes) {
+      return;
     }
-    alert("Coming soon");
-  }
+    // alert("Coming soon");
+    setIsLoading(true);
+
+    const id = report._id;
+    if (!id) {
+      return alert("Document is not found to delete.");
+    }
+    const url = `${serverURL}/api/constructions/site-engineers/delete-daily-progress-report?id=${id}`;
+    const header = {
+      header: "application/json",
+    };
+
+    axios
+      .delete(url, header)
+      .then((res) => {
+        console.log(res);
+        alert(res?.data?.message);
+        setDeleted(deleted+1);
+      })
+      .catch((err) => {
+        alert(err?.response?.data?.message);
+      })
+      .finally((final) => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="w-full h-100 absolute top-24 md:top-16 lg:top-12 mx-auto my-8 p-6 bg-white shadow-lg rounded-lg ">
       <div className="flex  items-center justify-end">
-        <button onClick={handleDelete} className="w-24 text-white m-2 p-1 bg-red-600 rounded-lg ">
+        {isLoading && (
+          <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-opacity-80 bg-slate-500 flex justify-center items-center ">
+            <div>
+              <ClipLoader color="#ffffff" loading={isLoading} size={50} />
+            </div>
+          </div>
+        )}
+        <button
+          onClick={handleDelete}
+          className="w-24 text-white m-2 p-1 bg-red-600 rounded-lg hover:bg-red-700 "
+        >
           Delete
         </button>
         <button
@@ -99,22 +142,22 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
           <p>Received Amount: RS {report.expenses.received || "N/A"} /-</p>
           <p>
             pending Amount: RS{" "}
-            {report.expenses.required - report.expenses.received || "N/A"} /-
+            {Number(report.expenses.required) - Number(report.expenses.received)} /-
           </p>
           <p className=" mt-1">
-          Status:{" "}
-          <span
-            className={`${
-              report.expenses.status === "Paid"
-                ? "text-green-500"
-                : report.expenses.status === "PartialPaid"
-                ? "text-blue-500"
-                : "text-red-500"
-            }`}
-          >
-            {report.expenses.status}
-          </span>
-        </p>
+            Status:{" "}
+            <span
+              className={`${
+                report.expenses.status === "Paid"
+                  ? "text-green-500"
+                  : report.expenses.status === "PartialPaid"
+                  ? "text-blue-500"
+                  : "text-red-500"
+              }`}
+            >
+              {report.expenses.status}
+            </span>
+          </p>
         </div>
 
         {/* Machinery Used */}
@@ -130,7 +173,6 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
       {/* Date & Time */}
 
       <div className=" mt-8">
-        
         <h2 className="font-semibold text-lg text-gray-600">Remarks</h2>
         <ul className=" ">
           <p>{report.remarks}</p>

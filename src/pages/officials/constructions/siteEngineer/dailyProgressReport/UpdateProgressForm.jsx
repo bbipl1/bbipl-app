@@ -754,7 +754,7 @@ const UpdateDailyProgressReport = ({ user }) => {
           </p>
         </div>
 
-        <div>
+        {/* <div>
           <label
             htmlFor="status"
             className="block text-sm font-medium text-gray-700 mb-2"
@@ -774,7 +774,7 @@ const UpdateDailyProgressReport = ({ user }) => {
             <option value="PartialPaid">PartialPaid</option>
             <option value="Unpaid">Unpaid</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       {/* Remarks */}
