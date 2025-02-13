@@ -60,13 +60,13 @@ const DynamicMap = ({ role, userId, userName }) => {
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
           {/* User Marker */}
-          {userLocation && (
+          {/* {userLocation && (
             <Marker position={userLocation}>
               <Popup>
                 Your Location <br /> Lat: {userLocation[0]}, Lng: {userLocation[1]}.
               </Popup>
             </Marker>
-          )}
+          )} */}
 
           {/* Tracked Users (Admin or User View) */}
           {Object.values(trackedUsers).map((user) => (
