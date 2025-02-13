@@ -7,6 +7,7 @@ import FormRequirementDetails from "./FormRequirementDetails";
 import SiteManagement from "./sitesManagement/SitesUpdateManagement";
 import ShowUserAttendance from "./ShowUserAttendance";
 import DailyProgressReport from "./DailyProgressReport";
+import ShowHDDForms from "./ShowHDDForm";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -32,6 +33,8 @@ const AdminDashboard = () => {
         return <ShowUserAttendance />;
       case "dailyProgressReport":
         return <DailyProgressReport />;
+      case "hddFormsReport":
+        return <ShowHDDForms />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -79,7 +82,7 @@ const AdminDashboard = () => {
         className={`fixed flex flex-col gap-1 transition-all duration-1000 ease-in-out 
           ${showMenu !=='hidden'? "w-3/4" : "w-0 -translate-x-[350%]"} 
           lg:w-full lg:translate-x-0 md:translate-x-0 lg:pb-12 h-screen px-4 top-24 pt-4 
-          bg-gray-100 lg:grid lg:grid-cols-8 lg:h-16`}
+          bg-gray-100 lg:grid lg:grid-cols-5 lg:h-16`}
       >
   
         <button
@@ -126,13 +129,19 @@ const AdminDashboard = () => {
           Daily Report
         </button>
         <button
+          onClick={() => setActiveComponent("hddFormsReport")}
+          className={getButtonClass("hddFormsReport")}
+        >
+          HDD
+        </button>
+        <button
           onClick={() => handleLogout()}
           className="w-100 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
         >
           Logout
         </button>
       </div>
-      <div className="bg-slate-500 h-1 my-2"></div>
+      <div className="bg-slate-500 h-1 my-12"></div>
       <div className="bg-gray-50 rounded shadow">{renderComponent()}</div>
     </div>
   );

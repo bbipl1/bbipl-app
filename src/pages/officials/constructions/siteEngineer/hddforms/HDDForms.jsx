@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 const HDDForms = ({ siteEngineerId }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [paymentRec, setPaymentRec] = useState("No");
@@ -11,7 +13,7 @@ const HDDForms = ({ siteEngineerId }) => {
   const [dateOfRequirements, setDateOfRequirements] = useState();
   const [dia, setDia] = useState();
   const [NoOfJobs, setNoOfJobs] = useState();
-  const [fuel, setFuel] = useState([]);
+  const [siteEngObjId, setSiteEngObjId] = useState([]);
   const [meter, setMeter] = useState();
   const [rate, setRate] = useState();
   const [amount, setAmount] = useState();
@@ -19,14 +21,15 @@ const HDDForms = ({ siteEngineerId }) => {
   const [remarks, setRemarks] = useState();
 
   const handleSubmit = () => {
-    const url = ``;
+    const url = `${serverUrl}/api/constructions/site-engineers/submit-hdd-form`;
     const header = {
       header: "application/json",
     };
     const payload = {
       paymentRec,
       paymentRecAmount,
-      UserId,
+      siteEngId:UserId,
+      siteEngObjId,
       userName,
       mobileNo,
       dateOfRequirements,
@@ -39,40 +42,46 @@ const HDDForms = ({ siteEngineerId }) => {
       remarks,
     };
 
+    console.log(payload)
+
     if (!UserId) {
-      alert("Id is required.");
+      return alert("Id is required.");
     }
     if (!userName) {
-      alert("userName is required.");
+      return alert("userName is required.");
     }
     if (!mobileNo) {
-      alert("mobile No is required.");
+      return alert("mobile No is required.");
     }
     if (!dateOfRequirements) {
-      alert("dateOfRequirements is required.");
+      return alert("dateOfRequirements is required.");
     }
     if (!dia) {
-      alert("dia is required.");
+      return alert("dia is required.");
     }
     if (!NoOfJobs) {
-      alert("No Of Jobs are required.");
+      return alert("No Of Jobs are required.");
     }
     if (!meter) {
-      alert("meter is required.");
+      return alert("meter is required.");
     }
     if (!rate) {
-      alert("rate is required.");
+      return alert("rate is required.");
     }
     if (!paymentRec) {
-      alert("payment status is required.");
+      return alert("payment status is required.");
     }
 
     setIsLoading(true);
 
     axios
       .post(url, payload, header)
-      .then(() => {})
-      .catch(() => {})
+      .then((res) => {
+        alert(res?.data?.message);
+      })
+      .catch((err) => {
+        alert(err?.reponse?.data?.message);
+      })
       .finally(() => {
         setIsLoading(false);
       });
@@ -83,6 +92,7 @@ const HDDForms = ({ siteEngineerId }) => {
     setUserId(siteEngineerId?.id);
     setUserName(siteEngineerId?.name);
     setMobileNo(siteEngineerId?.mobile);
+    setSiteEngObjId(siteEngineerId.siteEngObjId)
   }, [siteEngineerId]);
 
   useEffect(() => {
@@ -91,41 +101,19 @@ const HDDForms = ({ siteEngineerId }) => {
     // setExpenses(new Array(set))
   }, [expenses]);
 
-  const handleRemove = (exp) => {
-    setExpenses(expenses.filter((ex) => ex.expenses !== exp));
+  const handleRemoveExpense = (index) => {
+    setExpenses(expenses.filter((_, i) => i !== index));
   };
-  const handleAddExpenses = (e) => {
-    setExpenses((ex) => {
-      // Check if the value already exists in the array
-      const isDuplicate = ex.some(
-        (item) => item[e.target.name] === e.target.value
-      );
-      if (isDuplicate) return ex; // Return the current state if it's a duplicate
-
-      // Add the new item if it's not a duplicate
-      return [...ex, { [e.target.name]: e.target.value }];
-    });
+  const handleAddExpense = (e) => {
+    const expenseName = e.target.value;
+    if (!expenseName || expenses.some((exp) => exp.name === expenseName)) return;
+    setExpenses([...expenses, { name: expenseName, value: "" }]);
   };
 
-  const handleRemoveFuel = (fl) => {
-    setFuel(fuel.filter((f) => f.fuel !== fl));
-  };
-
-  const handleFuel = (e) => {
-    // const [name,value]=e.target;
-    if (!e.target.value) {
-      return;
-    }
-    setFuel((f) => {
-      // Check if the value already exists in the array
-      const isDuplicate = f.some(
-        (item) => item[e.target.name] === e.target.value
-      );
-      if (isDuplicate) return f; // Return the current state if it's a duplicate
-
-      // Add the new item if it's not a duplicate
-      return [...f, { [e.target.name]: e.target.value }];
-    });
+  const handleExpenseValueChange = (index, value) => {
+    const updatedExpenses = [...expenses];
+    updatedExpenses[index].value = value;
+    setExpenses(updatedExpenses);
   };
 
   return (
@@ -306,68 +294,25 @@ const HDDForms = ({ siteEngineerId }) => {
             </>
           )}
         </div>
-        <div className="w-full">
-          <label className="w-full " htmlFor="All days expenses">
-            All days expenses*
-          </label>
-          <select
-            onChange={(e) => {
-              handleAddExpenses(e);
-              // setExpenses((ex) => [...ex, { [e.target.name]: e.target.value }]);
-            }}
-            value={expenses[expenses.length - 1]?.value}
-            name="expenses"
-            id="expenses"
-            className="w-full p-2"
-          >
-            <option name="select" value="">
-              Select
-            </option>
-            <option name="deisel" value="deisel">
-              Deisel
-            </option>
-            <option name="petrol" value="petrol">
-              Petrol
-            </option>
-            <option name="fooding" value="fooding">
-              Fooding
-            </option>
-            <option name="advance" value="advance">
-              Advance
-            </option>
-            <option name="labourExpenses" value="labourExpenses">
-              Labour expenses
-            </option>
-            <option name="others" value="others">
-              Others
-            </option>
-          </select>
-
-          {expenses &&
-            expenses.map((expense) => {
-              return (
-                <>
-                  <div className="w-full flex justify-between">
-                    <h1>
-                      {expense.expenses}{" "}
-                      <input
-                        type="number"
-                        className="border-2 border-blue-50 p-1"
-                      />
-                    </h1>
-                    <button
-                      onClick={() => {
-                        handleRemove(expense.expenses);
-                      }}
-                      className="bg-red-500 hover:bg-red-600 m-1 p-1 px-2 rounded-lg text-white"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </>
-              );
-            })}
-        </div>
+        <div>
+        <label>All days expenses*</label>
+        <select onChange={handleAddExpense} className="w-full p-2">
+          <option value="">Select</option>
+          <option value="Diesel">Diesel</option>
+          <option value="Petrol">Petrol</option>
+          <option value="Fooding">Fooding</option>
+          <option value="Advance">Advance</option>
+          <option value="Labour Expenses">Labour Expenses</option>
+          <option value="Others">Others</option>
+        </select>
+        {expenses.map((expense, index) => (
+          <div key={index} className="w-full flex justify-between mt-2">
+            <span>{expense.name}</span>
+            <input type="number" className="border-2 p-1" value={expense.value} onChange={(e) => handleExpenseValueChange(index, e.target.value)} />
+            <button onClick={() => handleRemoveExpense(index)} className="bg-red-500 hover:bg-red-600 m-1 p-1 px-2 rounded-lg text-white">Delete</button>
+          </div>
+        ))}
+      </div>
       </div>
       <div>
         <label htmlFor="remarks"></label>

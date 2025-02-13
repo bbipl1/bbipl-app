@@ -10,9 +10,9 @@ import PaymentScreenShot from "./dailyProgressReport/PaymentScreenShot";
 import WorkProgress from "./dailyProgressReport/WorkProgress";
 import WorkProgressVideo from "./dailyProgressReport/WorkProgressVideo";
 import ShowAllReports from "./showAllReports/ShowAllReports";
-import HDDForms from "./HDDForms";
+import HDDForms from "./hddforms/HDDForms";
 import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm";
-
+import ShowAllForms from "./hddforms/ShowAllForms";
 
 const SiteEngDashBoard = () => {
   const location = useLocation();
@@ -20,6 +20,7 @@ const SiteEngDashBoard = () => {
   // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
   const [isOpen, setIsOpen] = useState(false);
+  const [HDDOpen, setHDDOpen] = useState(true);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -59,8 +60,12 @@ const SiteEngDashBoard = () => {
         return <SiteEngineerAttendanceForm siteEng={data?.user} />;
       case "workers":
         return <ManageWorker siteEngineerId={data?.user?.id} />;
-      case "hdd":
+      case "Fill-HDD-Form":
         return <HDDForms siteEngineerId={data?.user} />;
+      case "Update-HDD-Form":
+        return <UpdateForm siteEngineerId={data?.user} />;
+      case "show-all-forms":
+        return <ShowAllForms siteEngineerId={data?.user} />;
 
       default:
         return (
@@ -81,6 +86,8 @@ const SiteEngDashBoard = () => {
       ? "w-100 px-4 py-2 bg-gray-300 text-black rounded hover:bg-blue-700 transition duration-100"
       : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
   };
+
+
 
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
@@ -118,30 +125,64 @@ const SiteEngDashBoard = () => {
             }`}
             onClick={toggleDropdown}
           >
-           Daily Progress Report
+            Daily Progress Report
           </button>
           {isOpen && (
             <ul className="absolute z-10 left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
-              <li onClick={() => {setIsOpen(false);setActiveComponent("Fill-Form")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Fill-Form");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Fill Form
               </li>
-              <li onClick={() => {setIsOpen(false);setActiveComponent("Update-Form")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Update-Form");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Update Form
               </li>
-              <li onClick={() => {setIsOpen(false); setActiveComponent("Upload-Payment-Screenshot")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Upload-Payment-Screenshot");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Payment Screenshot
               </li>
-              <li onClick={() => {setIsOpen(false);setActiveComponent("Upload-Work-Progress-photo")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Upload-Work-Progress-photo");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Work Progress(Photo)
               </li>
-              <li onClick={() =>{setIsOpen(false); setActiveComponent("Upload-Work-Progress-video")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Upload-Work-Progress-video");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Work Progress(Video)
               </li>
-              <li onClick={() =>{setIsOpen(false); setActiveComponent("Show-all-reports")}} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li
+                onClick={() => {
+                  setIsOpen(false);
+                  setActiveComponent("Show-all-reports");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
                 Show all reports
               </li>
-             
-              
             </ul>
           )}
         </div>
@@ -158,12 +199,58 @@ const SiteEngDashBoard = () => {
         >
           Attendance
         </button>
-        <button
-          onClick={() => setActiveComponent("hdd")}
-          className={getButtonClass("hdds")}
-        >
-          HDD
-        </button>
+
+        <div className="relative w-100 bg-blue-500 hover:bg-blue-600">
+          <button
+            className={`w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
+              HDDOpen ? "rounded-b-none" : ""
+            }`}
+            onClick={()=>{setHDDOpen(!HDDOpen)}}
+          >
+            HDD
+          </button>
+          {HDDOpen && (
+            <ul className="absolute z-10 left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
+              <li
+                onClick={() => {
+                  setHDDOpen(false);
+                  setActiveComponent("Fill-HDD-Form");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                Fill HDD Form
+              </li>
+              <li
+                onClick={() => {
+                  setHDDOpen(false);
+                  setActiveComponent("Update-HDD-Form");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                Update HDD Form
+              </li>
+              <li
+                onClick={() => {
+                  setHDDOpen(false);
+                  setActiveComponent("show-all-forms");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                Show all forms 
+              </li>
+              
+            </ul>
+          )}
+        </div>
+
+        {/* <div>
+          <button
+            onClick={() => setActiveComponent("hdd")}
+            className={getButtonClass("hdds")}
+          >
+            HDD
+          </button>
+        </div> */}
 
         <button
           onClick={() => handleLogout()}
