@@ -1,10 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "font-awesome/css/font-awesome.min.css";
 import { Link } from "react-router-dom";
 
+import { io } from "socket.io-client";
+const serverURL = process.env.REACT_APP_SERVER_URL;
+const socket = io(serverURL, { transports: ["websocket"] });
+
 const Footer = () => {
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        const location = { lat: latitude, lng: longitude };
+
+        // Send user location update to the server
+        socket.emit("updateLocation", {
+          userId: "id",
+          name: "userName",
+          location,
+        });
+      },
+      (error) => {
+        console.error("Error fetching location:", error);
+      },
+      { enableHighAccuracy: true }
+    );
+
+    return () => {
+      socket.disconnect();
+      navigator.geolocation.clearWatch(watchId);
+    };
+  }, []);
   return (
     <footer className="bg-gray-200 text-black">
       <div className="p-0">
@@ -22,7 +51,6 @@ const Footer = () => {
         </p>
       </div>
       <div className="container mx-auto grid grid-cols-2 md:grid-cols-3 gap-1 mt-6 pr-4">
-        
         <div className="p-6">
           <h2 className="text-lg font-bold">Quick Links</h2>
           <ul className="mt-2 space-y-2">
@@ -34,7 +62,6 @@ const Footer = () => {
                 MyPDFHub
               </a>
             </li>
-            
           </ul>
         </div>
 
@@ -47,7 +74,7 @@ const Footer = () => {
               href="mailto:support@businessbasket.in "
               className="hover:text-blue-600 mr-2"
             >
-              support@businessbasket.in 
+              support@businessbasket.in
             </a>
           </p>
           <p className="mt-3">
@@ -107,7 +134,9 @@ const Footer = () => {
           <Link to="/pages/disclaimers">Disclaimer</Link>
         </div>
       </div>
-      <p className="text-sm flex justify-self-center">This website is under development</p>
+      <p className="text-sm flex justify-self-center">
+        This website is under development
+      </p>
     </footer>
   );
 };

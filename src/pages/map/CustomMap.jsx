@@ -2,24 +2,35 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-delete L.Icon.Default.prototype._getIconUrl;
+import { io } from "socket.io-client";
 
+// Prevent Leaflet missing icon issues
+delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
   iconUrl: require("leaflet/dist/images/marker-icon.png"),
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-const DynamicMap = ({ role, trackedUsers = [] }) => {
+const serverURL = process.env.REACT_APP_SERVER_URL;
+const socket = io(serverURL, { transports: ["websocket"] });
+
+const DynamicMap = ({ role, userId, userName }) => {
   const [userLocation, setUserLocation] = useState(null);
-  const [defaultCenter, setDefaultCenter] = useState(null);
+  const [trackedUsers, setTrackedUsers] = useState({});
+  const [defaultCenter, setDefaultCenter] = useState([20.5937, 78.9629]); // Default to India
 
   useEffect(() => {
     // Start watching the user's location
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
+        setUserLocation([latitude, longitude]);
         setDefaultCenter([latitude, longitude]); // Update the center position
+        const location = { lat: latitude, lng: longitude };
+
+        // Send user location update to the server
+        socket.emit("updateLocation", { userId, name: userName, location });
       },
       (error) => {
         console.error("Error fetching location:", error);
@@ -27,74 +38,44 @@ const DynamicMap = ({ role, trackedUsers = [] }) => {
       { enableHighAccuracy: true }
     );
 
-    // Cleanup function to stop watching the location when the component unmounts
+    // Listen for updates from other users
+    socket.on("usersLocation", (updatedUsers) => {
+      setTrackedUsers(
+        updatedUsers.reduce(
+          (acc, user) => ({ ...acc, [user.userId]: user }), // Store users in an object for fast lookup
+          {}
+        )
+      );
+    });
+
     return () => {
       navigator.geolocation.clearWatch(watchId);
     };
-  }, []);
-
-  useEffect(() => {
-    if (role === "user") {
-      // Get the current user's location
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation([latitude, longitude]);
-        },
-        (error) => {
-          console.error("Error fetching location:", error);
-        },
-        { enableHighAccuracy: true }
-      );
-    }
-  }, [role]);
+  }, [userId, userName]);
 
   return (
     <>
       {defaultCenter && (
-        <MapContainer
-          center={userLocation || defaultCenter} // Default center if no location is available
-          zoom={13}
-          style={{ height: "100vh", width: "100%" }}
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+        <MapContainer center={userLocation || defaultCenter} zoom={13} style={{ height: "100vh", width: "100%" }}>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {/* User View */}
+          {/* User Marker */}
+          {/* {userLocation && (
+            <Marker position={userLocation}>
+              <Popup>
+                Your Location <br /> Lat: {userLocation[0]}, Lng: {userLocation[1]}.
+              </Popup>
+            </Marker>
+          )} */}
 
-          {role === "user" && userLocation ? (
-            <>
-              <Marker position={userLocation}>
-                <Popup>
-                  Your Location <br /> Lat: {userLocation[0]}, Lng:{" "}
-                  {userLocation[1]}.
-                </Popup>
-              </Marker>
-            </>
-          ) : (
-            <>
-              {defaultCenter && (
-                <Marker position={defaultCenter}>
-                  <Popup>
-                    Your Location <br /> Lat: {defaultCenter[0]}, Lng:{" "}
-                    {defaultCenter[1]}.
-                  </Popup>
-                </Marker>
-              )}
-            </>
-          )}
-
-          {/* Admin View */}
-          {role === "admin" &&
-            trackedUsers.map((user, index) => (
-              <Marker key={index} position={[user.lat, user.lng]}>
-                <Popup>
-                  {user.name} <br /> Lat: {user.lat}, Lng: {user.lng}.
-                </Popup>
-              </Marker>
-            ))}
+          {/* Tracked Users (Admin or User View) */}
+          {Object.values(trackedUsers).map((user) => (
+            <Marker key={user.userId} position={[user.location.lat, user.location.lng]}>
+              <Popup>
+                {user.name} <br /> Lat: {user.location.lat}, Lng: {user.location.lng}.
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       )}
     </>
