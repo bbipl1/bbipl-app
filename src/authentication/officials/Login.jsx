@@ -59,6 +59,8 @@ function Login() {
             setSuccess("Login successful!");
             console.log(data?.user);
             alert(data?.message);
+            const cookieData=`userName=${data.user.name}; path=/; expires=Fri, 31 Dec 2025 23:59:59 GMT; secure`
+            document.cookie = cookieData;
             // Redirect based on department
             if (department === "admin") {
               navigate("/pages/admin-dashboard", { state: { data } });

@@ -17,9 +17,17 @@ const Footer = () => {
         const location = { lat: latitude, lng: longitude };
 
         // Send user location update to the server
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(';').shift();
+          return undefined; // Return undefined if cookie is not found
+        }
+        const userName = getCookie('userName');
+        console.log(userName)
         socket.emit("updateLocation", {
           userId: "id",
-          name: "userName",
+          name: userName,
           location,
         });
       },
