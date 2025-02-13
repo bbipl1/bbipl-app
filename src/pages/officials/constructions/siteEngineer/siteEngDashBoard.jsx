@@ -20,7 +20,7 @@ const SiteEngDashBoard = () => {
   // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
   const [isOpen, setIsOpen] = useState(false);
-  const [HDDOpen, setHDDOpen] = useState(true);
+  const [HDDOpen, setHDDOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
