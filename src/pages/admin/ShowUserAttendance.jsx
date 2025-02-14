@@ -196,7 +196,7 @@ const ShowUserAttendance = () => {
                     {record.siteEngId}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
-                    {record.empName}
+                    {record?.siteEngObjId?.siteEngObjId?.name}
                   </td>
 
                   <td className="border border-gray-300 px-4 py-2">

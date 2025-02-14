@@ -5,8 +5,8 @@ import CameraImage from "../../../../utility/CameraImage.jsx";
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const SiteEngineerAttendanceForm = ({ siteEng }) => {
-  const [latitude,setLatitude]=useState();
-  const [longitude,setLongitude]=useState();
+  const [latitude,setLatitude]=useState(null);
+  const [longitude,setLongitude]=useState(null);
   const [siteEngObjId,setSiteEngObjId]=useState();
   const [workers, setWorkers] = useState([]);
   const [selectedWorkers, setSelectedWorkers] = useState([]);
@@ -18,7 +18,7 @@ const SiteEngineerAttendanceForm = ({ siteEng }) => {
 
   console.log(siteEng.objId)
   useEffect(()=>{
-    navigator.geolocation.getCurrentPosition(
+    navigator?.geolocation?.getCurrentPosition(
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
@@ -33,7 +33,8 @@ const SiteEngineerAttendanceForm = ({ siteEng }) => {
       }
     );
     
-  },[])
+  },[siteEng])
+
   useEffect(() => {
     const url = `${serverURL}/api/constructions/site-engineers/get-all-workers?siteEngineerId=${siteEng?.id}`;
     axios
