@@ -73,6 +73,13 @@ const FileUpload = () => {
         alert(res.data.message);
         setAddText("Success");
         console.log(res);
+        setMobile("");
+        setEmail("");
+        setDepartment("");
+        setPassword("");
+        setName("");
+        setRole("");
+        setGender("");
       })
       .catch((err) => {
         console.log(err);
@@ -98,7 +105,7 @@ const FileUpload = () => {
       </div>
       <div>
         <div className="grid grid-cols-3 gap-4 mt-24">
-          <div>
+          {/* <div>
             <label htmlFor="id">ID*</label>
             <input
               type="text"
@@ -110,7 +117,7 @@ const FileUpload = () => {
               }}
               className="w-full p-1"
             />
-          </div>
+          </div> */}
           <div>
             <label htmlFor="name">Name*</label>
             <input
@@ -163,6 +170,7 @@ const FileUpload = () => {
               className="w-full p-1"
             >
               <option value="">Select</option>
+              <option value="admin">Admin</option>
               <option value="developer">Developer</option>
               <option value="construction">Construction</option>
             </select>
@@ -179,6 +187,7 @@ const FileUpload = () => {
               className="w-full p-1"
             >
               <option value="">Select</option>
+              <option value="admin">Admin</option>
               <option value="developer">Developer</option>
               <option value="site-engineer">Site-Engineer</option>
             </select>
