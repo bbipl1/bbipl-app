@@ -75,15 +75,15 @@ const RequirementForm = ({ user }) => {
         }
         // console.log(user.department);
         // console.log(user);
-        if (!(user.department === "construction")) {
-          setFormData((prevData) => ({
-            ...prevData,
-            name: "",
-            mobile: "",
-          }));
-          // setLoading(false)
-          return;
-        }
+        // if (!(user.department === "construction")) {
+        //   setFormData((prevData) => ({
+        //     ...prevData,
+        //     name: "",
+        //     mobile: "",
+        //   }));
+        //   // setLoading(false)
+        //   return;
+        // }
         let mobile = user.mobile;
         const preFix = mobile.substring(0, 2);
         const postFix = mobile.substring(8, 11);
