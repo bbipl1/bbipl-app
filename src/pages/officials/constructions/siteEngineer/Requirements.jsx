@@ -506,7 +506,7 @@ const RequirementForm = ({ user }) => {
               <option value="repair">Repair</option>
               <option value="ration">Ration</option>
               <option value="vendor">Vendor</option>
-              <option value="vendor">Self</option>
+              <option value="self">Self</option>
             </select>
           </div>
 
