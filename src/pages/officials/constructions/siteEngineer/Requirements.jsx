@@ -44,6 +44,7 @@ const RequirementForm = ({ user }) => {
     workType: "",
     materialUsed: [],
     requirements: "",
+    amount:"",
     remarks: "",
   });
 
@@ -664,6 +665,17 @@ const RequirementForm = ({ user }) => {
                 </div>
               </>
             )}
+          </div>
+
+          {/* amount */}
+          <div>
+            <label htmlFor="amount"> Required Amount</label>
+            <input
+            onChange={handleChange}
+            id="amount"
+            name="amount"
+            className="w-full border rounded px-3 py-2"
+             type="number" />
           </div>
 
           {/* </div> */}

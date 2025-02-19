@@ -4,7 +4,7 @@ import ImageShow from "../../components/admin/ImageShow";
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 const FormRequirementDetails = () => {
-  const [refresh,setRefresh]=useState(0);
+  const [refresh, setRefresh] = useState(0);
   const [formDetails, setFormDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isURL, setIsURL] = useState(null);
@@ -12,7 +12,7 @@ const FormRequirementDetails = () => {
   const [showMaterials, setShowMaterials] = useState(false);
   const [selectedshowMaterials, setSelectedShowMaterials] = useState(false);
   const [showStatusOpen, setShowStatusOpen] = useState(false);
-  const [currentStatus, setCurrentStatus] = useState("Pending");
+  const [currentAmount, setCurrentAmount] = useState(0);
   const [selectedDocId, setSelectedDocId] = useState(null);
 
   const fetchFormDetails = async () => {
@@ -84,41 +84,45 @@ const FormRequirementDetails = () => {
     // alert("ok");
   };
   const handleStatusOk = () => {
-
-    if(!currentStatus){
-      return alert("Please select the valid status.")
+    if (!currentAmount) {
+      return alert("Please select the valid status.");
     }
     setShowStatusOpen(false);
     setLoading(true);
     // alert(showStatusOpen);
-    const url=`${serverURL}/api/admin/requirements-forms/update-requirements-form-status`;
-    const payLoad={
-      status:currentStatus,
-      docId:selectedDocId
+    const url = `${serverURL}/api/admin/requirements-forms/update-requirements-form-status`;
+    const payLoad = {
+      amount: currentAmount,
+      docId: selectedDocId,
     };
     const header = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
 
     // alert(payLoad)
-    
-    axios.put(url,payLoad,header)
-    .then((res)=>{
-      setRefresh(refresh+1);
-      alert(res?.data?.message)
 
-    }).catch((err)=>{
-      console.log(err)
-      alert(err?.response?.data?.message)
-    })
-    .finally((final)=>{
-      setLoading(false);
-    })
+    axios
+      .put(url, payLoad, header)
+      .then((res) => {
+        setRefresh(refresh + 1);
+        alert(res?.data?.message);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err?.response?.data?.message);
+      })
+      .finally((final) => {
+        setLoading(false);
+      });
   };
 
-  const handleStatusChange = (e) => {
+  const handleCancel=()=>{
+    setShowStatusOpen(false);
+  }
+
+  const handleAmountChange = (e) => {
     // const [name, value] = e.target;
-    setCurrentStatus(e.target.value);
+    setCurrentAmount(e.target.value);
     // alert(e.target.value)
   };
 
@@ -128,26 +132,22 @@ const FormRequirementDetails = () => {
         <div className="fixed left-0 top-0 w-screen h-screen z-50 bg-slate-200 opacity-90 flex justify-center items-center">
           {/* <label htmlFor="status">Select Status</label> */}
           <div className="flex justify-center items-center w-1/2 h-1/2  lg:w-1/4 lg:h-1/4 flex-col bg-cyan-200 rounded-lg border-2 border-cyan-500 opacity-100">
-            <select
-              onChange={(e) => {
-                handleStatusChange(e);
-              }}
-              name="status"
-              id="status"
-              className="p-1"
-              value={currentStatus}
-            >
-              <option value="">Select</option>
-              <option value="Pending">Pending</option>
-              <option value="Partial Fulfilled">Partial Fulfilled</option>
-              <option value="Fulfilled">Fulfilled</option>
-            </select>
-            <button
-              onClick={handleStatusOk}
-              className="w-24 bg-blue-500 rounded-md text-white hover:bg-blue-600 m-2 p-2"
-            >
-              Ok
-            </button>
+            <label htmlFor="amount">Amount*</label>
+            <input onChange={handleAmountChange} className="p-1 rounded-lg" type="text" />
+            <div>
+              <button
+                onClick={handleCancel}
+                className="w-20 bg-red-500 rounded-md text-white hover:bg-red-600 m-2 p-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleStatusOk}
+                className="w-20 bg-blue-500 rounded-md text-white hover:bg-blue-600 m-2 p-2"
+              >
+                Ok
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -188,6 +188,12 @@ const FormRequirementDetails = () => {
               </th>
               <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
                 Materials Required
+              </th>
+              <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
+                Require Amt
+              </th>
+              <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
+                Received Amt
               </th>
               <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
                 Status
@@ -233,11 +239,25 @@ const FormRequirementDetails = () => {
                 >
                   Click me
                 </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {form?.paymentsDetails?.RequiredAmt}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {form?.paymentsDetails?.receivedAmt}
+                </td>
                 <td
                   onClick={(e) => {
                     handleUpdateStatus(form._id);
                   }}
-                  className={`text-white cursor-pointer ${form?.paymentsDetails?.status==="Pending"?"bg-red-500 hover:bg-red-600":`${form?.paymentsDetails?.status==="Partial Fulfilled"?"bg-blue-500 hover:bg-blue-600":" bg-green-500 hover:bg-green-600"}`} border border-gray-300 px-4  ${
+                  className={`text-white cursor-pointer ${
+                    form?.paymentsDetails?.status === "Pending"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : `${
+                          form?.paymentsDetails?.status === "Partially FulFilled"
+                            ? "bg-blue-500 hover:bg-blue-600"
+                            : " bg-green-500 hover:bg-green-600"
+                        }`
+                  } border border-gray-300 px-4  ${
                     showStatusOpen
                       ? "pointer-events: none"
                       : "pointer-events-auto"
