@@ -13,8 +13,10 @@ import ShowAllReports from "./showAllReports/ShowAllReports";
 import HDDForms from "./hddforms/HDDForms";
 import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm";
 import ShowAllForms from "./hddforms/ShowAllForms";
+import { useSiteEngAuth } from "../../../../authContext/AuthContextProvider";
 
 const SiteEngDashBoard = () => {
+  const {siteEngUser,logout}=useSiteEngAuth();
   const location = useLocation();
   const { data } = location?.state || {};
   // console.log("data is", data);
@@ -77,7 +79,8 @@ const SiteEngDashBoard = () => {
   const handleLogout = () => {
     const allowMe = window.confirm("Are you sure to logout?");
     if (allowMe) {
-      navigate("/authentication/logout");
+      logout();
+      // navigate("/authentication/logout");
     }
   };
 

@@ -44,7 +44,7 @@ const UserForgotPassword = () => {
         <p className="my-2 text-sm text-gray-600 ">
           I know my password?{" "}
           <Link
-            to="/authentication/users/user-login"
+            to="/authentication/users/login"
             className="text-blue-500 hover:underline"
           >
             Go Back

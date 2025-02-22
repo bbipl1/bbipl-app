@@ -76,7 +76,7 @@ const NavBar = () => {
                   <Link
                     className="text-nowrap"
                     // to="/worker"
-                    to="/pages/forms/requirements"
+                    to="/pages/forms/requirements-form"
                   >
                     Requirements
                   </Link>
@@ -114,7 +114,7 @@ const NavBar = () => {
                 <li className="px-4 py-2 hover:bg-gray-100">
                   <Link
                     onClick={handleMenuItemClick}
-                    to="authentication/users/user-login"
+                    to="authentication/users/login"
                   >
                     User
                   </Link>
@@ -122,7 +122,7 @@ const NavBar = () => {
                 <li className="px-4 py-2 hover:bg-gray-100">
                   <Link
                     onClick={handleMenuItemClick}
-                    to="authentication/officials/officials-login"
+                    to="authentication/officials/login"
                   >
                     Official
                   </Link>

@@ -8,12 +8,15 @@ import SiteManagement from "./sitesManagement/SitesUpdateManagement";
 import ShowUserAttendance from "./ShowUserAttendance";
 import DailyProgressReport from "./DailyProgressReport";
 import ShowHDDForms from "./ShowHDDForm";
+import { useAdminAuth } from "../../authContext/AuthContextProvider";
 
 const AdminDashboard = () => {
   const location = useLocation();
   const { data } = location.state || {};
   const [activeComponent, setActiveComponent] = useState("details"); // State to track active component
   const [showMenu, setShowMenu] = useState("hidden");
+
+  const {adminUser,adminLogout}=useAdminAuth();
 
   const navigate = useNavigate();
 
@@ -43,9 +46,10 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    const allowMe = window.confirm("Are you sure to logOut?");
+    const allowMe = window.confirm("Are you sure to logout?");
     if (allowMe) {
-      navigate("/");
+      // navigate("/");
+        adminLogout();
     }
   };
 

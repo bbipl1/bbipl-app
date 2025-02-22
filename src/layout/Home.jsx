@@ -10,7 +10,7 @@ const Home = () => {
   let imageURL = [home1,home2,home3];
 
   return (
-    <div>
+    <div className="min-h-screen  w-full">
       {/* Hero Section */}
 
       <section className="bg-white text-black text-center relative">

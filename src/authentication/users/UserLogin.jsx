@@ -58,7 +58,7 @@ const UserLogin = () => {
         <p className="mt-6 text-sm text-gray-600">
           Don’t have an account?{" "}
           <Link
-            to="/authentication/users/user-sign-up"
+            to="/authentication/users/sign-up"
             className="text-blue-500 hover:underline"
           >
             Sign Up
@@ -67,7 +67,7 @@ const UserLogin = () => {
         <p className="my-2 text-sm text-gray-600 ">
           Didn’t remember password?{" "}
           <Link
-            to="/authentication/users/user-forgot-password"
+            to="/authentication/users/forgot-password"
             className="text-blue-500 hover:underline"
           >
             Forgot here

@@ -59,7 +59,7 @@ const UserSignUp = () => {
         <p className="my-2 text-sm text-gray-600 ">
           Already have an account?{" "}
           <Link
-            to="/authentication/users/user-login"
+            to="/authentication/users/login"
             className="text-blue-500 hover:underline"
           >
             Login here

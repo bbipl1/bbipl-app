@@ -2,19 +2,15 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
-import useCustomNavigate from "../../utility/Navigate";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
 function Login() {
-  const navigateTo = useCustomNavigate();
   const [loading, setLoading] = useState(false);
-  const [department, setDepartment] = useState("admin"); // Updated from role to department
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     empMobileOrId: "", // Single field to accept either empId or empMobile
     empPassword: "",
-    empDepartment: "admin", // Updated from empRole to empDepartment
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -25,10 +21,6 @@ function Login() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleDepartment = (e) => {
-    setDepartment(e.target.value);
-    setFormData((prevData) => ({ ...prevData, empDepartment: e.target.value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,21 +28,21 @@ function Login() {
     setSuccess("");
     setLoading(true);
 
-    const { empMobileOrId, empPassword, empDepartment } = formData;
+    const { empMobileOrId, empPassword } = formData;
     let dataToSend = {};
 
     if (empMobileOrId) {
       // Check if the input looks like a mobile number or empId
       if (empMobileOrId.length === 10 && /^[0-9]+$/.test(empMobileOrId)) {
         // It's a mobile number, send it as empMobile
-        dataToSend = { empMobile: empMobileOrId, empPassword, empDepartment };
+        dataToSend = { mobile: empMobileOrId, password:empPassword};
       } else {
         // Otherwise, treat it as empId
-        dataToSend = { empId: empMobileOrId, empPassword, empDepartment };
+        dataToSend = { id: empMobileOrId, password:empPassword,};
       }
 
       try {
-        const url = `${serverURL}/api/user-login`;
+        const url = `${serverURL}/api/src/login`;
         const header = { headers: { "Content-Type": "application/json" } };
 
         setLoading(true);
@@ -59,8 +51,11 @@ function Login() {
           .then((res) => {
             const data = res?.data;
             setSuccess("Login successful!");
-            console.log(data?.user);
+            console.log("data is",data);
             alert(data?.message);
+            const department=res?.data?.user?.department;
+            const role=res?.data?.user?.role;
+            
 
             // Redirect based on department
             if (department === "admin") {
@@ -74,8 +69,6 @@ function Login() {
                 replace: true,
               });
             } else if (department === "construction") {
-              const role = data?.user?.role;
-
               if (role === "site-engineer") {
                 navigate("/pages/constructions/site-engineer/dashboard", {
                   state: { data },
@@ -156,27 +149,7 @@ function Login() {
               </button>
             </div>
           </div>
-          <div className="mb-6">
-            <label
-              htmlFor="department"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Department
-            </label>
-            <select
-              id="department"
-              name="empDepartment"
-              value={department}
-              onChange={handleDepartment}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            >
-              <option value="admin">Admin</option>
-              <option value="developer">Developer</option>
-              <option value="construction">Construction</option>
-              {/* <option value="finance">Finance</option> */}
-            </select>
-          </div>
+    
 
           <div className="flex items-center justify-center mb-4">
             {loading && (
@@ -191,15 +164,7 @@ function Login() {
             Login
           </button>
         </form>
-        <p className="my-2 text-sm text-gray-600 ">
-          Didn’t remember password?{" "}
-          <Link
-            to="/authentication/officials/forgot-password"
-            className="text-blue-500 hover:underline"
-          >
-            Forgot here
-          </Link>
-        </p>
+      
       </div>
     </div>
   );

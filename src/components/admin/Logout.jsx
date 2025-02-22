@@ -6,7 +6,7 @@ const Logout = () => {
 
   // Function to handle navigation after logout
   const goToHome = () => {
-    navigate('/'); // Redirect to the homepage or any other route if needed
+    navigate('/',{replace:true}); // Redirect to the homepage or any other route if needed
   };
 
   return (
