@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
@@ -5,16 +6,17 @@ import { ClipLoader } from "react-spinners";
 const ContactUsMessageModal = ({ isOpen, contact, onClose, onSendReply }) => {
   const [message, setMessage] = useState("");
   const [method, setMethod] = useState("email"); // Default method is email
-  const [isLoading,setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async() => {
+
+  const handleSubmit = async () => {
     if (message.trim() === "") {
       alert("Message cannot be empty.");
       return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     await onSendReply(method, contact, message);
-    setIsLoading(false)
+    setIsLoading(false);
     onClose(); // Close the modal after submitting
   };
 
@@ -27,10 +29,10 @@ const ContactUsMessageModal = ({ isOpen, contact, onClose, onSendReply }) => {
           Send a Reply to {contact.name}
         </h2>
         <div className="flex items-center justify-center mb-4">
-            {isLoading && (
-              <ClipLoader color="#4A90E2" loading={isLoading} size={50} />
-            )}
-          </div>
+          {isLoading && (
+            <ClipLoader color="#4A90E2" loading={isLoading} size={50} />
+          )}
+        </div>
         <div className="mb-4">
           <label className="block text-gray-700">Response Method</label>
           <select
@@ -86,6 +88,8 @@ const ContactUsMessages = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState(null);
 
+  const serverURL=process.env.REACT_APP_SERVER_URL;
+
   // Fetch contacts from the server
   useEffect(() => {
     const fetchContacts = async () => {
@@ -134,7 +138,7 @@ const ContactUsMessages = () => {
         responseMessage: message,
         status: "Complete",
       };
-  
+
       // Create both API request promises
       const updateContactPromise = fetch(
         `${process.env.REACT_APP_SERVER_URL}/api/update-contact-us-messages`,
@@ -147,7 +151,7 @@ const ContactUsMessages = () => {
         if (!res.ok) throw new Error("Failed to update contact status");
         return res.json();
       });
-  
+
       const sendEmailPromise = fetch(
         `${process.env.REACT_APP_SERVER_URL}/api/email/send-email`,
         {
@@ -164,26 +168,48 @@ const ContactUsMessages = () => {
         if (!res.ok) throw new Error("Failed to send email");
         return res.json();
       });
-  
+
       // Run both requests in parallel
       const [updateResponse, emailResponse] = await Promise.all([
         updateContactPromise,
         sendEmailPromise,
       ]);
-  
+
       console.log("Contact updated:", updateResponse.message);
       console.log("Email sent successfully:", emailResponse.message);
-  
+
       // Update state only if both are successful
       setFetchMe(fetchMe + 1);
       alert("Response sent successfully!");
-  
     } catch (err) {
       console.error("Error handling reply:", err);
       alert("Error handling reply. Please try again.");
     }
   };
-  
+
+  const handleDelete=(docId)=>{
+    const url=`${serverURL}/api/admin/users/query/contact-us/delete-contact-us?docId=${docId}`;
+    const headers={
+      "Content-Type":"application/json"
+    }
+    const userRes=window.confirm("Are you sure? All the data of this user will be deleted permanently.");
+    if(!userRes){
+      return ;
+    }
+    setLoading(true);
+    axios.delete(url,headers)
+    .then((res)=>{
+      alert(res?.data?.message);
+      setFetchMe(fetchMe+1);
+    })
+    .catch((error)=>{
+      console.log(error)
+      alert(error?.response?.data?.message);
+    })
+    .finally((final)=>{
+      setLoading(false);
+    })
+  }
 
   return (
     <div className="container mx-auto p-4 ">
@@ -209,6 +235,9 @@ const ContactUsMessages = () => {
               <th className="border border-gray-300 px-4 py-2 text-left">
                 Submitted At
               </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -216,7 +245,7 @@ const ContactUsMessages = () => {
               <tr
                 key={contact._id}
                 className="hover:bg-gray-100 cursor-pointer"
-                onClick={() => handleOpenModal(contact)}
+               
               >
                 <td className="border border-gray-300 px-4 py-2">
                   {contact.name}
@@ -242,6 +271,19 @@ const ContactUsMessages = () => {
                 </td>
                 <td className="border border-gray-300 px-4 py-2">
                   {new Date(contact.createdAt).toLocaleString()}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <div>
+                    <button onClick={()=>{handleDelete(contact._id)}} className="w-16 m-1 p-1 bg-red-500 hover:bg-red-600 text-white rounded-md">
+                      delete
+                    </button>
+                    <button onClick={()=>{alert("Coming soon.")}} className="w-16 m-1 p-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md">
+                      View
+                    </button>
+                    <button  onClick={() => handleOpenModal(contact)} className="w-16 m-1 p-1 bg-green-500 hover:bg-green-600 text-white rounded-md">
+                      Reply
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

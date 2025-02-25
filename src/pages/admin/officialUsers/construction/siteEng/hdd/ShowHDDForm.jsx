@@ -1,37 +1,30 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
-
-
+import React, { useEffect, useState } from "react";
+import FullScreenLoading from "../../../../../../loading/FullScreenLoading";
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 const ShowAllForms = ({ siteEngineerId }) => {
   const [allForms, setAllForms] = useState();
-  const [id, setId] = useState();
   const [viewHdd, setViewHdd] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    if (id) {
-      const url = `${serverUrl}/api/constructions/site-engineers/get-hdd-forms?id=${id}`;
+    const url = `${serverUrl}/api/constructions/site-engineers/get-hdd-forms`;
 
-      const header = {
-        header: "application/json",
-      };
-      axios
-        .get(url, header)
-        .then((res) => {
-          console.log("res", res.data.data);
-          setAllForms(res.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [id]);
-
-  useEffect(() => {
-    console.log(siteEngineerId.id);
-    setId(siteEngineerId.id);
-  }, [siteEngineerId]);
+    const header = {
+      header: "application/json",
+    };
+    axios
+      .get(url, header)
+      .then((res) => {
+        // console.log("res", res.data.data);
+        setAllForms(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [siteEngineerId, refresh]);
 
   const viewSingleHDD = (hdd) => {
     return (
@@ -39,14 +32,13 @@ const ShowAllForms = ({ siteEngineerId }) => {
         <div className="flex flex-row justify-end relative">
           <div className=" absolute left-0 top-8  w-full flex justify-center items-center ">
             <p className="text-xl font-bold"> HDD Form Details.</p>
-            
           </div>
 
           <div onClick={() => setViewHdd(null)}>
-          <X
-                className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
-                size={32}
-              />
+            <X
+              className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
+              size={32}
+            />
           </div>
         </div>
         <div className="mt-8">
@@ -108,7 +100,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                   ) : (
                     <>
                       <div>
-                        <p>HDD meter data is not available.</p>
+                        <p>HDD machine report is not available.</p>
                       </div>
                     </>
                   )}
@@ -138,7 +130,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                   ) : (
                     <>
                       <div>
-                        <p>HDD meter data is not available.</p>
+                        <p>Expenses report is not available.</p>
                       </div>
                     </>
                   )}
@@ -151,19 +143,57 @@ const ShowAllForms = ({ siteEngineerId }) => {
     );
   };
 
+  const DeleteForm = (formId) => {
+    const response = window.confirm(
+      "Are you sure? All the data will be deleted permanently."
+    );
+    if (!response) {
+      return;
+    }
+
+    const url = `${serverUrl}/api/official-users/construction/site-engineers/hdd-form/delete-form?docId=${formId}`;
+    const header = {
+      "Content-Type": "application/json",
+    };
+
+    const payload = {};
+
+    setIsLoading(true);
+
+    axios
+      .delete(url, header)
+      .then((res) => {
+        setRefresh(refresh + 1);
+        alert(res?.data?.message);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error?.response?.data?.message);
+      })
+      .finally((final) => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleEditHdd = () => {
+    alert("Coming soon.")
+  };
   return (
     <div className="w-full">
       {viewHdd && viewSingleHDD(viewHdd)}
+      {isLoading && <FullScreenLoading />}
       {allForms && Array.isArray(allForms) ? (
         <>
           <div className="w-full">
             <div></div>
-            <div className="w-full overflow-x-auto">
+            <div className="w-full">
               <table className="w-full border-2 border-gray-100">
-                <thead className="w-full">
+                <thead className="w-full bg-slate-200">
                   <tr>
                     <th className="border-2 p-1">Date</th>
-                    <th className="border-2 p-1">Name</th>
+                    <th className="border-2 p-1">User Name</th>
+                    <th className="border-2 p-1">Client Name</th>
+                    <th className="border-2 p-1">site Name</th>
                     <th className="border-2 p-1">Date of Req...</th>
                     <th className="border-2 p-1">DIA (mtr)</th>
                     {/* <th  className="border-2 p-1">No Of Jobs</th> */}
@@ -189,6 +219,10 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           <td className="border-2 p-1">
                             {expense?.siteEngObjId?.siteEngObjId?.name}
                           </td>
+                          <td className="border-2 p-1">
+                            {expense?.clientName}
+                          </td>
+                          <td className="border-2 p-1">{expense?.siteName}</td>
                           <td className="border-2 p-1">
                             {expense?.dateOfRequirements}
                           </td>
@@ -257,20 +291,35 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               );
                             })}
                           </td>
-                          <td className="border-2 p-1">{expense.remarks}</td>
+                          <td className="border-2 p-1 max-w-52">
+                            {expense.remarks}
+                          </td>
                           <td className="border-2 p-1">
-                            <div>
-                              <button className="bg-green-500 hover:bg-green-600 px-1 text-white rounded-md w-12 m-1">
+                            <div className="grid grid-cols-1">
+                              <button
+                                onClick={() => {
+                                  handleEditHdd();
+                                }}
+                                className="p-1 m-1 bg-green-500 hover:bg-green-600 text-white rounded-md w-16"
+                              >
                                 Edit
                               </button>
                               <button
                                 onClick={() => {
                                   setViewHdd(expense);
                                 }}
-                                className="bg-blue-500 hover:bg-blue-600 px-1 text-white rounded-md w-12 m-1"
+                                className="p-1 m-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md w-16"
                               >
                                 View
                               </button>
+                              <button
+                                onClick={() => {
+                                  DeleteForm(expense?._id);
+                                }}
+                                className="p-1 m-1 bg-red-500 hover:bg-red-600 text-white rounded-md w-16"
+                              >
+                                Delete
+                              </button>{" "}
                             </div>
                           </td>
                         </tr>

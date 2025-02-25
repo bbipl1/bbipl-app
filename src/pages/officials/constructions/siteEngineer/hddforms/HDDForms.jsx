@@ -9,14 +9,11 @@ const HDDForms = ({ siteEngineerId }) => {
   const [paymentRecAmount, setPaymentRecAmount] = useState("");
   const [userId, setUserId] = useState();
   const [userName, setUserName] = useState();
+  const [clientName, setClientName] = useState();
+  const [siteName, setSiteName] = useState();
   const [mobileNo, setMobileNo] = useState();
   const [dateOfRequirements, setDateOfRequirements] = useState("");
-  const [dia, setDia] = useState("");
-  const [noOfJobs, setNoOfJobs] = useState("");
   const [siteEngObjId, setSiteEngObjId] = useState([]);
-  const [meter, setMeter] = useState("");
-  const [rate, setRate] = useState("");
-  const [amount, setAmount] = useState("");
   const [expenses, setExpenses] = useState([]);
   const [remarks, setRemarks] = useState("");
   const [hddDetails, setHddDetails] = useState([]);
@@ -33,6 +30,8 @@ const HDDForms = ({ siteEngineerId }) => {
       siteEngId: userId,
       siteEngObjId,
       userName,
+      clientName,
+      siteName,
       mobileNo,
       dateOfRequirements,
       hddDetails,
@@ -58,7 +57,9 @@ const HDDForms = ({ siteEngineerId }) => {
     axios
       .post(url, payload, header)
       .then((res) => {
+        emptyForm();
         alert(res?.data?.message);
+
       })
       .catch((err) => {
         alert(err?.response?.data?.message || "An error occurred");
@@ -67,6 +68,21 @@ const HDDForms = ({ siteEngineerId }) => {
         setIsLoading(false);
       });
   };
+
+  const emptyForm=()=>{
+    setPaymentRec("");
+    setPaymentRecAmount("");
+    setUserId("");
+    setSiteEngObjId("");
+    setUserName("");
+    setMobileNo("");
+    setDateOfRequirements("");
+    setHddDetails([]);
+    setRemarks("");
+    setExpenses([]);
+    setSiteName("");
+    setClientName("");
+  }
 
   // Handle dynamic job details
   const handleAddHDD = () => {
@@ -113,7 +129,7 @@ const HDDForms = ({ siteEngineerId }) => {
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 m-4">
-        <div>
+        {/* <div>
           <label htmlFor="">Id*</label>
           <input
             disabled
@@ -121,17 +137,29 @@ const HDDForms = ({ siteEngineerId }) => {
             type="text"
             className="w-full cursor-not-allowed border-2 p-2"
           />
-        </div>
+        </div> */}
         <div>
           <label htmlFor="">Client Name*</label>
           <input
-            value={userName}
+            value={clientName}
+            onChange={(e)=>{setClientName(e.target.value)}}
             type="text"
-            disabled
-            className="w-full cursor-not-allowed border-2 p-2"
+            placeholder="client name"
+            className="w-full border-2 p-2"
           />
         </div>
         <div>
+          <label htmlFor="siteName">SiteName*</label>
+          <input 
+          id="siteName"
+          name="siteName"
+          placeholder="site name"
+          type="text"
+          onChange={(e)=>{setSiteName(e.target.value)}}
+          className="w-full border-2 p-2"
+           />
+        </div>
+        {/* <div>
           <label htmlFor="">Mobile No*</label>
           <input
             disabled
@@ -139,7 +167,7 @@ const HDDForms = ({ siteEngineerId }) => {
             type="text"
             className="w-full cursor-not-allowed border-2 p-2"
           />
-        </div>
+        </div> */}
         <div>
           <label htmlFor="">Date of Requirements*</label>
           <input

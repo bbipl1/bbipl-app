@@ -7,16 +7,18 @@ import FormRequirementDetails from "./FormRequirementDetails";
 import SiteManagement from "./sitesManagement/SitesUpdateManagement";
 import ShowUserAttendance from "./ShowUserAttendance";
 import DailyProgressReport from "./DailyProgressReport";
-import ShowHDDForms from "./ShowHDDForm";
+import ShowHDDForms from "./officialUsers/construction/siteEng/hdd/ShowHDDForm";
 import { useAdminAuth } from "../../authContext/AuthContextProvider";
+import HDDReport from "./officialUsers/construction/siteEng/hdd/HDDReport";
 
 const AdminDashboard = () => {
   const location = useLocation();
   const { data } = location.state || {};
   const [activeComponent, setActiveComponent] = useState("details"); // State to track active component
   const [showMenu, setShowMenu] = useState("hidden");
+  const [isHddOpen, setIsHddOpen] = useState(false);
 
-  const {adminUser,adminLogout}=useAdminAuth();
+  const { adminUser, adminLogout } = useAdminAuth();
 
   const navigate = useNavigate();
 
@@ -36,8 +38,10 @@ const AdminDashboard = () => {
         return <ShowUserAttendance />;
       case "dailyProgressReport":
         return <DailyProgressReport />;
-      case "hddFormsReport":
+      case "filledForm":
         return <ShowHDDForms />;
+      case "hddReport":
+        return <HDDReport />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -49,21 +53,18 @@ const AdminDashboard = () => {
     const allowMe = window.confirm("Are you sure to logout?");
     if (allowMe) {
       // navigate("/");
-        adminLogout();
+      adminLogout();
     }
   };
 
   const getButtonClass = (component) => {
     return activeComponent === component
-      ? "w-100 px-4 py-2 bg-gray-300 text-black rounded hover:bg-white hover:border-1 transition duration-100"
-      : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
+      ? "w-full  px-4 py-2 bg-blue-300 text-white rounded-none hover:bg-blue-400 hover:border-1 transition duration-100 cursor-pointer"
+      : "w-full  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100 cursor-pointer";
   };
-
-
 
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
-      
       <div className="flex justify-between">
         <div className="text-3xl font-bold text-gray-800 mb-6 ml-2">
           Hi! {data?.user?.name}
@@ -84,11 +85,10 @@ const AdminDashboard = () => {
           setShowMenu("hidden");
         }}
         className={`fixed flex flex-col gap-1 transition-all duration-1000 ease-in-out 
-          ${showMenu !=='hidden'? "w-3/4" : "w-0 -translate-x-[350%]"} 
+          ${showMenu !== "hidden" ? "w-3/4" : "w-0 -translate-x-[350%]"} 
           lg:w-full lg:translate-x-0 md:translate-x-0 lg:pb-12 h-screen px-4 top-24 pt-4 
           bg-gray-100 lg:grid lg:grid-cols-5 lg:h-16`}
       >
-  
         <button
           onClick={() => setActiveComponent("details")}
           className={getButtonClass("details")}
@@ -132,12 +132,40 @@ const AdminDashboard = () => {
         >
           Daily Report
         </button>
-        <button
-          onClick={() => setActiveComponent("hddFormsReport")}
-          className={getButtonClass("hddFormsReport")}
-        >
-          HDD
-        </button>
+        <div className="w-full relative">
+          <button
+            onClick={() => {
+              // setActiveComponent("hdd");
+              setIsHddOpen(!isHddOpen);
+            }}
+            className={getButtonClass("hdd")}
+          >
+            HDD
+          </button>
+          {isHddOpen && (
+            <ul className="absolute left-0 w-full bg-blue-500">
+              <li
+                onClick={() => {
+                  setActiveComponent("filledForm");
+                  setIsHddOpen(false);
+                }}
+                className={getButtonClass("hddFormsReport")}
+              >
+                Filled form
+              </li>
+              <li
+                onClick={() => {
+                  setActiveComponent("hddReport");
+                  setIsHddOpen(false);
+                }}
+                className={getButtonClass("hddFormsReport")}
+              >
+                Report
+              </li>
+            </ul>
+          )}
+        </div>
+
         <button
           onClick={() => handleLogout()}
           className="w-100 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"

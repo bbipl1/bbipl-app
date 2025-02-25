@@ -116,9 +116,9 @@ const FormRequirementDetails = () => {
       });
   };
 
-  const handleCancel=()=>{
+  const handleCancel = () => {
     setShowStatusOpen(false);
-  }
+  };
 
   const handleAmountChange = (e) => {
     // const [name, value] = e.target;
@@ -133,7 +133,11 @@ const FormRequirementDetails = () => {
           {/* <label htmlFor="status">Select Status</label> */}
           <div className="flex justify-center items-center w-1/2 h-1/2  lg:w-1/4 lg:h-1/4 flex-col bg-cyan-200 rounded-lg border-2 border-cyan-500 opacity-100">
             <label htmlFor="amount">Amount*</label>
-            <input onChange={handleAmountChange} className="p-1 rounded-lg" type="text" />
+            <input
+              onChange={handleAmountChange}
+              className="p-1 rounded-lg"
+              type="text"
+            />
             <div>
               <button
                 onClick={handleCancel}
@@ -196,10 +200,14 @@ const FormRequirementDetails = () => {
                 Received Amt
               </th>
               <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
-                Status
+                Remarks
               </th>
               <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
-                Remarks
+                Status
+              </th>
+
+              <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
+                Actions
               </th>
             </tr>
           </thead>
@@ -245,6 +253,9 @@ const FormRequirementDetails = () => {
                 <td className="border border-gray-300 px-4 py-2">
                   {form?.paymentsDetails?.receivedAmt}
                 </td>
+                <td className="border border-gray-300 px-4 py-2 ">
+                  {form.remarks}
+                </td>
                 <td
                   onClick={(e) => {
                     handleUpdateStatus(form._id);
@@ -253,7 +264,8 @@ const FormRequirementDetails = () => {
                     form?.paymentsDetails?.status === "Pending"
                       ? "bg-red-500 hover:bg-red-600"
                       : `${
-                          form?.paymentsDetails?.status === "Partially FulFilled"
+                          form?.paymentsDetails?.status ===
+                          "Partially FulFilled"
                             ? "bg-blue-500 hover:bg-blue-600"
                             : " bg-green-500 hover:bg-green-600"
                         }`
@@ -264,9 +276,6 @@ const FormRequirementDetails = () => {
                   }`}
                 >
                   {form?.paymentsDetails?.status}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 ">
-                  {form.remarks}
                 </td>
               </tr>
             ))}
