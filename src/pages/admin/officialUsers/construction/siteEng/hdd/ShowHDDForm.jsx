@@ -2,12 +2,14 @@ import axios from "axios";
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import FullScreenLoading from "../../../../../../loading/FullScreenLoading";
+import UpdateHDD from "./UpdateHDD";
 const serverUrl = process.env.REACT_APP_SERVER_URL;
 const ShowAllForms = ({ siteEngineerId }) => {
   const [allForms, setAllForms] = useState();
   const [viewHdd, setViewHdd] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [toUpdateDoc, setToUpdateDoc] = useState(null);
 
   useEffect(() => {
     const url = `${serverUrl}/api/constructions/site-engineers/get-hdd-forms`;
@@ -175,18 +177,28 @@ const ShowAllForms = ({ siteEngineerId }) => {
       });
   };
 
-  const handleEditHdd = () => {
-    alert("Coming soon.")
+  const handleEditHdd = (doc) => {
+    // alert("Coming soon.")
+    setToUpdateDoc(doc);
   };
   return (
     <div className="w-full">
       {viewHdd && viewSingleHDD(viewHdd)}
       {isLoading && <FullScreenLoading />}
+      {toUpdateDoc && (
+        <UpdateHDD
+          refresh={refresh}
+          setRefresh={setRefresh}
+          doc={toUpdateDoc}
+          handleClose={setToUpdateDoc}
+        />
+      )}
+
       {allForms && Array.isArray(allForms) ? (
         <>
           <div className="w-full">
             <div></div>
-            <div className="w-full">
+            <div className="w-full overflow-x-auto">
               <table className="w-full border-2 border-gray-100">
                 <thead className="w-full bg-slate-200">
                   <tr>
@@ -200,7 +212,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Rate/mtr (INR)</th>
                     <th className="border-2 p-1">Amount (INR)</th>
-                    <th className="border-2 p-1">payment</th>
+                    <th className="border-2 p-1 max-w-12">
+                      payment Received From Client
+                    </th>
                     <th className="border-2 p-1">Expenses</th>
                     <th className="border-2 p-1">Remarks</th>
                     <th className="border-2 p-1">Actions</th>
@@ -231,7 +245,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start border-b-2">
+                                    <p className="flex justify-start ">
                                       {++ind}) {ex.dia}
                                     </p>
                                     {/* <hr className="bg-gray-600 w-full "/> */}
@@ -244,7 +258,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4  border-b-2">
+                                    <p className="flex justify-start pl-4  ">
                                       {ex.meter}
                                     </p>
                                   </>
@@ -256,7 +270,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4  border-b-2">
+                                    <p className="flex justify-start pl-4 ">
                                       {ex.rate}
                                     </p>
                                   </>
@@ -268,7 +282,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4 border-b-2">
+                                    <p className="flex justify-start pl-4 ">
                                       RS. {Number(ex.rate) * Number(ex.meter)}/-
                                     </p>
                                   </>
@@ -277,8 +291,16 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           </td>
 
                           <td className="border-2 p-1">
-                            {expense.paymentRec.status}/Rs.
-                            {expense.paymentRec.amount}/-
+                            <p>
+                              Status:
+                              {" " + expense.paymentRec.status}
+                            </p>
+                            {expense.paymentRec.status === "Yes" && (
+                              <p>
+                                Rs.
+                                {expense.paymentRec.amount}/-
+                              </p>
+                            )}
                           </td>
                           <td className="border-2 p-1">
                             {expense?.expenses?.map((ex) => {
@@ -294,11 +316,11 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           <td className="border-2 p-1 max-w-52">
                             {expense.remarks}
                           </td>
-                          <td className="border-2 p-1">
+                          <td className="border-2 p-1 min-w-20">
                             <div className="grid grid-cols-1">
                               <button
                                 onClick={() => {
-                                  handleEditHdd();
+                                  handleEditHdd(expense);
                                 }}
                                 className="p-1 m-1 bg-green-500 hover:bg-green-600 text-white rounded-md w-16"
                               >
