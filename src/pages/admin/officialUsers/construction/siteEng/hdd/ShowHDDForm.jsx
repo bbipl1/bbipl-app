@@ -153,7 +153,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
       return;
     }
 
-    const url = `${serverUrl}/api/official-users/construction/site-engineers/hdd-form/delete-form?docId=${formId}`;
+    const url = `${serverUrl}/api/admin/official-users/construction/site-eng/hdd-report/delete-report?docId=${formId}`;
     const header = {
       "Content-Type": "application/json",
     };
