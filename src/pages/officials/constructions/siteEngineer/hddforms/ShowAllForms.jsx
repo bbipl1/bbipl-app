@@ -1,13 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
-
+import UpdatePaymentReceivedFromClient from "./update/UpdatePaymentReceivedFromClient";
+import UpdatePaymentReceivedFromCompany from "./update/UpdatePaymentReceivedFromCompany";
 
 const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 const ShowAllForms = ({ siteEngineerId }) => {
   const [allForms, setAllForms] = useState();
   const [id, setId] = useState();
   const [viewHdd, setViewHdd] = useState(null);
+  const [viewUpdate, setViewUpdate] = useState(false);
+  const [viewUpdateFormId, setViewUpdateFormId] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -34,19 +38,30 @@ const ShowAllForms = ({ siteEngineerId }) => {
   }, [siteEngineerId]);
 
   const viewSingleHDD = (hdd) => {
+    let totalExp = 0;
+    let totalMtrBill = 0;
+
+    totalExp = hdd?.expenses?.map((hd) => {
+      return (totalExp = Number(totalExp) + Number(hd?.value));
+    });
+
+    totalMtrBill = hdd?.hddDetails?.reduce((acc, hd) => {
+      return acc + Number(hd.rate) * Number(hd.meter);
+    }, 0);
+    
+
     return (
       <div className="fixed left-0 top-24 w-full h-full bg-slate-100 p-8">
         <div className="flex flex-row justify-end relative">
           <div className=" absolute left-0 top-8  w-full flex justify-center items-center ">
             <p className="text-xl font-bold"> HDD Form Details.</p>
-            
           </div>
 
           <div onClick={() => setViewHdd(null)}>
-          <X
-                className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
-                size={32}
-              />
+            <X
+              className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
+              size={32}
+            />
           </div>
         </div>
         <div className="mt-8">
@@ -57,8 +72,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
                   <h1 className="text-lg font-bold">General details.</h1>
                   <p>Name: {hdd?.siteEngObjId?.siteEngObjId?.name}</p>
                   <p>Date: {hdd?.date}</p>
-                  <p>Payment status: {hdd?.paymentRec?.status}</p>
-                  <p>Payment Received: {hdd?.paymentRec?.amount}</p>
+                  <p>Payment received from company: {hdd?.paymentReceivedFromCompany?.companyName}</p>
+                  <p>Payment received amount: Rs.{hdd?.paymentReceivedFromCompany?.amount}/-</p>
+                  <p>Payment done by: {hdd?.paymentReceivedFromCompany?.paidBy}</p>
                   <p>
                     Date of Requirement (YYYY-MM-DD): {hdd?.dateOfRequirements}
                   </p>
@@ -70,7 +86,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <>
                       <div>
                         <h1 className="text-lg font-bold">
-                          HDD machine details.
+                          HDD machine used details.
                         </h1>
                         <table>
                           <thead>
@@ -103,6 +119,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               })}
                           </tbody>
                         </table>
+                        <h1 className="font-bold">Total amount: Rs.{totalMtrBill}/-</h1>
                       </div>
                     </>
                   ) : (
@@ -118,7 +135,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <>
                       <div className="">
                         <div>
-                          <h1 className="text-lg font-bold">Other expenses.</h1>
+                          <h1 className="text-lg font-bold">Expenses.</h1>
                           {hdd &&
                             hdd.expenses &&
                             hdd.expenses.map((exp, ind) => {
@@ -132,6 +149,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 </>
                               );
                             })}
+                          <h1 className="font-bold">
+                            Total expenses: Rs.{totalExp}/-
+                          </h1>
                         </div>
                       </div>
                     </>
@@ -151,9 +171,33 @@ const ShowAllForms = ({ siteEngineerId }) => {
     );
   };
 
+  const viewUpdateForm = (docId, close) => {
+    return (
+      <>
+        <div className="fixed left-0 top-0 bg-cyan-50  w-screen h-screen z-50 pt-12">
+          <div className="grid grid-cols-1">
+            <UpdatePaymentReceivedFromClient docId={viewUpdateFormId} />
+            <UpdatePaymentReceivedFromCompany docId={viewUpdateFormId} />
+          </div>
+          <div className="flex justify-center py-8">
+            <button
+              onClick={() => {
+                setViewUpdate(false);
+              }}
+              className="m-1 p-1 w-24 bg-red-500 hover:bg-red-600 rounded-md text-white"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="w-full">
       {viewHdd && viewSingleHDD(viewHdd)}
+      {viewUpdate && viewUpdateForm(viewUpdateFormId)}
       {allForms && Array.isArray(allForms) ? (
         <>
           <div className="w-full">
@@ -170,7 +214,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Rate/mtr (INR)</th>
                     <th className="border-2 p-1">Amount (INR)</th>
-                    <th className="border-2 p-1">payment</th>
+                    {/* <th className="border-2 p-1">payment</th> */}
                     <th className="border-2 p-1">Expenses</th>
                     <th className="border-2 p-1">Remarks</th>
                     <th className="border-2 p-1">Actions</th>
@@ -242,10 +286,10 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               })}
                           </td>
 
-                          <td className="border-2 p-1">
-                            {expense.paymentRec.status}/Rs.
-                            {expense.paymentRec.amount}/-
-                          </td>
+                          {/* <td className="border-2 p-1">
+                            {expense?.paymentRec?.status}/Rs.
+                            {expense?.paymentRec?.amount}/-
+                          </td> */}
                           <td className="border-2 p-1">
                             {expense?.expenses?.map((ex) => {
                               return (
@@ -260,7 +304,13 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           <td className="border-2 p-1">{expense.remarks}</td>
                           <td className="border-2 p-1">
                             <div>
-                              <button className="bg-green-500 hover:bg-green-600 px-1 text-white rounded-md w-12 m-1">
+                              <button
+                                onClick={() => {
+                                  setViewUpdateFormId(expense._id);
+                                  setViewUpdate(true);
+                                }}
+                                className="bg-green-500 hover:bg-green-600 px-1 text-white rounded-md w-12 m-1"
+                              >
                                 Edit
                               </button>
                               <button

@@ -21,7 +21,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
       .get(url, header)
       .then((res) => {
         // console.log("res", res.data.data);
-        setAllForms(res.data.data);
+        setAllForms(res?.data?.data);
       })
       .catch((err) => {
         console.log(err);
@@ -293,12 +293,12 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           <td className="border-2 p-1">
                             <p>
                               Status:
-                              {" " + expense.paymentRec.status}
+                              {" " + expense?.paymentRec?.status}
                             </p>
-                            {expense.paymentRec.status === "Yes" && (
+                            {expense?.paymentRec?.status === "Yes" && (
                               <p>
                                 Rs.
-                                {expense.paymentRec.amount}/-
+                                {expense?.paymentRec?.amount}/-
                               </p>
                             )}
                           </td>
