@@ -216,7 +216,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                       payment Received From Client
                     </th>
                     <th className="border-2 p-1">Expenses</th>
-                    <th className="border-2 p-1">Remarks</th>
+                    {/* <th className="border-2 p-1">Remarks</th> */}
                     <th className="border-2 p-1">Actions</th>
                   </tr>
                 </thead>
@@ -234,7 +234,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                             {expense?.siteEngObjId?.siteEngObjId?.name}
                           </td>
                           <td className="border-2 p-1">
-                            {expense?.clientName}
+                            {expense?.paymentReceivedFromClient?.clientName}
                           </td>
                           <td className="border-2 p-1">{expense?.siteName}</td>
                           <td className="border-2 p-1">
@@ -291,16 +291,13 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           </td>
 
                           <td className="border-2 p-1">
-                            <p>
-                              Status:
-                              {" " + expense?.paymentRec?.status}
-                            </p>
-                            {expense?.paymentRec?.status === "Yes" && (
-                              <p>
+                        
+                            {Number(expense?.paymentReceivedFromClient?.amount)>0? 
+                              <p className="text-green-500">
                                 Rs.
-                                {expense?.paymentRec?.amount}/-
-                              </p>
-                            )}
+                                {expense?.paymentReceivedFromClient?.amount}/-
+                              </p>:<p className="text-red-500">Not received</p>
+                            }
                           </td>
                           <td className="border-2 p-1">
                             {expense?.expenses?.map((ex) => {
@@ -313,9 +310,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               );
                             })}
                           </td>
-                          <td className="border-2 p-1 max-w-52">
+                          {/* <td className="border-2 p-1 max-w-52">
                             {expense.remarks}
-                          </td>
+                          </td> */}
                           <td className="border-2 p-1 min-w-20">
                             <div className="grid grid-cols-1">
                               <button

@@ -16,9 +16,11 @@ const HDDReport = ({ allDocs }) => {
   const [otherExpenses, setOtherExpenses] = useState(0);
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [amountRecFromClient, setAmountRecFromClient] = useState(0);
+  const [amountRecFromCompany, setAmountRecFromCompany] = useState(0);
   const [dates, setDates] = useState([]);
   const [profit, setProfit] = useState(0);
   const [due, setDue] = useState(0);
+  const [selectedExp, setSelectedExp] = useState([]);
 
   useEffect(() => {
     const url = `${serverURL}/api/constructions/site-engineers/get-hdd-forms`;
@@ -32,7 +34,9 @@ const HDDReport = ({ allDocs }) => {
         const hdds = res.data.data;
         console.log(hdds);
         if (Array.isArray(hdds) && hdds.length > 0) {
-          const cls = hdds.map((hdd) => hdd.clientName || "Unknown");
+          const cls = hdds.map(
+            (hdd) => hdd?.paymentReceivedFromClient?.clientName || "Unknown"
+          );
           const clsSet = new Set(cls);
           setClients(Array.from(clsSet));
         }
@@ -57,30 +61,35 @@ const HDDReport = ({ allDocs }) => {
     if (selectedClient && selectedSite) {
       filteredHdds = hdds.filter(
         (hdd) =>
-          hdd.clientName === selectedClient && hdd.siteName === selectedSite
+          hdd.paymentReceivedFromClient?.clientName === selectedClient &&
+          hdd.siteName === selectedSite
       );
 
       //   setFilteredHdds(filteredHdds);
     } else if (selectedClient) {
-      filteredHdds = hdds.filter((hdd) => hdd.clientName === selectedClient);
+      filteredHdds = hdds.filter(
+        (hdd) => hdd?.paymentReceivedFromClient?.clientName === selectedClient
+      );
       //   setFilteredHdds(filteredHdds);
     } else if (selectedSite) {
       filteredHdds = hdds.filter((hdd) => hdd.siteName === selectedSite);
     }
-    setFilteredHdds(filteredHdds);
-    const dates = filteredHdds.map((hdd) => hdd.date || "Unknown");
-    const datesSet = new Set(dates);
-    const datesArray = Array.from(datesSet);
-    const sortedDates = datesArray.sort((a, b) => {
-      const [dayA, monthA, yearA] = a.split("-").map(Number);
-      const [dayB, monthB, yearB] = b.split("-").map(Number);
+    if (filteredHdds.length > 0) {
+      setFilteredHdds(filteredHdds);
+      const dates = filteredHdds.map((hdd) => hdd.date || "Unknown");
+      const datesSet = new Set(dates);
+      const datesArray = Array.from(datesSet);
+      const sortedDates = datesArray.sort((a, b) => {
+        const [dayA, monthA, yearA] = a.split("-").map(Number);
+        const [dayB, monthB, yearB] = b.split("-").map(Number);
 
-      return (
-        new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB)
-      );
-    });
-    setDates(sortedDates);
-    setTotalSalesAmount(filteredHdds[0]?.salesAmount);
+        return (
+          new Date(yearA, monthA - 1, dayA) - new Date(yearB, monthB - 1, dayB)
+        );
+      });
+      setDates(sortedDates);
+      setTotalSalesAmount(filteredHdds[0]?.salesAmount);
+    }
   }, [hdds, selectedClient, selectedSite]);
 
   useEffect(() => {
@@ -88,6 +97,7 @@ const HDDReport = ({ allDocs }) => {
       let totalOtherExp = 0;
       let totalHddExp = 0;
       let totalPaymentRecFromClient = 0;
+      let totalpaymentReceivedFromCompany = 0;
 
       filteredHdds.forEach((hdd) => {
         if (hdd?.expenses && Array.isArray(hdd.expenses)) {
@@ -106,21 +116,65 @@ const HDDReport = ({ allDocs }) => {
       });
 
       filteredHdds.forEach((hdd) => {
-        if (hdd?.paymentRec && hdd.paymentRec.status === "Yes") {
-          totalPaymentRecFromClient += Number(hdd.paymentRec.amount);
+        if (
+          hdd?.paymentReceivedFromClient &&
+          Number(hdd?.paymentReceivedFromClient?.amount) >= 0
+        ) {
+          totalPaymentRecFromClient += Number(
+            hdd?.paymentReceivedFromClient?.amount
+          );
         }
       });
+
+      filteredHdds.forEach((hdd) => {
+        if (
+          hdd?.paymentReceivedFromCompany &&
+          Number(hdd?.paymentReceivedFromCompany?.amount) >= 0
+        ) {
+          totalpaymentReceivedFromCompany =
+            Number(totalpaymentReceivedFromCompany) +
+            Number(hdd?.paymentReceivedFromCompany?.amount);
+        }
+      });
+
+      //set expense amount of all site docs
+
+      const expenseMap = {};
+
+      filteredHdds.forEach((hdd) => {
+        hdd.expenses.forEach((exp) => {
+          if (expenseMap[exp.name]) {
+            expenseMap[exp.name] += Number(exp.value); // Sum values for the same name
+          } else {
+            expenseMap[exp.name] = Number(exp.value);
+          }
+        });
+      });
+
+      // Convert the object back to an array
+      const groupedExpenses = Object.entries(expenseMap).map(
+        ([name, value]) => ({
+          name,
+          value,
+        })
+      );
+
+      setSelectedExp(groupedExpenses);
+
+      console.log(groupedExpenses);
 
       // console.log(totalOtherExp);
       setOtherExpenses(totalOtherExp);
       sethddMtrExpenses(totalHddExp);
-      setTotalExpenses(totalHddExp + totalOtherExp);
+      setTotalExpenses(totalOtherExp);
       setAmountRecFromClient(totalPaymentRecFromClient);
+      setAmountRecFromCompany(totalpaymentReceivedFromCompany);
     } else {
       setOtherExpenses(0);
       sethddMtrExpenses(0);
       setTotalExpenses(0);
       setAmountRecFromClient(0);
+      setSelectedExp([]);
     }
   }, [filteredHdds]);
 
@@ -141,13 +195,12 @@ const HDDReport = ({ allDocs }) => {
   }, [totalSalesAmount, amountRecFromClient]);
 
   const datas = [
-    { name: "HDD expenses", value: hddMtrExpenses },
-    { name: "Other expenses", value: otherExpenses },
+    { name: "Expenses", value: otherExpenses },
     { name: "Due", value: due },
     { name: "Profit", value: profit },
   ];
 
-  const colors=["#0088FE", "#FFBB28", "#FF8042", "#00C49F"];
+  const colors = ["#0000FF", "#FF0000", "#00C49F"];
 
   return (
     <div className="p-4">
@@ -214,14 +267,20 @@ const HDDReport = ({ allDocs }) => {
             <h1>Client name: {selectedClient}</h1>
             <h1>Site name: {selectedSite}</h1>
             <h1>Total sales amount(INR): RS. {totalSalesAmount}/-</h1>
-            <h1>Total hdd meter expenses(INR):RS. {hddMtrExpenses}/-</h1>
-            <h1>Total other expenses(INR): RS. {otherExpenses}/-</h1>
             <h1>
-              Total expenses(INR): RS.{" "}
-              {Number(otherExpenses) + Number(hddMtrExpenses)}/-
+              Total payment received from company: Rs. {amountRecFromCompany}/-
             </h1>
             <h1>
-              Total amount received till date(INR):RS. {amountRecFromClient}/-
+              Total amount received from client till date(INR):RS.{" "}
+              {amountRecFromClient}/-
+            </h1>
+            <h1>Total hdd meter income(INR):RS. {hddMtrExpenses}/-</h1>
+
+            <h1>Total expenses(INR): RS. {otherExpenses}/-</h1>
+
+            <h1>
+              Expense balance due: Rs.{" "}
+              {-Number(amountRecFromCompany) + Number(otherExpenses)}/-
             </h1>
             <h1 className={`${due > 0 ? "text-red-600" : "text-green-600"}`}>
               Due(INR): RS. {due}/-
@@ -235,11 +294,13 @@ const HDDReport = ({ allDocs }) => {
             </h1>
           </div>
           <div>
-            <h1 className="flex justify-self-center text-xl font-bold">Expense & Profit Analysis</h1>
-            <CircularCharts datas={datas} colors={colors}/>
+            <h1 className="flex justify-self-center text-xl font-bold">
+              Expense & Profit Analysis
+            </h1>
+            <CircularCharts datas={datas} colors={colors} />
           </div>
-          <div>
-            <BarChartComponent datas={datas}/>
+          <div className="pb-24">
+            {Array.isArray(selectedExp) && <BarChartComponent datas={selectedExp} />}
           </div>
         </div>
       </div>

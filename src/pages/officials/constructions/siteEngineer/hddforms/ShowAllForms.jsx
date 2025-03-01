@@ -41,9 +41,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
     let totalExp = 0;
     let totalMtrBill = 0;
 
-    totalExp = hdd?.expenses?.map((hd) => {
-      return (totalExp = Number(totalExp) + Number(hd?.value));
-    });
+    totalExp = hdd?.expenses?.reduce((acc,hd) => {
+      return (acc +Number(hd?.value));
+    },0);
 
     totalMtrBill = hdd?.hddDetails?.reduce((acc, hd) => {
       return acc + Number(hd.rate) * Number(hd.meter);
@@ -78,7 +78,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                   <p>
                     Date of Requirement (YYYY-MM-DD): {hdd?.dateOfRequirements}
                   </p>
-                  <p>Remarks: {hdd?.remarks}</p>
+                  <p className="font-bold">Remarks: {hdd?.remarks}</p>
                 </div>
 
                 <div className="mb-4">
@@ -216,7 +216,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <th className="border-2 p-1">Amount (INR)</th>
                     {/* <th className="border-2 p-1">payment</th> */}
                     <th className="border-2 p-1">Expenses</th>
-                    <th className="border-2 p-1">Remarks</th>
+                    {/* <th className="border-2 p-1">Remarks</th> */}
                     <th className="border-2 p-1">Actions</th>
                   </tr>
                 </thead>
@@ -301,9 +301,9 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               );
                             })}
                           </td>
-                          <td className="border-2 p-1">{expense.remarks}</td>
+                          {/* <td className="border-2 p-1">{expense.remarks}</td> */}
                           <td className="border-2 p-1">
-                            <div>
+                            <div className="flex justify-center">
                               <button
                                 onClick={() => {
                                   setViewUpdateFormId(expense._id);
