@@ -78,6 +78,8 @@ const ShowAllForms = ({ siteEngineerId }) => {
                   <p>
                     Date of Requirement (YYYY-MM-DD): {hdd?.dateOfRequirements}
                   </p>
+                  <p>Client Name: {hdd?.paymentReceivedFromClient?.clientName}</p>
+                  <p>Payment received from client: {hdd?.paymentReceivedFromClient?.amount}</p>
                   <p className="font-bold">Remarks: {hdd?.remarks}</p>
                 </div>
 
