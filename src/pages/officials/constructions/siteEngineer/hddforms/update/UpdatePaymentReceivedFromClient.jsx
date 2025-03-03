@@ -7,6 +7,7 @@ import axios from "axios";
 const UpdatePaymentReceivedFromClient = ({ docId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [clientName, setClientName] = useState(null);
+  const [updateText,setUpdateText]=useState("Update")
   const [paymentReceivedFromClient, setPaymentReceivedFromClient] =
     useState(null);
 
@@ -25,17 +26,21 @@ const UpdatePaymentReceivedFromClient = ({ docId }) => {
       docId,
     };
     setIsLoading(true);
+    setUpdateText("updating...")
     axios
       .put(url, payload, headers)
       .then((res) => {
         alert(res?.data?.message);
+        setUpdateText("Updated")
       })
       .catch((err) => {
         alert(err?.response?.data?.message);
         console.log(err);
+        setUpdateText("Failed");
       })
       .finally((final) => {
         setIsLoading(false);
+        
       });
   };
 
@@ -76,7 +81,7 @@ const UpdatePaymentReceivedFromClient = ({ docId }) => {
             <div className="relative w-32">
               {isLoading && <LoaderCircle className=" animate-spin mx-auto" />}
               <button onClick={submit} className="m-1 p-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md w-28">
-                Submit
+                {updateText}
               </button>
             </div>
           </div>

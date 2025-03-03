@@ -8,6 +8,7 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
   const [paymentRecFromCompany, setPaymentRecFromCompany] = useState(null);
   const [paidBy, setPaidBy] = useState();
   const [isLoading, setIsLoading] = useState(false);
+   const [updateText,setUpdateText]=useState("Update")
 
   const handleSubmitPaymentRecFromCompany = () => {
     if (!companyName || !paymentRecFromCompany || !paidBy) {
@@ -21,13 +22,16 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
     const payLoad = {docId,companyName,paymentRecFromCompany,paidBy};
 
     setIsLoading(true);
+    setUpdateText("updating...")
     axios
       .put(url, payLoad, headers)
       .then((res) => {
         alert(res?.data?.message);
+        setUpdateText("updated")
       })
       .catch((err) => {
         alert(err?.response?.data?.message);
+        setUpdateText("Failed.")
         console.log(err);
       })
       .finally((final) => {
@@ -101,7 +105,7 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
                 onClick={handleSubmitPaymentRecFromCompany}
                 className="m-1 p-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md w-28"
               >
-                Submit
+                {updateText}
               </button>
             </div>
           </div>
