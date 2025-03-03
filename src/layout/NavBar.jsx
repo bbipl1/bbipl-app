@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { AdminAuthContext } from "../authContext/AuthContextProvider";
+import { SiteEngAuthContext } from "../authContext/AuthContextProvider";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
