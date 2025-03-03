@@ -278,7 +278,7 @@ const HDDReport = ({ allDocs }) => {
 
             <h1>Total expenses(INR): RS. {otherExpenses}/-</h1>
 
-            <h1 className={`${(Number(otherExpenses)-Number(amountRecFromCompany))>0?"bg-red-500":"bg-green-500"}`}>
+            <h1 className={`${(Number(otherExpenses)-Number(amountRecFromCompany))>0?"text-red-500":"text-green-500"}`}>
               Expense balance due: Rs.{" "}
               {-Number(amountRecFromCompany) + Number(otherExpenses)}/-
             </h1>
