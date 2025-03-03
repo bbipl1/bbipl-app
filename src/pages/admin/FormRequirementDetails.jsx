@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Trash2, Pencil } from "lucide-react";
 import axios from "axios";
 import ImageShow from "../../components/admin/ImageShow";
 const serverURL = process.env.REACT_APP_SERVER_URL;
@@ -276,6 +277,16 @@ const FormRequirementDetails = () => {
                   }`}
                 >
                   {form?.paymentsDetails?.status}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <div className="flex flex-row">
+                    <button className="mx-auto block px-1 text-blue-500 hover:text-blue-600 rounded-md">
+                      <Pencil />
+                    </button>
+                    <button className="mx-auto block px-1 text-red-500 hover:text-red-600 rounded-md">
+                      <Trash2 />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

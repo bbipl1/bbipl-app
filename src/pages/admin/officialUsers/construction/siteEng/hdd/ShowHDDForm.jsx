@@ -1,5 +1,5 @@
 import axios from "axios";
-import { X } from "lucide-react";
+import { X,Eye,Pencil,Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import FullScreenLoading from "../../../../../../loading/FullScreenLoading";
 import UpdateHDD from "./UpdateHDD";
@@ -319,25 +319,25 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 onClick={() => {
                                   handleEditHdd(expense);
                                 }}
-                                className="p-1 m-1 bg-green-500 hover:bg-green-600 text-white rounded-md w-16"
+                                className="p-1 m-1 text-green-500 hover:text-green-600 rounded-md w-16"
                               >
-                                Edit
+                                <Pencil className="block mx-auto" size={24}/>
                               </button>
                               <button
                                 onClick={() => {
                                   setViewHdd(expense);
                                 }}
-                                className="p-1 m-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md w-16"
+                                className="p-1 m-1 text-blue-500 hover:text-blue-600  rounded-md w-16"
                               >
-                                View
+                                <Eye className="block mx-auto" size={24}/>
                               </button>
                               <button
                                 onClick={() => {
                                   DeleteForm(expense?._id);
                                 }}
-                                className="p-1 m-1 bg-red-500 hover:bg-red-600 text-white rounded-md w-16"
+                                className="p-1 m-1 text-red-500 hover:text-red-600  rounded-md w-16"
                               >
-                                Delete
+                                <Trash2 className="block mx-auto" size={24}/>
                               </button>{" "}
                             </div>
                           </td>

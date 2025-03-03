@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { header } from "framer-motion/client";
 import axios from "axios";
 import { ClipLoader } from "react-spinners";
+import { Trash2 } from "lucide-react";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
@@ -85,17 +86,17 @@ const ShowProRepInDetail = ({ report, isOpen, open }) => {
         )}
         <button
           onClick={handleDelete}
-          className="w-24 text-white m-2 p-1 bg-red-600 rounded-lg hover:bg-red-700 "
+          className="m-2 p-1 text-red-600 rounded-lg hover:text-red-700 "
         >
-          Delete
+          <Trash2 size={32}/>
         </button>
         <button
           onClick={() => {
             isOpen(false);
           }}
-          className=" w-12 bg-red-200 hover:bg-red-300 text-red-600 p-2 rounded-md border-2 border-red-400 font-bold text-lg"
+          className="text-red-600  font-bold "
         >
-          <X className="mx-auto" size={24} />
+          <X className="mx-auto" size={32} />
         </button>
       </div>
       {isQROpen && (
