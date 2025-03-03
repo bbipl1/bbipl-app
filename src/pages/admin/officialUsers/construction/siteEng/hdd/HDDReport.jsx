@@ -179,12 +179,12 @@ const HDDReport = ({ allDocs }) => {
   }, [filteredHdds]);
 
   useEffect(() => {
-    if (totalExpenses > 0 && totalSalesAmount > 0) {
-      setProfit(Number(totalSalesAmount) - Number(totalExpenses));
+    if (totalExpenses > 0 && Number(hddMtrExpenses) > 0) {
+      setProfit(Number(hddMtrExpenses) - Number(totalExpenses));
     } else {
       setProfit(0);
     }
-  }, [totalExpenses, totalSalesAmount]);
+  }, [totalExpenses, hddMtrExpenses]);
 
   useEffect(() => {
     if (hddMtrExpenses > 0 && amountRecFromClient > 0) {
