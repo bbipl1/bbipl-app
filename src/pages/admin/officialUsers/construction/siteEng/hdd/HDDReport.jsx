@@ -187,12 +187,12 @@ const HDDReport = ({ allDocs }) => {
   }, [totalExpenses, totalSalesAmount]);
 
   useEffect(() => {
-    if (totalSalesAmount > 0 && amountRecFromClient > 0) {
-      setDue(Number(totalSalesAmount) - Number(amountRecFromClient));
+    if (hddMtrExpenses > 0 && amountRecFromClient > 0) {
+      setDue(Number(hddMtrExpenses) - Number(amountRecFromClient));
     } else {
       setDue(0);
     }
-  }, [totalSalesAmount, amountRecFromClient]);
+  }, [hddMtrExpenses, amountRecFromClient]);
 
   const datas = [
     { name: "Expenses", value: otherExpenses },
@@ -266,7 +266,7 @@ const HDDReport = ({ allDocs }) => {
             </h1>
             <h1>Client name: {selectedClient}</h1>
             <h1>Site name: {selectedSite}</h1>
-            <h1>Total sales amount(INR): RS. {totalSalesAmount}/-</h1>
+            <h1>Total sales amount(INR): RS. {hddMtrExpenses}/-</h1>
             <h1>
               Total payment received from company: Rs. {amountRecFromCompany}/-
             </h1>
@@ -274,7 +274,7 @@ const HDDReport = ({ allDocs }) => {
               Total amount received from client till date(INR):RS.{" "}
               {amountRecFromClient}/-
             </h1>
-            <h1>Total hdd meter income(INR):RS. {hddMtrExpenses}/-</h1>
+            {/* <h1>Total hdd meter income(INR):RS. {hddMtrExpenses}/-</h1> */}
 
             <h1>Total expenses(INR): RS. {otherExpenses}/-</h1>
 
