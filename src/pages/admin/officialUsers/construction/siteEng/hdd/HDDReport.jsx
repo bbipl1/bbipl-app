@@ -187,7 +187,7 @@ const HDDReport = ({ allDocs }) => {
   }, [totalExpenses, hddMtrExpenses]);
 
   useEffect(() => {
-    if (hddMtrExpenses > 0 && amountRecFromClient > 0) {
+    if (hddMtrExpenses >= 0 && amountRecFromClient >= 0) {
       setDue(Number(hddMtrExpenses) - Number(amountRecFromClient));
     } else {
       setDue(0);
