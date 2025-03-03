@@ -203,17 +203,17 @@ const ShowAllForms = ({ siteEngineerId }) => {
                 <thead className="w-full bg-slate-200">
                   <tr>
                     <th className="border-2 p-1">Date</th>
-                    <th className="border-2 p-1">User Name</th>
-                    <th className="border-2 p-1">Client Name</th>
-                    <th className="border-2 p-1">site Name</th>
-                    <th className="border-2 p-1">Date of Req...</th>
+                    <th className="border-2 p-1">User name</th>
+                    <th className="border-2 p-1">Client name</th>
+                    <th className="border-2 p-1">site name</th>
+                    <th className="border-2 p-1">Date of work</th>
                     <th className="border-2 p-1">DIA (mtr)</th>
                     {/* <th  className="border-2 p-1">No Of Jobs</th> */}
                     <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Rate/mtr (INR)</th>
                     <th className="border-2 p-1">Amount (INR)</th>
                     <th className="border-2 p-1 max-w-12">
-                      payment Received From Client
+                      payment received from client
                     </th>
                     <th className="border-2 p-1">Expenses</th>
                     {/* <th className="border-2 p-1">Remarks</th> */}
