@@ -12,13 +12,16 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
   const [siteName, setSiteName] = useState(null);
   const [salesAmount, setSalesAmount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [paymentRecFromClient,setPaymentRecFromClient]=useState(0);
+  const [paymentRecFromClientText,setPaymentRecFromClientText]=useState("Edit");
 
   useEffect(() => {
     if (doc) {
       console.log(doc);
-      setClientName(doc.clientName);
-      setSalesAmount(doc.salesAmount);
-      setSiteName(doc.siteName);
+      setClientName(doc?.paymentReceivedFromClient?.clientName);
+      setSalesAmount(doc?.paymentReceivedFromCompany?.amount);
+      setPaymentRecFromClient(doc?.paymentReceivedFromClient?.amount);
+      setSiteName(doc?.siteName);
     }
   }, [doc]);
 
@@ -26,18 +29,19 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
     // alert(text);
     if (text === "Update") {
       setIsLoading(true);
-      const url = `${serverURL}/api/admin/official-users/construction/site-eng/hdd-report/update-sales-amount`;
+      const url = `${serverURL}/api/admin/official-users/construction/site-eng/hdd-report/update-payment-received-from-bbipl`;
       const payload = {
         docId: doc._id,
         salesAmount,
       };
       const headers = { "Content-Type": "application/json" };
-
+      setSalesAmountText("Updating");
       axios
         .put(url, payload, headers)
         .then((res) => {
           alert(res?.data?.message);
           setRefresh(refresh + 1);
+          setSalesAmountText("Updated");
         })
         .catch((err) => {
           console.log(err);
@@ -61,12 +65,13 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
         siteName,
       };
       const headers = { "Content-Type": "application/json" };
-
+      setsiteNameText("Updating");
       axios
         .put(url, payload, headers)
         .then((res) => {
           alert(res?.data?.message);
           setRefresh(refresh + 1);
+          setsiteNameText("Updated");
         })
         .catch((err) => {
           console.log(err);
@@ -79,6 +84,7 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
       setsiteNameText("Update");
     }
   };
+
   const handleEditOrUpdateForClientName = (text) => {
     // alert(text)
     if (text === "Update") {
@@ -89,12 +95,13 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
         clientName,
       };
       const headers = { "Content-Type": "application/json" };
-
+      setClientText("Updating");
       axios
         .put(url, payload, headers)
         .then((res) => {
           alert(res?.data?.message);
           setRefresh(refresh + 1);
+          setClientText("Updated");
         })
         .catch((err) => {
           console.log(err);
@@ -105,6 +112,35 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
         });
     } else if (text === "Edit") {
       setClientText("Update");
+    }
+  };
+  const handleEditOrUpdateForClientAmount = (text) => {
+    // alert(text)
+    if (text === "Update") {
+      setIsLoading(true);
+      const url = `${serverURL}/api/admin/official-users/construction/site-eng/hdd-report/update-amount-received-from-client`;
+      const payload = {
+        docId: doc._id,
+        paymentRecFromClient,
+      };
+      const headers = { "Content-Type": "application/json" };
+setPaymentRecFromClientText("Updating...")
+      axios
+        .put(url, payload, headers)
+        .then((res) => {
+          alert(res?.data?.message);
+          setRefresh(refresh + 1);
+          setPaymentRecFromClientText("Updated")
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(err?.response?.data?.message);
+        })
+        .finally((final) => {
+          setIsLoading(false);
+        });
+    } else if (text === "Edit") {
+      setPaymentRecFromClientText("Update");
     }
   };
 
@@ -190,7 +226,7 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
               <div>
                 <label className="block" htmlFor="salesAmount">
                   {" "}
-                  salesAmount{" "}
+                  payment received from company{" "}
                 </label>
                 <input
                   onChange={(e) => {
@@ -210,6 +246,31 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
                   className="m-1 p-1 bg-blue-500 hover:bg-blue-600 text-white w-24 rounded-md"
                 >
                   {salesAmountEditText}
+                </button>
+              </div>
+              <div>
+                <label className="block" htmlFor="salesAmount">
+                  {" "}
+                  payment received from client{" "}
+                </label>
+                <input
+                  onChange={(e) => {
+                    setPaymentRecFromClient(e.target.value);
+                  }}
+                  className={`p-1 border-2 rounded-md ${paymentRecFromClientText==="Edit"?"cursor-not-allowed":"cursor-default"}`}
+                  id="salesAmount"
+                  name="salesAmount"
+                  type="Number"
+                  value={paymentRecFromClient}
+                  disabled={paymentRecFromClientText === "Edit"}
+                />
+                <button
+                  onClick={() => {
+                    handleEditOrUpdateForClientAmount(paymentRecFromClientText);
+                  }}
+                  className="m-1 p-1 bg-blue-500 hover:bg-blue-600 text-white w-24 rounded-md"
+                >
+                  {paymentRecFromClientText}
                 </button>
               </div>
             </div>

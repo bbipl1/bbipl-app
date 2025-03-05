@@ -208,17 +208,17 @@ const ShowAllForms = ({ siteEngineerId }) => {
               <table className="w-full border-2 border-gray-100">
                 <thead className="w-full">
                   <tr>
-                    <th className="border-2 p-1">Date</th>
-                    <th className="border-2 p-1">Name</th>
                     <th className="border-2 p-1">Date of work</th>
+                    <th className="border-2 p-1"> Client name</th>
+                    <th className="border-2 p-1"> Site name</th>
                     <th className="border-2 p-1">DIA (mtr)</th>
-                    {/* <th  className="border-2 p-1">No Of Jobs</th> */}
-                    <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Rate/mtr (INR)</th>
-                    <th className="border-2 p-1">Amount (INR)</th>
-                    {/* <th className="border-2 p-1">payment</th> */}
+                    <th className="border-2 p-1">Length (mtr)</th>
+                    <th className="border-2 p-1">Total Amount (INR)</th>
                     <th className="border-2 p-1">Expenses</th>
-                    {/* <th className="border-2 p-1">Remarks</th> */}
+                    <th className="border-2 p-1">Payment received from BBIPL</th>
+                    <th className="border-2 p-1"> Amount received from client</th>
+                    <th className="border-2 p-1">Remarks</th>
                     <th className="border-2 p-1">Actions</th>
                   </tr>
                 </thead>
@@ -231,12 +231,18 @@ const ShowAllForms = ({ siteEngineerId }) => {
                             i % 2 === 0 ? "bg-white" : "bg-blue-50"
                           }`}
                         >
-                          <td className="border-2 p-1">{expense?.date}</td>
-                          <td className="border-2 p-1">
+                          {/* <td className="border-2 p-1">{expense?.date}</td> */}
+                          {/* <td className="border-2 p-1">
                             {expense?.siteEngObjId?.siteEngObjId?.name}
+                          </td> */}
+                           <td className="border-2 p-1">
+                            {expense?.dateOfRequirements}
                           </td>
                           <td className="border-2 p-1">
-                            {expense?.dateOfRequirements}
+                            {expense?.paymentReceivedFromClient?.clientName}
+                          </td>
+                           <td className="border-2 p-1">
+                            {expense?.siteName}
                           </td>
                           <td className="border-2">
                             {expense &&
@@ -275,6 +281,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 );
                               })}
                           </td>
+
                           <td className="border-2">
                             {expense &&
                               expense?.hddDetails?.map((ex, ind) => {
@@ -288,10 +295,6 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               })}
                           </td>
 
-                          {/* <td className="border-2 p-1">
-                            {expense?.paymentRec?.status}/Rs.
-                            {expense?.paymentRec?.amount}/-
-                          </td> */}
                           <td className="border-2 p-1">
                             {expense?.expenses?.map((ex) => {
                               return (
@@ -303,6 +306,32 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               );
                             })}
                           </td>
+
+                          <td className="border-2 p-1">
+                            {expense?.paymentReceivedFromCompany?.amount}
+                          </td>
+                          
+                          <td className="border-2 p-1">
+                            {expense?.paymentReceivedFromClient?.amount}
+                          </td>
+                          {/* <td className="border-2 p-1">
+                            {expense?.paymentReceivedFromCompany?.companyName}
+                          </td> */}
+                         
+                          <td className="border-2 p-1">
+                            {expense?.remarks}
+                          </td>
+                         
+                         
+                          
+                          
+                          
+
+                          {/* <td className="border-2 p-1">
+                            {expense?.paymentRec?.status}/Rs.
+                            {expense?.paymentRec?.amount}/-
+                          </td> */}
+                          
                           {/* <td className="border-2 p-1">{expense.remarks}</td> */}
                           <td className="border-2 p-1">
                             <div className="flex justify-center">

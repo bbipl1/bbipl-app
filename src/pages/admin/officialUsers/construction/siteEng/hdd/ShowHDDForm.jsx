@@ -202,21 +202,17 @@ const ShowAllForms = ({ siteEngineerId }) => {
               <table className="w-full border-2 border-gray-100">
                 <thead className="w-full bg-slate-200">
                   <tr>
-                    <th className="border-2 p-1">Date</th>
-                    <th className="border-2 p-1">User name</th>
-                    <th className="border-2 p-1">Client name</th>
-                    <th className="border-2 p-1">site name</th>
-                    <th className="border-2 p-1">Date of work</th>
+                  <th className="border-2 p-1">Date of work</th>
+                    <th className="border-2 p-1"> Client name</th>
+                    <th className="border-2 p-1"> Site name</th>
                     <th className="border-2 p-1">DIA (mtr)</th>
-                    {/* <th  className="border-2 p-1">No Of Jobs</th> */}
-                    <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Rate/mtr (INR)</th>
-                    <th className="border-2 p-1">Amount (INR)</th>
-                    <th className="border-2 p-1 max-w-12">
-                      payment received from client
-                    </th>
+                    <th className="border-2 p-1">Length (mtr)</th>
+                    <th className="border-2 p-1">Total Amount (INR)</th>
                     <th className="border-2 p-1">Expenses</th>
-                    {/* <th className="border-2 p-1">Remarks</th> */}
+                    <th className="border-2 p-1 max-w-28">Payment received from BBIPL</th>
+                    <th className="border-2 p-1 max-w-28"> Amount received from client</th>
+                    <th className="border-2 p-1">Remarks</th>
                     <th className="border-2 p-1">Actions</th>
                   </tr>
                 </thead>
@@ -229,23 +225,21 @@ const ShowAllForms = ({ siteEngineerId }) => {
                             i % 2 === 0 ? "bg-white" : "bg-blue-50"
                           }`}
                         >
-                          <td className="border-2 p-1">{expense?.date}</td>
-                          <td className="border-2 p-1">
-                            {expense?.siteEngObjId?.siteEngObjId?.name}
+                           <td className="border-2 p-1">
+                            {expense?.dateOfRequirements}
                           </td>
                           <td className="border-2 p-1">
                             {expense?.paymentReceivedFromClient?.clientName}
                           </td>
-                          <td className="border-2 p-1">{expense?.siteName}</td>
-                          <td className="border-2 p-1">
-                            {expense?.dateOfRequirements}
+                           <td className="border-2 p-1">
+                            {expense?.siteName}
                           </td>
                           <td className="border-2">
                             {expense &&
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start ">
+                                    <p className="flex justify-start border-b-2">
                                       {++ind}) {ex.dia}
                                     </p>
                                     {/* <hr className="bg-gray-600 w-full "/> */}
@@ -258,7 +252,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4  ">
+                                    <p className="flex justify-start pl-4  border-b-2">
                                       {ex.meter}
                                     </p>
                                   </>
@@ -270,19 +264,20 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4 ">
+                                    <p className="flex justify-start pl-4  border-b-2">
                                       {ex.rate}
                                     </p>
                                   </>
                                 );
                               })}
                           </td>
+
                           <td className="border-2">
                             {expense &&
                               expense?.hddDetails?.map((ex, ind) => {
                                 return (
                                   <>
-                                    <p className="flex justify-start pl-4 ">
+                                    <p className="flex justify-start pl-4 border-b-2">
                                       RS. {Number(ex.rate) * Number(ex.meter)}/-
                                     </p>
                                   </>
@@ -290,15 +285,6 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               })}
                           </td>
 
-                          <td className="border-2 p-1">
-                        
-                            {Number(expense?.paymentReceivedFromClient?.amount)>0? 
-                              <p className="text-green-500">
-                                Rs.
-                                {expense?.paymentReceivedFromClient?.amount}/-
-                              </p>:<p className="text-red-500">Not received</p>
-                            }
-                          </td>
                           <td className="border-2 p-1">
                             {expense?.expenses?.map((ex) => {
                               return (
@@ -310,9 +296,20 @@ const ShowAllForms = ({ siteEngineerId }) => {
                               );
                             })}
                           </td>
-                          {/* <td className="border-2 p-1 max-w-52">
-                            {expense.remarks}
-                          </td> */}
+
+                          <td className="border-2 p-1">
+                            {expense?.paymentReceivedFromCompany?.amount}
+                          </td>
+                          
+                          <td className="border-2 p-1">
+                            {expense?.paymentReceivedFromClient?.amount}
+                          </td>
+                          
+                         
+                          <td className="border-2 p-1 max-w-44">
+                            {expense?.remarks}
+                          </td>
+                         
                           <td className="border-2 p-1 min-w-20">
                             <div className="grid grid-cols-1">
                               <button
