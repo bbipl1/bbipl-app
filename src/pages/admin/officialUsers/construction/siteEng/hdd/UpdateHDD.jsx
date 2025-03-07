@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { serverURL } from "../../../../../../utility/URL";
 import axios from "axios";
 import FullScreenLoading from "../../../../../../loading/FullScreenLoading";
+import UpdateHDDMeter from "./UpdateHDDMeter";
 
 const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
   const [clientEditText, setClientText] = useState("Edit");
@@ -12,8 +13,9 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
   const [siteName, setSiteName] = useState(null);
   const [salesAmount, setSalesAmount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentRecFromClient,setPaymentRecFromClient]=useState(0);
-  const [paymentRecFromClientText,setPaymentRecFromClientText]=useState("Edit");
+  const [paymentRecFromClient, setPaymentRecFromClient] = useState(0);
+  const [paymentRecFromClientText, setPaymentRecFromClientText] =
+    useState("Edit");
 
   useEffect(() => {
     if (doc) {
@@ -124,13 +126,13 @@ const UpdateHDD = ({ doc, handleClose, refresh, setRefresh }) => {
         paymentRecFromClient,
       };
       const headers = { "Content-Type": "application/json" };
-setPaymentRecFromClientText("Updating...")
+      setPaymentRecFromClientText("Updating...");
       axios
         .put(url, payload, headers)
         .then((res) => {
           alert(res?.data?.message);
           setRefresh(refresh + 1);
-          setPaymentRecFromClientText("Updated")
+          setPaymentRecFromClientText("Updated");
         })
         .catch((err) => {
           console.log(err);
@@ -145,7 +147,7 @@ setPaymentRecFromClientText("Updating...")
   };
 
   return (
-    <div className="fixed left-0 top-0 z-50 w-screen h-screen bg-white">
+    <div className="fixed left-0 top-0 z-50 w-screen h-screen bg-white overflow-y-auto">
       {isLoading && <FullScreenLoading />}
 
       <div className="w-full">
@@ -159,15 +161,15 @@ setPaymentRecFromClientText("Updating...")
             <X className="cursor-pointer" size={32} />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3">
           <div className="flex flex-col justify-center items-center">
             <div className="ml-8 md:ml-12 lg:ml-20">
-            <p>User id: {doc.siteEngObjId.siteEngId}</p>
-            <p>User name: {doc.siteEngObjId.siteEngObjId.name}</p>
-            <p>Client name: {doc.clientName}</p>
-            <p>Site name: {doc.siteName}</p>
-            <p>Sales amount: {doc.salesAmount}</p>
-            <p>Remarks: {doc.remarks}</p>
+              <p className="font-blod">User id: {doc.siteEngObjId.siteEngId}</p>
+              <p className="font-blod">User name: {doc.siteEngObjId.siteEngObjId.name}</p>
+              <p className="font-blod">Client name: {doc.clientName}</p>
+              <p className="font-blod">Site name: {doc.siteName}</p>
+              <p className="font-blod">Sales amount: {doc.salesAmount}</p>
+              <p className="font-blod">Remarks: {doc.remarks}</p>
             </div>
           </div>
 
@@ -182,7 +184,11 @@ setPaymentRecFromClientText("Updating...")
                   onChange={(e) => {
                     setClientName(e.target.value);
                   }}
-                  className={`p-1 border-2 rounded-md ${clientEditText==="Edit"?"cursor-not-allowed":"cursor-default"}`}
+                  className={`p-1 border-2 rounded-md ${
+                    clientEditText === "Edit"
+                      ? "cursor-not-allowed"
+                      : "cursor-default"
+                  }`}
                   id="clientName"
                   name="clientName"
                   type="text"
@@ -207,7 +213,11 @@ setPaymentRecFromClientText("Updating...")
                   onChange={(e) => {
                     setSiteName(e.target.value);
                   }}
-                  className={`p-1 border-2 rounded-md ${siteNameEditText==="Edit"?"cursor-not-allowed":"cursor-default"}`}
+                  className={`p-1 border-2 rounded-md ${
+                    siteNameEditText === "Edit"
+                      ? "cursor-not-allowed"
+                      : "cursor-default"
+                  }`}
                   id="siteName"
                   name="siteName"
                   type="text"
@@ -232,7 +242,11 @@ setPaymentRecFromClientText("Updating...")
                   onChange={(e) => {
                     setSalesAmount(e.target.value);
                   }}
-                  className={`p-1 border-2 rounded-md ${salesAmountEditText==="Edit"?"cursor-not-allowed":"cursor-default"}`}
+                  className={`p-1 border-2 rounded-md ${
+                    salesAmountEditText === "Edit"
+                      ? "cursor-not-allowed"
+                      : "cursor-default"
+                  }`}
                   id="salesAmount"
                   name="salesAmount"
                   type="Number"
@@ -257,7 +271,11 @@ setPaymentRecFromClientText("Updating...")
                   onChange={(e) => {
                     setPaymentRecFromClient(e.target.value);
                   }}
-                  className={`p-1 border-2 rounded-md ${paymentRecFromClientText==="Edit"?"cursor-not-allowed":"cursor-default"}`}
+                  className={`p-1 border-2 rounded-md ${
+                    paymentRecFromClientText === "Edit"
+                      ? "cursor-not-allowed"
+                      : "cursor-default"
+                  }`}
                   id="salesAmount"
                   name="salesAmount"
                   type="Number"
@@ -274,6 +292,9 @@ setPaymentRecFromClientText("Updating...")
                 </button>
               </div>
             </div>
+          </div>
+          <div>
+            <UpdateHDDMeter refresh={refresh} setRefresh={setRefresh} doc={doc} />
           </div>
         </div>
       </div>

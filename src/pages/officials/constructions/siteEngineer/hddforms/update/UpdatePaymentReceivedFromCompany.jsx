@@ -47,13 +47,13 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
             Update payment received from company
           </h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1">
           <div className="flex flex-col m-4">
             <label htmlFor="company">Company*</label>
             <select
               name="company"
               id="company"
-              className="m-1 p-1 rounded-md"
+              className="m-1 p-1 rounded-md border-2"
               value={companyName}
               onChange={(e) => {
                 setCompanyName(e.target.value);
@@ -73,7 +73,7 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
               type="number"
               id="amountFromComapany"
               name="amountFromComapany"
-              className="m-1 p-1 rounded-md"
+              className="m-1 p-1 rounded-md border-2"
               value={paymentRecFromCompany}
               onChange={(e) => {
                 setPaymentRecFromCompany(e.target.value);
@@ -89,7 +89,7 @@ const UpdatePaymentReceivedFromCompany = ({ docId }) => {
               onChange={(e) => {
                 setPaidBy(e.target.value);
               }}
-              className="m-1 p-1 rounded-md"
+              className="m-1 p-1 rounded-md border-2"
             >
               <option value="">Select</option>
               <option value="rakeshKumar">Rakesh Kumar</option>

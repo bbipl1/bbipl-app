@@ -1,5 +1,5 @@
 import axios from "axios";
-import { X,Eye,Pencil,Trash2 } from "lucide-react";
+import { X, Eye, Pencil, Trash2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import FullScreenLoading from "../../../../../../loading/FullScreenLoading";
 import UpdateHDD from "./UpdateHDD";
@@ -28,122 +28,155 @@ const ShowAllForms = ({ siteEngineerId }) => {
       });
   }, [siteEngineerId, refresh]);
 
-  const viewSingleHDD = (hdd) => {
-    return (
-      <div className="fixed left-0 top-24 w-full h-full bg-slate-100 p-8">
-        <div className="flex flex-row justify-end relative">
-          <div className=" absolute left-0 top-8  w-full flex justify-center items-center ">
-            <p className="text-xl font-bold"> HDD Form Details.</p>
+   const viewSingleHDD = (hdd) => {
+      let totalExp = 0;
+      let totalMtrBill = 0;
+  
+      totalExp = hdd?.expenses?.reduce((acc, hd) => {
+        return acc + Number(hd?.value);
+      }, 0);
+  
+      totalMtrBill = hdd?.hddDetails?.reduce((acc, hd) => {
+        return acc + Number(hd.rate) * Number(hd.meter);
+      }, 0);
+  
+      return (
+        <div className="fixed left-0 top-24 w-full h-full bg-slate-100 p-8">
+          <div className="flex flex-row justify-end relative">
+            <div className=" absolute left-0 top-8  w-full flex justify-center items-center ">
+              <p className="text-xl font-bold"> HDD Form Details.</p>
+            </div>
+  
+            <div onClick={() => setViewHdd(null)}>
+              <X
+                className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
+                size={32}
+              />
+            </div>
           </div>
-
-          <div onClick={() => setViewHdd(null)}>
-            <X
-              className="m-1 bg-red-500 hover:bg-red-600 text-white rounded-md cursor-pointer"
-              size={32}
-            />
-          </div>
-        </div>
-        <div className="mt-8">
-          {hdd && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="mb-4">
-                  <h1 className="text-lg font-bold">General details.</h1>
-                  <p>Name: {hdd?.siteEngObjId?.siteEngObjId?.name}</p>
-                  <p>Date: {hdd?.date}</p>
-                  <p>Payment status: {hdd?.paymentRec?.status}</p>
-                  <p>Payment Received: {hdd?.paymentRec?.amount}</p>
-                  <p>
-                    Date of Requirement (YYYY-MM-DD): {hdd?.dateOfRequirements}
-                  </p>
-                  <p>Remarks: {hdd?.remarks}</p>
-                </div>
-
-                <div className="mb-4">
-                  {hdd?.hddDetails.length > 0 ? (
-                    <>
-                      <div>
-                        <h1 className="text-lg font-bold">
-                          HDD machine details.
-                        </h1>
-                        <table>
-                          <thead>
-                            <tr>
-                              <th className="border-2 p-1">S/R</th>
-                              <th className="border-2 p-1">Diameter (mtr)</th>
-                              <th className="border-2 p-1">Length (mtr)</th>
-                              <th className="border-2 p-1">Rate/mtr (INR)</th>
-                              <th className="border-2 p-1">Total Amount</th>
-                            </tr>
-                          </thead>
-                          <tbody>
+          <div className="mt-8">
+            {hdd && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="mb-4">
+                    <h1 className="text-lg font-bold">General details.</h1>
+                    <p>Name: {hdd?.siteEngObjId?.siteEngObjId?.name}</p>
+                    <p>Date: {hdd?.date}</p>
+                    <p>
+                      Payment received from company:{" "}
+                      {hdd?.paymentReceivedFromCompany?.companyName}
+                    </p>
+                    <p>
+                      Payment received amount: Rs.
+                      {hdd?.paymentReceivedFromCompany?.amount}/-
+                    </p>
+                    <p>
+                      Payment done by: {hdd?.paymentReceivedFromCompany?.paidBy}
+                    </p>
+                    <p>
+                      Date of Requirement (YYYY-MM-DD): {hdd?.dateOfRequirements}
+                    </p>
+                    <p>
+                      Client Name: {hdd?.paymentReceivedFromClient?.clientName}
+                    </p>
+                    <p>
+                      Payment received from client:{" "}
+                      {hdd?.paymentReceivedFromClient?.amount}
+                    </p>
+                    <p className="font-bold">Remarks: {hdd?.remarks}</p>
+                  </div>
+  
+                  <div className="mb-4">
+                    {hdd?.hddDetails.length > 0 ? (
+                      <>
+                        <div>
+                          <h1 className="text-lg font-bold">
+                            HDD machine used details.
+                          </h1>
+                          <table>
+                            <thead>
+                              <tr>
+                                <th className="border-2 p-1">S/R</th>
+                                <th className="border-2 p-1">Diameter (mtr)</th>
+                                <th className="border-2 p-1">Length (mtr)</th>
+                                <th className="border-2 p-1">Rate/mtr (INR)</th>
+                                <th className="border-2 p-1">Total Amount</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {hdd &&
+                                hdd.hddDetails &&
+                                hdd.hddDetails.map((hd, ind) => {
+                                  return (
+                                    <tr>
+                                      <td className="border-2 p-1">{++ind}</td>
+                                      <td className="border-2 p-1">{hd?.dia}</td>
+                                      <td className="border-2 p-1">
+                                        {hd?.meter}
+                                      </td>
+                                      <td className="border-2 p-1">{hd?.rate}</td>
+                                      <td className="border-2 p-1">
+                                        Rs.{Number(hd?.meter) * Number(hd?.rate)}
+                                        /-
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                          <h1 className="font-bold">
+                            Total amount: Rs.{totalMtrBill}/-
+                          </h1>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <p>HDD meter data is not available.</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="mb-4">
+                    {hdd?.hddDetails.length > 0 ? (
+                      <>
+                        <div className="">
+                          <div>
+                            <h1 className="text-lg font-bold">Expenses.</h1>
                             {hdd &&
-                              hdd.hddDetails &&
-                              hdd.hddDetails.map((hd, ind) => {
+                              hdd.expenses &&
+                              hdd.expenses.map((exp, ind) => {
                                 return (
-                                  <tr>
-                                    <td className="border-2 p-1">{++ind}</td>
-                                    <td className="border-2 p-1">{hd?.dia}</td>
-                                    <td className="border-2 p-1">
-                                      {hd?.meter}
-                                    </td>
-                                    <td className="border-2 p-1">{hd?.rate}</td>
-                                    <td className="border-2 p-1">
-                                      Rs.{Number(hd?.meter) * Number(hd?.rate)}
-                                      /-
-                                    </td>
-                                  </tr>
+                                  <>
+                                    <div>
+                                      <p>
+                                        {++ind}) {exp?.name}: Rs.{exp?.value}/-
+                                      </p>
+                                    </div>
+                                  </>
                                 );
                               })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <p>HDD machine report is not available.</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className="mb-4">
-                  {hdd?.hddDetails.length > 0 ? (
-                    <>
-                      <div className="">
-                        <div>
-                          <h1 className="text-lg font-bold">Other expenses.</h1>
-                          {hdd &&
-                            hdd.expenses &&
-                            hdd.expenses.map((exp, ind) => {
-                              return (
-                                <>
-                                  <div>
-                                    <p>
-                                      {++ind}) {exp?.name}: Rs.{exp?.value}/-
-                                    </p>
-                                  </div>
-                                </>
-                              );
-                            })}
+                            <h1 className="font-bold">
+                              Total expenses: Rs.{totalExp}/-
+                            </h1>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <p>Expenses report is not available.</p>
-                      </div>
-                    </>
-                  )}
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <p>HDD meter data is not available.</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    );
-  };
+      );
+    };
 
   const DeleteForm = (formId) => {
     const response = window.confirm(
@@ -202,7 +235,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
               <table className="w-full border-2 border-gray-100">
                 <thead className="w-full bg-slate-200">
                   <tr>
-                  <th className="border-2 p-1">Date of work</th>
+                    <th className="border-2 p-1">Date of work</th>
                     <th className="border-2 p-1"> Client name</th>
                     <th className="border-2 p-1"> Site name</th>
                     <th className="border-2 p-1">DIA (mtr)</th>
@@ -210,8 +243,13 @@ const ShowAllForms = ({ siteEngineerId }) => {
                     <th className="border-2 p-1">Length (mtr)</th>
                     <th className="border-2 p-1">Total Amount (INR)</th>
                     <th className="border-2 p-1">Expenses</th>
-                    <th className="border-2 p-1 max-w-28">Payment received from BBIPL</th>
-                    <th className="border-2 p-1 max-w-28"> Amount received from client</th>
+                    <th className="border-2 p-1 max-w-28">
+                      Payment received from BBIPL
+                    </th>
+                    <th className="border-2 p-1 max-w-28">
+                      {" "}
+                      Amount received from client
+                    </th>
                     <th className="border-2 p-1">Remarks</th>
                     <th className="border-2 p-1">Actions</th>
                   </tr>
@@ -225,15 +263,13 @@ const ShowAllForms = ({ siteEngineerId }) => {
                             i % 2 === 0 ? "bg-white" : "bg-blue-50"
                           }`}
                         >
-                           <td className="border-2 p-1">
+                          <td className="border-2 p-1">
                             {expense?.dateOfRequirements}
                           </td>
                           <td className="border-2 p-1">
                             {expense?.paymentReceivedFromClient?.clientName}
                           </td>
-                           <td className="border-2 p-1">
-                            {expense?.siteName}
-                          </td>
+                          <td className="border-2 p-1">{expense?.siteName}</td>
                           <td className="border-2">
                             {expense &&
                               expense?.hddDetails?.map((ex, ind) => {
@@ -300,16 +336,15 @@ const ShowAllForms = ({ siteEngineerId }) => {
                           <td className="border-2 p-1">
                             {expense?.paymentReceivedFromCompany?.amount}
                           </td>
-                          
+
                           <td className="border-2 p-1">
                             {expense?.paymentReceivedFromClient?.amount}
                           </td>
-                          
-                         
+
                           <td className="border-2 p-1 max-w-44">
                             {expense?.remarks}
                           </td>
-                         
+
                           <td className="border-2 p-1 min-w-20">
                             <div className="grid grid-cols-1">
                               <button
@@ -318,7 +353,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 }}
                                 className="p-1 m-1 text-green-500 hover:text-green-600 rounded-md w-16"
                               >
-                                <Pencil className="block mx-auto" size={24}/>
+                                <Pencil className="block mx-auto" size={24} />
                               </button>
                               <button
                                 onClick={() => {
@@ -326,7 +361,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 }}
                                 className="p-1 m-1 text-blue-500 hover:text-blue-600  rounded-md w-16"
                               >
-                                <Eye className="block mx-auto" size={24}/>
+                                <Eye className="block mx-auto" size={24} />
                               </button>
                               <button
                                 onClick={() => {
@@ -334,7 +369,7 @@ const ShowAllForms = ({ siteEngineerId }) => {
                                 }}
                                 className="p-1 m-1 text-red-500 hover:text-red-600  rounded-md w-16"
                               >
-                                <Trash2 className="block mx-auto" size={24}/>
+                                <Trash2 className="block mx-auto" size={24} />
                               </button>{" "}
                             </div>
                           </td>

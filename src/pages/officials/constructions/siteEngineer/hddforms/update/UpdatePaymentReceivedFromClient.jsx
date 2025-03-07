@@ -52,14 +52,14 @@ const UpdatePaymentReceivedFromClient = ({ docId }) => {
             Update payment received from client
           </h1>
         </div>
-        <div className="w-full grid grid-cols-1 md:grid-cols-1 lg:grid-cols-4 gap-4 pb-8">
+        <div className="w-full grid grid-cols-1">
           <div className="flex justify-self-center flex-col">
             <label htmlFor="clientName">Client Name*</label>
             <input
               type="text"
               id="clientName"
               name="clientName"
-              className="border-2 rounded-md"
+              className="m-1 p-1 rounded-md border-2"
               onChange={(e)=>{setClientName(e.target.value)}}
               value={clientName}
             />
@@ -72,7 +72,7 @@ const UpdatePaymentReceivedFromClient = ({ docId }) => {
               type="number"
               id="amountFromClient"
               name="amountFromClient"
-              className=" border-2 rounded-md"
+              className="m-1 p-1 rounded-md border-2"
               onChange={(e)=>{setPaymentReceivedFromClient(e.target.value)}}
             />
           </div>

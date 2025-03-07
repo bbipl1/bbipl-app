@@ -14,6 +14,8 @@ import HDDForms from "./hddforms/HDDForms";
 import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm";
 import ShowAllForms from "./hddforms/ShowAllForms";
 import { useSiteEngAuth } from "../../../../authContext/AuthContextProvider";
+// import UploadPaymentReceipt from "./hddforms/UploadPaymentReceipt";
+// import UploadWorkProgressPhotoOrVideo from "./hddforms/UploadWorkProgressPhotoOrVideo";
 
 const SiteEngDashBoard = () => {
   const {siteEngUser,logout}=useSiteEngAuth();
@@ -66,6 +68,10 @@ const SiteEngDashBoard = () => {
         return <HDDForms siteEngineerId={data?.user} />;
       case "Update-HDD-Form":
         return <UpdateForm siteEngineerId={data?.user} />;
+      // case "Upload-payment-receipt":
+      //   return <UploadPaymentReceipt siteEngineerId={data?.user} />;
+      // case "upload-work-progress-photo/video":
+      //   return <UploadWorkProgressPhotoOrVideo siteEngineerId={data?.user} />;
       case "show-all-forms":
         return <ShowAllForms siteEngineerId={data?.user} />;
 
@@ -223,7 +229,7 @@ const SiteEngDashBoard = () => {
               >
                 Fill HDD Form
               </li>
-              <li
+              {/* <li
                 onClick={() => {
                   setHDDOpen(false);
                   setActiveComponent("Update-HDD-Form");
@@ -231,7 +237,25 @@ const SiteEngDashBoard = () => {
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               >
                 Update HDD Form
-              </li>
+              </li> */}
+              {/* <li
+                onClick={() => {
+                  setHDDOpen(false);
+                  setActiveComponent("Upload-payment-receipt");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                Upload payment receipt
+              </li> */}
+              {/* <li
+                onClick={() => {
+                  setHDDOpen(false);
+                  setActiveComponent("upload-work-progress-photo/video");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                upload work progress photo/video
+              </li> */}
               <li
                 onClick={() => {
                   setHDDOpen(false);
