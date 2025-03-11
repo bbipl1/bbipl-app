@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { header } from "framer-motion/client";
+import apiService from "../../api/services/apiServices";
 
 const serverURL = process.env.REACT_APP_SERVER_URL;
 const FileUpload = () => {
@@ -31,18 +32,13 @@ const FileUpload = () => {
 
     try {
       setUploadStatus("Uploading...");
-      const response = await axios.post(
-        `${serverURL}/api/upload-users-details`,
+      const response = await apiService.postWithFile(
+        `$/api/upload-users-details`,
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
       );
 
       setUploadStatus("Upload successful!");
-      console.log("Server Response:", response.data);
+      // console.log("Server Response:", response.data);
     } catch (error) {
       setUploadStatus("Upload failed.");
       console.error("Error uploading file:", error);
@@ -60,19 +56,14 @@ const FileUpload = () => {
       gender,
       password,
     };
-    const url = `${serverURL}/api/admin/add-new-user`;
-    const header = {
-      header: "application/json",
-    };
-
+    const url = `/api/admin/add-new-user`;
     console.log(payload);
-
-    axios
-      .post(url, payload, header)
-      .then((res) => {
-        alert(res.data.message);
+    apiService
+      .post(url, payload)
+      .then((data) => {
+        alert(data.message);
         setAddText("Success");
-        console.log(res);
+        // console.log(data);
         setMobile("");
         setEmail("");
         setDepartment("");

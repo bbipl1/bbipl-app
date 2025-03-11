@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiService from '../../../api/services/apiServices';
 
 // Get the server URL from environment variables
 const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -17,9 +18,10 @@ const StatesManagement = () => {
     // Fetch states function
     const fetchStates = async () => {
         try {
-            const response = await fetch(`${serverUrl}/api/site-management/find-site-details`);
-            const data = await response.json();
-            setStates(data?.data[0]?.states);
+            const data = await apiService.get(`/api/site-management/find-site-details`);
+            // const data = await response.json();
+            setStates(data.data[0].states);
+            console.log(data.data[0].states)
         } catch (error) {
             console.error("Error fetching states:", error);
         }

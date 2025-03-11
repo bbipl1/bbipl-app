@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
-import axios from "axios";
 import useCustomNavigate from "../../utility/Navigate";
-
-const serverURL = process.env.REACT_APP_SERVER_URL;
+import apiService from "../../api/services/apiServices";
 
 function Login() {
-  const navigateTo = useCustomNavigate();
   const [loading, setLoading] = useState(false);
   const [department, setDepartment] = useState("admin"); // Updated from role to department
   const navigate = useNavigate();
@@ -49,15 +46,19 @@ function Login() {
         dataToSend = { empId: empMobileOrId, empPassword, empDepartment };
       }
 
+      const subURL='/api/user-login'
+      const payload=dataToSend;
+      
+
       try {
-        const url = `${serverURL}/api/user-login`;
-        const header = { headers: { "Content-Type": "application/json" } };
+        // const url = `${serverURL}/api/user-login`;
+        // const header = { headers: { "Content-Type": "application/json" } };
 
         setLoading(true);
-        axios
-          .post(url, JSON.stringify(dataToSend), header)
-          .then((res) => {
-            const data = res?.data;
+        apiService
+          .post(subURL,payload)
+          .then((data) => {
+            // const data = res?.data;
             setSuccess("Login successful!");
             console.log(data?.user);
             alert(data?.message);

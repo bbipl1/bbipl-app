@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-const serverURL = process.env.REACT_APP_SERVER_URL;
+import apiService from '../../api/services/apiServices'
+
 
 const Admin = () => {
   const [data, setData] = useState([]);
@@ -16,10 +16,10 @@ const Admin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${serverURL}/api/all-users`);
-        const fetchedData = response?.data?.data || [];
-        setData(fetchedData); // Set the full data
-        setFilteredData(fetchedData); // Initially, display all data
+        const data = await apiService.get(`/api/all-users`);
+         console.log(data)
+        setData(data.data || []); // Set the full data
+        setFilteredData(data.data || []); // Initially, display all data
       } catch (error) {
         console.error("Error fetching data:", error);
       }

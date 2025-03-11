@@ -76,7 +76,7 @@ const HDDReport = ({ allDocs }) => {
     }
     if (filteredHdds.length > 0) {
       setFilteredHdds(filteredHdds);
-      const dates = filteredHdds.map((hdd) => hdd.date || "Unknown");
+      const dates = filteredHdds.map((hdd) => hdd.dateOfRequirements || "Unknown");
       const datesSet = new Set(dates);
       const datesArray = Array.from(datesSet);
       const sortedDates = datesArray.sort((a, b) => {

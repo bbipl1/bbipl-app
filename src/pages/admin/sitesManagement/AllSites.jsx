@@ -1,9 +1,7 @@
-import axios from "axios";
-import { useScroll } from "framer-motion";
+import apiService from '../../../api/services/apiServices'
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -15,11 +13,11 @@ const AllSites = () => {
   useEffect(() => {
     try {
       const url = `${serverURL}/api/site-management/find-site-details`;
-      axios
+      apiService
         .get(url)
-        .then((res) => {
-          setStates(res?.data?.data[0]?.states || []);
-          console.log(res.data.data[0].states);
+        .then((data) => {
+          setStates(data?.data[0]?.states || []);
+          // console.log(data.data[0].states);
         })
         .catch((err) => {
           console.log(err);
