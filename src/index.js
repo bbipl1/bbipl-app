@@ -12,7 +12,6 @@ import {
 } from "react-router-dom";
 import "./index.css";
 
-
 // protected routes
 import Layout from "./layout/Layout";
 import Home from "./layout/Home";
@@ -20,7 +19,7 @@ import Error from "./Error.jsx";
 import Login from "./authentication/officials/Login.jsx";
 import About from "./pages/About.jsx";
 // import Services from './pages/Services.jsx';
-import MainServices from "./pages/services/MainService.jsx";
+
 import ContactUs from "./pages/ContactUs.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import RequirementForm from "./pages/officials/constructions/siteEngineer/Requirements.jsx";
@@ -30,6 +29,16 @@ import UserForgotPassword from "./authentication/users/UserForgotPassword.jsx";
 import UserLogin from "./authentication/users/UserLogin.jsx";
 import UserSignUp from "./authentication/users/UserSignUp.jsx";
 
+// home start here
+//services start here
+import {
+  IndoorServices,
+  OutdoorServices,
+  DevelopmentServices,
+  ConsultationSection
+} from "./allPages.jsx";
+//services end here
+// home end here
 //officials - start-here
 //admin-sections-start
 import { AdminAuthProvider } from "./pages/AllPages.jsx";
@@ -60,7 +69,7 @@ import Disclaimer from "./conditions/Dislaimers.jsx";
 import RefundPolicy from "./conditions/RefundPolicy.jsx";
 import CookiesPolicy from "./conditions/CookiesPolicy.jsx";
 import CustomMap from "./pages/map/CustomMap.jsx";
-import SrcLogin from "./api/SrcLogin.jsx"
+import SrcLogin from "./api/SrcLogin.jsx";
 // const routerFromelements=
 
 // Non-protected-routes
@@ -71,7 +80,7 @@ const router = createBrowserRouter(
       {/* protected-routes */}
       <Route path="" element={<Home />}></Route>
       {/* auth-section-start */}
-      <Route path="src/login" element={<SrcLogin/>}></Route>
+      <Route path="src/login" element={<SrcLogin />}></Route>
       <Route path="authentication" element={<Outlet />}>
         <Route path="officials" element={<Outlet />}>
           <Route path="login" element={<Login />}></Route>
@@ -140,10 +149,15 @@ const router = createBrowserRouter(
         <Route path="forms" element={<Outlet />}>
           <Route path="requirements-form" element={<RequirementForm />}></Route>
         </Route>
+        <Route path="consultation" element={<ConsultationSection/>}></Route>
         <Route path="map" element={<CustomMap />}></Route>
         <Route path="about" element={<About />}></Route>
         <Route path="contact-us" element={<ContactUs />}></Route>
-        <Route path="services" element={<MainServices />}></Route>
+        <Route path="services" element={<Outlet />}>
+          <Route path="indoor" element={<IndoorServices />}></Route>
+          <Route path="outdoor" element={<OutdoorServices />}></Route>
+          <Route path="development" element={<DevelopmentServices />}></Route>
+        </Route>
         <Route path="privacy-policy" element={<PrivacyPolicy />}></Route>
         <Route
           path="terms-and-conditions"
