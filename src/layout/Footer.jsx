@@ -143,7 +143,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="text-sm flex justify-self-center">
-        This website is under development. <span className="ml-8">  Last updated on: February 2025.</span>
+        This website is under development. <span className="ml-8">  Last updated on: March 2025.</span>
       </p>
     </footer>
   );
