@@ -500,11 +500,14 @@ const RequirementForm = ({ user }) => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
-              <option value="">Select requirements</option>
+              <option value="">Select</option>
               <option value="manpower">Manpower</option>
+              <option value="motor rent">motor rent</option>
+              <option value="room rent">room rent</option>
+              <option value="advance payment-labour">advance payment-labour</option>
+              <option value="advance payment-labour-staff">advance payment-staff</option>
               {/* <option value="material">Material</option> */}
               <option value="tools and machinery">Tools & Machinery</option>
-              <option value="repair">Repair</option>
               <option value="ration">Ration</option>
               <option value="vendor">Vendor</option>
               <option value="self">Self</option>
@@ -533,13 +536,24 @@ const RequirementForm = ({ user }) => {
               <option value="">Select</option>
               <option value="morang">Morang</option>
               <option value="Steel">Steel</option>
-              <option value="Cement(OCC)">Cement(OCC)</option>
+              <option value="Cement(OCC)">Cement(OPC)</option>
               <option value="Cement(PCC)">Cement(PCC)</option>
               <option value="Brick">Brick</option>
               <option value="Concrete">Concrete </option>
               <option value="Paint">Paint</option>
               <option value="Gate">Gate</option>
-              <option value="others">Others</option>
+              <option value="10mm crushed stone">10mm crushed stone</option>
+              <option value="20mm crushed stone">20mm crushed stone</option>
+              <option value="steel">steel</option>
+              <option value="ply">ply</option>
+              <option value="button">button</option>
+              <option value="nails">nails</option>
+              <option value="materials-winding wire">winding wire</option>
+              <option value="cover block">cover block</option>
+              <option value="mixture machine">mixture machine</option>
+              <option value="generator">generator</option>
+              <option value="electric gadgets">electric gadgets</option>
+              <option value="others">Others</option>>
             </select>
 
             {isMaterialsOpen && (
