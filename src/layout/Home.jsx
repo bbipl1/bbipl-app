@@ -14,6 +14,7 @@ export default function Home() {
         {/* <About /> */}
         <Section />
         {/* <Team /> */}
+        
       </div>
       <FloatingSocialBar />
       <ScrollToTopButton />
