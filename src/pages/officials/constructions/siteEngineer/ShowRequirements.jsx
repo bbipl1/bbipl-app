@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Trash2, Pencil } from "lucide-react";
 import axios from "axios";
-import ImageShow from "../../components/admin/ImageShow";
+import ImageShow from "../../../../components/admin/ImageShow";
 const serverURL = process.env.REACT_APP_SERVER_URL;
 
-const FormRequirementDetails = () => {
+const ShowRequirements = ({siteEngineerId}) => {
   const [refresh, setRefresh] = useState(0);
   const [formDetails, setFormDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,9 +15,11 @@ const FormRequirementDetails = () => {
   const [showStatusOpen, setShowStatusOpen] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(0);
   const [selectedDocId, setSelectedDocId] = useState(null);
+//   const [siteEngId,setSiteEngId]=useState(null);
 
   const fetchFormDetails = async () => {
-    const url = `${serverURL}/api/forms/get-requirements-forms`;
+    const url = `${serverURL}/api/forms/get-requirements-forms?id=${siteEngineerId?.id}`;
+    console.log(url)
 
     try {
       const response = await axios.get(url);
@@ -30,8 +32,10 @@ const FormRequirementDetails = () => {
   };
 
   useEffect(() => {
-    fetchFormDetails();
-  }, [refresh]);
+    if(siteEngineerId?.id){
+        fetchFormDetails();
+    }
+  }, [refresh,siteEngineerId]);
 
   const handleUrl = (url, form) => {
     setIsURL(url);
@@ -159,14 +163,6 @@ const FormRequirementDetails = () => {
     );
   };
 
-  const handleEdit = () => {
-    alert("Coming soon!");
-  };
-
-  const handleDelete = () => {
-    alert("Coming soon!");
-  };
-
   return (
     <div className="p-1 bg-white shadow rounded-lg w-full overflow-auto">
       {/* <h2 className="text-2xl font-bold mb-4">Form Details</h2> */}
@@ -211,13 +207,13 @@ const FormRequirementDetails = () => {
               <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
                 Remarks
               </th>
-              <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
+              {/* <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
                 Status
-              </th>
+              </th> */}
 
-              <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
+              {/* <th className="border border-gray-300 px-0 md:px-4 lg:px-4 py-2 ">
                 Actions
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -265,7 +261,7 @@ const FormRequirementDetails = () => {
                 <td className="border border-gray-300 px-4 py-2 ">
                   {form.remarks}
                 </td>
-                <td
+                {/* <td
                   onClick={(e) => {
                     handleUpdateStatus(form._id);
                   }}
@@ -285,27 +281,17 @@ const FormRequirementDetails = () => {
                   }`}
                 >
                   {form?.paymentsDetails?.status}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
+                </td> */}
+                {/* <td className="border border-gray-300 px-4 py-2">
                   <div className="flex flex-row">
-                    <button
-                      onClick={() => {
-                        handleEdit();
-                      }}
-                      className="mx-auto block px-1 text-blue-500 hover:text-blue-600 rounded-md"
-                    >
+                    <button className="mx-auto block px-1 text-blue-500 hover:text-blue-600 rounded-md">
                       <Pencil />
                     </button>
-                    <button
-                      onClick={() => {
-                        handleDelete();
-                      }}
-                      className="mx-auto block px-1 text-red-500 hover:text-red-600 rounded-md"
-                    >
+                    <button className="mx-auto block px-1 text-red-500 hover:text-red-600 rounded-md">
                       <Trash2 />
                     </button>
                   </div>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
@@ -322,4 +308,4 @@ const FormRequirementDetails = () => {
   );
 };
 
-export default FormRequirementDetails;
+export default ShowRequirements;

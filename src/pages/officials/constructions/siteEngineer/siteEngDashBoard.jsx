@@ -14,6 +14,7 @@ import HDDForms from "./hddforms/HDDForms";
 import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm";
 import ShowAllForms from "./hddforms/ShowAllForms";
 import { useSiteEngAuth } from "../../../../authContext/AuthContextProvider";
+import ShowRequirements from "./ShowRequirements";
 // import UploadPaymentReceipt from "./hddforms/UploadPaymentReceipt";
 // import UploadWorkProgressPhotoOrVideo from "./hddforms/UploadWorkProgressPhotoOrVideo";
 
@@ -74,6 +75,8 @@ const SiteEngDashBoard = () => {
       //   return <UploadWorkProgressPhotoOrVideo siteEngineerId={data?.user} />;
       case "show-all-forms":
         return <ShowAllForms siteEngineerId={data?.user} />;
+      case "Show-Requirements":
+        return <ShowRequirements siteEngineerId={data?.user} />;
 
       default:
         return (
@@ -105,7 +108,7 @@ const SiteEngDashBoard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-7">
         <button
           onClick={() => setActiveComponent("profile")}
           className={getButtonClass("profiles")}
@@ -201,6 +204,13 @@ const SiteEngDashBoard = () => {
         >
           Daily Progress Report
         </button> */}
+
+        <button
+          onClick={() => setActiveComponent("Show-Requirements")}
+          className={getButtonClass("Show-Requirements")}
+        >
+          Show Requirements
+        </button>
 
         <button
           onClick={() => setActiveComponent("siteEngAttendance")}
