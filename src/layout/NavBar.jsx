@@ -114,12 +114,12 @@ const NavBar = () => {
             {isLoginDropdownOpen && (
               <ul className="absolute right-0  mt-2 bg-gray-50 shadow-lg ">
                 <li className="px-4 py-2 hover:bg-gray-100">
-                  <Link
+                  {/* <Link
                     onClick={handleMenuItemClick}
                     to="authentication/users/login"
                   >
                     User
-                  </Link>
+                  </Link> */}
                 </li>
                 <li className="px-4 py-2 hover:bg-gray-100">
                   <Link
