@@ -8,6 +8,7 @@ const WaterManagements = () => {
       const [waterDetails, setWaterDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [totalQt,setTotalQt]=useState(0);
+  const [tc,setTC]=useState(0);
 
   useEffect(() => {
     const subUrl = `/api/managements/water-management/get-water-details?`;
@@ -18,6 +19,7 @@ const WaterManagements = () => {
         console.log(res)
         setWaterDetails(res?.data);
         setTotalQt(res?.data?.reduce((acc, item) => Number(acc) + Number(item.quantity), 0));
+        setTC(res?.data?.reduce((acc, item) => Number(acc) + (Number(item.quantity)*(item.rate?Number(item.rate):20)), 0))
 
       })
       .catch((err) => {
@@ -43,6 +45,9 @@ const WaterManagements = () => {
               <th>S/R</th>
               <th>Date</th>
               <th>Quantity</th>
+              <th>Price (INR)</th>
+              <th>supplier</th>
+              <th>Supplier Mob No</th>
               <th>Remarks</th>
               <th>Updated At</th>
               <th>Received by</th>
@@ -63,12 +68,16 @@ const WaterManagements = () => {
                       <td>{++ind}</td>
                       <td>{wd.updatedDate}</td>
                       <td>{wd.quantity}</td>
+                      <td>{wd.rate?Number(wd.rate)*Number(wd.quantity):20*Number(wd.quantity)}</td>
+                      {/* <td>{Number(wd.rate)*Number(wd.quantity)}</td> */}
+                      <td>{wd.supplier}</td>
+                      <td>{wd.supplierMobileNo}</td>
                       <td>{wd.remarks}</td>
                       <td>
                         {wd.submittedDate} - {wd.submittedTime} -{" "}
                         {wd.submittedDay}
                       </td>
-                      <td>{"You"}</td>
+                      <td>{wd?.updatedBy?.name}</td>
                       <td
                         onClick={handleDelete}
                         className="text-red-500 inline-block m-auto hover:text-red-600 hover:cursor-pointer"
@@ -81,8 +90,9 @@ const WaterManagements = () => {
               })}
           </tbody>
         </table>
-        <div className="mt-12 flex justify-center items-center text-xl pb-8">
+        <div className="mt-12 flex flex-col justify-center items-center text-xl pb-8">
             <h1>Total Quantity : {totalQt}</h1>
+            <h1>Total Cost (INR): RS.{tc}/-</h1>
         </div>
       </div>
     </>

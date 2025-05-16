@@ -48,7 +48,7 @@ const WaterManagementsHome = ({ siteEngineerId }) => {
       </div>
 
       <div className="mt-20">
-        {getActiveComponent(activeCompo, siteEngineerId?.siteEngObjId)}
+        {getActiveComponent(activeCompo, siteEngineerId?.objId)}
       </div>
     </div>
   );
@@ -57,14 +57,17 @@ const WaterManagementsHome = ({ siteEngineerId }) => {
 const Submit = ({ id }) => {
   const [date, setDate] = useState(null);
   const [qt, setQt] = useState(0);
-  const [rem, setRem] = useState();
+  const [rem, setRem] = useState('delivered.');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     const subUrl = `/api/managements/water-management/submit-water-details`;
     const data = {
       updatedDate: date,
-      quantity: qt,
+      quantity: Number(qt).toString(),
+      rate:"20.00",
+      supplier:"Rakesh kumar kashyap. Add-Aoras",
+      supplierMobileNo:"+91-9415783945",
       remarks: rem,
       userId: id,
     };
