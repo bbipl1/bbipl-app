@@ -15,20 +15,50 @@ import UpdateDailyProgressReport from "./dailyProgressReport/UpdateProgressForm"
 import ShowAllForms from "./hddforms/ShowAllForms";
 import { useSiteEngAuth } from "../../../../authContext/AuthContextProvider";
 import ShowRequirements from "./ShowRequirements";
+import WaterManagementsHome from "./managements/waterManagements/WaterManagementsHome";
 // import UploadPaymentReceipt from "./hddforms/UploadPaymentReceipt";
 // import UploadWorkProgressPhotoOrVideo from "./hddforms/UploadWorkProgressPhotoOrVideo";
 
 const SiteEngDashBoard = () => {
-  const {siteEngUser,logout}=useSiteEngAuth();
+  const { siteEngUser, logout } = useSiteEngAuth();
   const location = useLocation();
   const { data } = location?.state || {};
   // console.log("data is", data);
   const [activeComponent, setActiveComponent] = useState("profile"); // State to track active component
   const [isOpen, setIsOpen] = useState(false);
   const [HDDOpen, setHDDOpen] = useState(false);
+  const [managementsOpen, setManagements] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleHddOpen = () => {
+    if (HDDOpen) {
+      setHDDOpen(false);
+    } else {
+      setHDDOpen(true);
+      setIsOpen(false);
+      setManagements(false);
+    }
+  };
+  const handleIsOpen = () => {
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+      setHDDOpen(false);
+      setManagements(false);
+    }
+  };
+  const handleManagements = () => {
+    if (managementsOpen) {
+      setManagements(false);
+    } else {
+      setManagements(true);
+      setIsOpen(false);
+      setHDDOpen(false);
+    }
   };
 
   const navigate = useNavigate();
@@ -77,6 +107,8 @@ const SiteEngDashBoard = () => {
         return <ShowAllForms siteEngineerId={data?.user} />;
       case "Show-Requirements":
         return <ShowRequirements siteEngineerId={data?.user} />;
+      case "water Management":
+        return <WaterManagementsHome siteEngineerId={data?.user} />;
 
       default:
         return (
@@ -99,8 +131,6 @@ const SiteEngDashBoard = () => {
       : "w-100 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100";
   };
 
-
-
   return (
     <div className="p-1 bg-gray-100 min-h-screen">
       <div>
@@ -108,7 +138,7 @@ const SiteEngDashBoard = () => {
           Hi! {data?.user?.name}
         </h1>
       </div>
-      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-7">
+      <div className="grid gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-8">
         <button
           onClick={() => setActiveComponent("profile")}
           className={getButtonClass("profiles")}
@@ -135,9 +165,10 @@ const SiteEngDashBoard = () => {
             className={`w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
               isOpen ? "rounded-b-none" : ""
             }`}
-            onClick={toggleDropdown}
+            onClick={handleIsOpen}
           >
-            Daily Progress Report
+            <h1>DPR</h1>
+            {/* <span className="text-sm">Daily progress report</span> */}
           </button>
           {isOpen && (
             <ul className="absolute z-10 left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
@@ -224,7 +255,9 @@ const SiteEngDashBoard = () => {
             className={`w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
               HDDOpen ? "rounded-b-none" : ""
             }`}
-            onClick={()=>{setHDDOpen(!HDDOpen)}}
+            onClick={() => {
+              handleHddOpen();
+            }}
           >
             HDD
           </button>
@@ -273,21 +306,47 @@ const SiteEngDashBoard = () => {
                 }}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               >
-                Show all forms 
+                Show all forms
               </li>
-              
             </ul>
           )}
         </div>
 
-        {/* <div>
+        <div className="relative w-100 bg-blue-500 hover:bg-blue-600">
           <button
-            onClick={() => setActiveComponent("hdd")}
-            className={getButtonClass("hdds")}
+            className={`w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded ${
+              managementsOpen ? "rounded-b-none" : ""
+            }`}
+            onClick={() => {
+              handleManagements(!managementsOpen);
+            }}
           >
-            HDD
+            Managements
           </button>
-        </div> */}
+          {managementsOpen && (
+            <ul className="absolute z-10 left-0 w-full bg-white border border-gray-200 rounded-b shadow-lg">
+              <li
+                onClick={() => {
+                  setManagements(false);
+                  setActiveComponent("water Management");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                water Management
+              </li>
+
+              <li
+                onClick={() => {
+                  setManagements(false);
+                  setActiveComponent("Vehicle Management");
+                }}
+                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                Vehicle Management
+              </li>
+            </ul>
+          )}
+        </div>
 
         <button
           onClick={() => handleLogout()}

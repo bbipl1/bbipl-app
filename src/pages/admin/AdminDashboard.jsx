@@ -10,6 +10,7 @@ import DailyProgressReport from "./DailyProgressReport";
 import ShowHDDForms from "./officialUsers/construction/siteEng/hdd/ShowHDDForm";
 import { useAdminAuth } from "../../authContext/AuthContextProvider";
 import HDDReport from "./officialUsers/construction/siteEng/hdd/HDDReport";
+import WaterManagements from "./managements/WaterManagements";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState("details"); // State to track active component
   const [showMenu, setShowMenu] = useState("hidden");
   const [isHddOpen, setIsHddOpen] = useState(false);
+  const [isManOpen,setIsManOpen]=useState(false)
 
   const { adminUser, adminLogout } = useAdminAuth();
 
@@ -42,6 +44,8 @@ const AdminDashboard = () => {
         return <ShowHDDForms />;
       case "hddReport":
         return <HDDReport />;
+        case "waterMan":
+        return <WaterManagements />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -161,6 +165,39 @@ const AdminDashboard = () => {
                 className={getButtonClass("hddFormsReport")}
               >
                 Report
+              </li>
+            </ul>
+          )}
+        </div>
+        <div className="w-full relative">
+          <button
+            onClick={() => {
+              // setActiveComponent("hdd");
+              setIsManOpen(!isManOpen);
+            }}
+            className={getButtonClass("hdd")}
+          >
+            Managements
+          </button>
+          {isManOpen && (
+            <ul className="absolute left-0 w-full bg-blue-500">
+              <li
+                onClick={() => {
+                  setActiveComponent("waterMan");
+                  setIsManOpen(false);
+                }}
+                className={getButtonClass("waterMan")}
+              >
+               WaterManagements
+              </li>
+              <li
+                onClick={() => {
+                  setActiveComponent("vehicleMan");
+                  setIsManOpen(false);
+                }}
+                className={getButtonClass("vehicleMan")}
+              >
+                Vehicle Managements
               </li>
             </ul>
           )}
