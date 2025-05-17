@@ -361,14 +361,29 @@ const DailyProgress = ({ user }) => {
         ];
       } else {
         return [
-          "PCC",
           "Column Casting",
-          "Raft Casting",
-          "Desetring",
-          "Beam Casting",
-          "Steel Making",
-          "Steel Binding",
-          "Others"
+          "OHT raft steel bending",
+          "GL beam reinforcement",
+          "OHT centering work",
+          "OHT de-centering work",
+          "OHT raft casting",
+          "GL beam casting work",
+          "1st beam casting work",
+          "2nd beam casting work",
+          "3rd beam casting work",
+          "OHT dome reinforcasting work",
+          "OHT dome casting work",
+          "OHT slab casting work",
+          "OHT slab reinforcement work",
+          "1st lift column casting work",
+          "2nd lift column casting work",
+          "3rd lift column casting work",
+          "1st lift column steel work",
+          "2nd lift column steel work",
+          "3rd lift column steel work",
+          "OHT staircase steel work",
+          "OHT staircase casting work",
+          "Column centering work",
         ];
       }
     }

@@ -11,7 +11,13 @@ import ShowHDDForms from "./officialUsers/construction/siteEng/hdd/ShowHDDForm";
 import { useAdminAuth } from "../../authContext/AuthContextProvider";
 import HDDReport from "./officialUsers/construction/siteEng/hdd/HDDReport";
 import WaterManagements from "./managements/WaterManagements";
-import { CrossIcon, MenuIcon, MenuSquare, MenuSquareIcon, X } from "lucide-react";
+import {
+  CrossIcon,
+  MenuIcon,
+  MenuSquare,
+  MenuSquareIcon,
+  X,
+} from "lucide-react";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -81,7 +87,9 @@ const AdminDashboard = () => {
             }}
             className="cursor-pointer mr-1 text-blue-600 hover:text-blue-800 flex items-center px-1 rounded-md"
           >
-            <p className="text-2xl font-bold"><MenuIcon size={44}/></p>
+            <p className="text-2xl font-bold">
+              <MenuIcon size={44} />
+            </p>
           </div>
         )}
       </div>
@@ -95,9 +103,16 @@ const AdminDashboard = () => {
           } 
           lg:w-full lg:grid lg:grid-cols-6 md:grid-cols-5`}
       >
-        <div className="absolute top-0 right-0 text-red-500">
-          <X onClick={()=>{setShowMenu("hidden")}} size={40}/>
-        </div>
+        {showMenu !== "hidden" && (
+          <div className="absolute top-0 right-0 text-red-500">
+            <X
+              onClick={() => {
+                setShowMenu("hidden");
+              }}
+              size={40}
+            />
+          </div>
+        )}
         <button
           onClick={() => {
             setActiveComponent("details");
@@ -106,7 +121,6 @@ const AdminDashboard = () => {
           className={getButtonClass("details")}
         >
           Show Employee
-        
         </button>
 
         <button
@@ -223,14 +237,20 @@ const AdminDashboard = () => {
         </div>
 
         <button
-          onClick={() => {setActiveComponent("contactUsMessages"); setShowMenu("hidden");}}
-          className={getButtonClass("contactUsMessages") }
+          onClick={() => {
+            setActiveComponent("contactUsMessages");
+            setShowMenu("hidden");
+          }}
+          className={getButtonClass("contactUsMessages")}
         >
           Contact Us
         </button>
 
         <button
-          onClick={() => {handleLogout();; setShowMenu("hidden");}}
+          onClick={() => {
+            handleLogout();
+            setShowMenu("hidden");
+          }}
           className="w-100 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
         >
           Logout

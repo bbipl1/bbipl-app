@@ -36,7 +36,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
       })
       .catch((err) => {
         console.log(err);
-        alert("Something went wrong.");
+        // alert("Something went wrong.");
       });
   }, []);
 
@@ -55,7 +55,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
 
     const formData = new FormData();
     if (!siteEngineer.id) {
-      alert("Something went wrong.");
+      alert("site engineer id not available.");
       return;
     }
     formData.append("profilePic", profilePic);
@@ -72,7 +72,7 @@ const SiteEngProfile = ({ siteEngineer }) => {
       setProfilePic(null); // Reset the selected file
     } catch (err) {
       console.error(err);
-      alert("Error uploading profile picture.");
+      alert(err?.response?.data?.message);
     }
   };
 
