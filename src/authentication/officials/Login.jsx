@@ -60,7 +60,7 @@ function Login() {
           .then((data) => {
             // const data = res?.data;
             setSuccess("Login successful!");
-            console.log(data?.user);
+            console.log(data);
             alert(data?.message);
 
             // Redirect based on department
@@ -88,8 +88,13 @@ function Login() {
             }
           })
           .catch((err) => {
-            alert(err?.response?.data?.message);
-            console.log(err?.response?.data?.message);
+             console.log(err)
+            if(err?.code==='ERR_NETWORK'){
+              alert(err?.message)
+            }else{
+              alert(err?.response?.data?.message);
+             
+            }
           })
           .finally((final) => {
             setLoading(false);

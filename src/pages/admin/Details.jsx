@@ -105,34 +105,38 @@ const Admin = () => {
 
         {/* Data Table */}
         <div className="w-full overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-200">
+          <table className="w-full border-collapse border border-gray-400">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="bg-gray-400 text-white">
                 <th className="border border-gray-300 p-3 text-left">ID</th>
                 <th className="border border-gray-300 p-3 text-left">Name</th>
+                <th className="border border-gray-300 p-3 text-left">Gender</th>
+                <th className="border border-gray-300 p-3 text-left">Email</th>
+                <th className="border border-gray-300 p-3 text-left">Mobile</th>
                 <th className="border border-gray-300 p-3 text-left">Department</th>
                 <th className="border border-gray-300 p-3 text-left">Role</th>
-                <th className="border border-gray-300 p-3 text-left">Mobile</th>
-                <th className="border border-gray-300 p-3 text-left">Actions</th>
+                {/* <th className="border border-gray-300 p-3 text-left">Actions</th> */}
               </tr>
             </thead>
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((item) => (
-                  <tr key={item.empId} className="odd:bg-white even:bg-gray-50">
+                  <tr key={item.empId} className="odd:bg-white even:bg-gray-200">
                     <td className="border border-gray-300 p-3">{item.id}</td>
                     <td className="border border-gray-300 p-3">{item.name}</td>
+                    <td className="border border-gray-300 p-3">{item.gender}</td>
+                    <td className="border border-gray-300 p-3 max-w-44">{item.email}</td>
+                    <td className="border border-gray-300 p-3">{item.mobile}</td>
                     <td className="border border-gray-300 p-3">{item.department}</td>
                     <td className="border border-gray-300 p-3">{item.role}</td>
-                    <td className="border border-gray-300 p-3">{item.mobile}</td>
-                    <td className="border border-gray-300 p-3">
+                    {/* <td className="border border-gray-300 p-3">
                       <button
                         onClick={() => setSelectedEmployee(item)}
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                       >
                         View Details
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               ) : (
@@ -164,7 +168,7 @@ const Admin = () => {
             <p><strong>Department:</strong> {selectedEmployee.department}</p>
             <p><strong>Role:</strong> {selectedEmployee.role}</p>
             <p><strong>Gender:</strong> {selectedEmployee.gender}</p>
-            <p><strong>password:</strong> {selectedEmployee.password}</p>
+            {/* <p><strong>password:</strong> {selectedEmployee.password}</p> */}
             <div className="mt-4">
               <button
                 onClick={() => setSelectedEmployee(null)}

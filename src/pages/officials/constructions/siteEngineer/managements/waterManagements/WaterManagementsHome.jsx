@@ -152,13 +152,13 @@ const Show = ({ id }) => {
     apiService
       .get(subUrl)
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         setWaterDetails(res?.data);
         setTotalQt(res?.data?.reduce((acc, item) => Number(acc) + Number(item.quantity), 0));
 
       })
       .catch((err) => {
-        alert(err?.response?.data?.err);
+        // alert(err?.response?.data?.err);
         console.log(err?.response?.data?.err);
       })
       .finally((final) => {

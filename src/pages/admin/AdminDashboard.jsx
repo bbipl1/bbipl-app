@@ -11,6 +11,7 @@ import ShowHDDForms from "./officialUsers/construction/siteEng/hdd/ShowHDDForm";
 import { useAdminAuth } from "../../authContext/AuthContextProvider";
 import HDDReport from "./officialUsers/construction/siteEng/hdd/HDDReport";
 import WaterManagements from "./managements/WaterManagements";
+import { CrossIcon, MenuIcon, MenuSquare, MenuSquareIcon, X } from "lucide-react";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -18,7 +19,7 @@ const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState("details"); // State to track active component
   const [showMenu, setShowMenu] = useState("hidden");
   const [isHddOpen, setIsHddOpen] = useState(false);
-  const [isManOpen,setIsManOpen]=useState(false)
+  const [isManOpen, setIsManOpen] = useState(false);
 
   const { adminUser, adminLogout } = useAdminAuth();
 
@@ -44,7 +45,7 @@ const AdminDashboard = () => {
         return <ShowHDDForms />;
       case "hddReport":
         return <HDDReport />;
-        case "waterMan":
+      case "waterMan":
         return <WaterManagements />;
       default:
         return (
@@ -63,75 +64,93 @@ const AdminDashboard = () => {
 
   const getButtonClass = (component) => {
     return activeComponent === component
-      ? "w-full  px-4 py-2 bg-blue-300 text-white rounded-none hover:bg-blue-400 hover:border-1 transition duration-100 cursor-pointer"
-      : "w-full  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100 cursor-pointer";
+      ? "w-full  px-2 py-2 bg-blue-300 text-white rounded-none hover:bg-blue-400 hover:border-1 transition duration-100 cursor-pointer"
+      : "w-full px-2 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-100 cursor-pointer";
   };
 
   return (
-    <div className="p-1 bg-gray-100 min-h-screen">
+    <div className="p-0 bg-gray-100 min-h-screen">
       <div className="flex justify-between">
         <div className="text-3xl font-bold text-gray-800 mb-6 ml-2">
           Hi! {data?.user?.name}
         </div>
-        {showMenu === "hidden" && window.innerWidth <= 600 && (
+        {showMenu === "hidden" && window.innerWidth <= 768 && (
           <div
             onClick={() => {
               setShowMenu("flex");
             }}
-            className="cursor-pointer mr-4 bg-blue-600 hover:bg-blue-800 flex items-center px-4 rounded-md text-white"
+            className="cursor-pointer mr-1 text-blue-600 hover:text-blue-800 flex items-center px-1 rounded-md"
           >
-            <p className="text-2xl font-bold">Menu</p>
+            <p className="text-2xl font-bold"><MenuIcon size={44}/></p>
           </div>
         )}
       </div>
       <div
-        onClick={() => {
-          setShowMenu("hidden");
-        }}
-        className={`fixed flex flex-col gap-1 transition-all duration-1000 ease-in-out 
-          ${showMenu !== "hidden" ? "w-3/4" : "w-0 -translate-x-[350%]"} 
-          lg:w-full lg:translate-x-0 md:translate-x-0 lg:pb-12 h-screen px-4 top-24 pt-4 
-          bg-gray-100 lg:grid lg:grid-cols-5 lg:h-16`}
+        onClick={() => {}}
+        className={` flex flex-col gap-1 transition-all duration-1000 ease-in-out 
+          ${
+            showMenu !== "hidden"
+              ? "w-3/4 md:w-1/2 bg-blue-500 h-screen fixed top-24"
+              : "hidden sticky top-24"
+          } 
+          lg:w-full lg:grid lg:grid-cols-6 md:grid-cols-5`}
       >
+        <div className="absolute top-0 right-0 text-red-500">
+          <X onClick={()=>{setShowMenu("hidden")}} size={40}/>
+        </div>
         <button
-          onClick={() => setActiveComponent("details")}
+          onClick={() => {
+            setActiveComponent("details");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("details")}
         >
           Show Employee
+        
         </button>
 
         <button
-          onClick={() => setActiveComponent("upload")}
+          onClick={() => {
+            setActiveComponent("upload");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("upload")}
         >
           Add Employee
         </button>
         <button
-          onClick={() => setActiveComponent("sites-management")}
+          onClick={() => {
+            setActiveComponent("sites-management");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("sites-management")}
         >
           Add Site
         </button>
         <button
-          onClick={() => setActiveComponent("form-requirements")}
+          onClick={() => {
+            setActiveComponent("form-requirements");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("form-requirements")}
         >
-          Requirements Form
+          Requirements
         </button>
+
         <button
-          onClick={() => setActiveComponent("contactUsMessages")}
-          className={getButtonClass("contactUsMessages")}
-        >
-          Contact Us
-        </button>
-        <button
-          onClick={() => setActiveComponent("showUserAttendance")}
+          onClick={() => {
+            setActiveComponent("showUserAttendance");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("showUserAttendance")}
         >
           Attendance
         </button>
         <button
-          onClick={() => setActiveComponent("dailyProgressReport")}
+          onClick={() => {
+            setActiveComponent("dailyProgressReport");
+            setShowMenu("hidden");
+          }}
           className={getButtonClass("dailyProgressReport")}
         >
           Daily Report
@@ -147,13 +166,13 @@ const AdminDashboard = () => {
             HDD
           </button>
           {isHddOpen && (
-            <ul className="absolute left-0 w-full bg-blue-500">
+            <ul className="absolute left-0 w-full bg-blue-500 z-50">
               <li
                 onClick={() => {
                   setActiveComponent("filledForm");
                   setIsHddOpen(false);
                 }}
-                className={getButtonClass("hddFormsReport")}
+                className={getButtonClass("filledForm")}
               >
                 Filled form
               </li>
@@ -162,7 +181,7 @@ const AdminDashboard = () => {
                   setActiveComponent("hddReport");
                   setIsHddOpen(false);
                 }}
-                className={getButtonClass("hddFormsReport")}
+                className={getButtonClass("hddReport")}
               >
                 Report
               </li>
@@ -180,7 +199,7 @@ const AdminDashboard = () => {
             Managements
           </button>
           {isManOpen && (
-            <ul className="absolute left-0 w-full bg-blue-500">
+            <ul className="absolute left-0 w-full bg-blue-500 z-50">
               <li
                 onClick={() => {
                   setActiveComponent("waterMan");
@@ -188,7 +207,7 @@ const AdminDashboard = () => {
                 }}
                 className={getButtonClass("waterMan")}
               >
-               WaterManagements
+                WaterManagements
               </li>
               <li
                 onClick={() => {
@@ -204,7 +223,14 @@ const AdminDashboard = () => {
         </div>
 
         <button
-          onClick={() => handleLogout()}
+          onClick={() => {setActiveComponent("contactUsMessages"); setShowMenu("hidden");}}
+          className={getButtonClass("contactUsMessages") }
+        >
+          Contact Us
+        </button>
+
+        <button
+          onClick={() => {handleLogout();; setShowMenu("hidden");}}
           className="w-100 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200"
         >
           Logout

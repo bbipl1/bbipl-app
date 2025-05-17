@@ -161,8 +161,8 @@ const AllSites = () => {
       <div className="w-full flex justify-center text-xl font-bold p-4">
         <h1>All site details</h1>
       </div>
-      <div>
-        <table className="w-full ">
+      <div className='w-full overflow-x-auto overflow-y-auto'>
+        <table className="w-full  ">
           <thead className="w-full ">
             <tr>
               <th className="border-2">S/N</th>
