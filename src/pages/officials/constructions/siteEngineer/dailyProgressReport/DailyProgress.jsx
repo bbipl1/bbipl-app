@@ -384,6 +384,7 @@ const DailyProgress = ({ user }) => {
           "OHT staircase steel work",
           "OHT staircase casting work",
           "Column centering work",
+          "PCC",
           "Others",
         ];
       }
