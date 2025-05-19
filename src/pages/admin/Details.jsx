@@ -17,7 +17,7 @@ const Admin = () => {
     const fetchData = async () => {
       try {
         const data = await apiService.get(`/api/all-users`);
-         console.log(data)
+        //  console.log(data)
         setData(data.data || []); // Set the full data
         setFilteredData(data.data || []); // Initially, display all data
       } catch (error) {

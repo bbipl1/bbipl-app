@@ -18,6 +18,7 @@ import {
   MenuSquareIcon,
   X,
 } from "lucide-react";
+import ManpowerManagements from "./managements/ManpowerManagements";
 
 const AdminDashboard = () => {
   const location = useLocation();
@@ -53,6 +54,8 @@ const AdminDashboard = () => {
         return <HDDReport />;
       case "waterMan":
         return <WaterManagements />;
+      case "manpowerMan":
+        return <ManpowerManagements />;
       default:
         return (
           <p className="text-gray-600">Please select an option from above.</p>
@@ -221,7 +224,7 @@ const AdminDashboard = () => {
                 }}
                 className={getButtonClass("waterMan")}
               >
-                WaterManagements
+                Water Managements
               </li>
               <li
                 onClick={() => {
@@ -231,6 +234,24 @@ const AdminDashboard = () => {
                 className={getButtonClass("vehicleMan")}
               >
                 Vehicle Managements
+              </li>
+              <li
+                onClick={() => {
+                  setActiveComponent("messMan");
+                  setIsManOpen(false);
+                }}
+                className={getButtonClass("messMan")}
+              >
+                Mess Managements
+              </li>
+              <li
+                onClick={() => {
+                  setActiveComponent("manpowerMan");
+                  setIsManOpen(false);
+                }}
+                className={getButtonClass("manpowerMan")}
+              >
+                Manpower Managements
               </li>
             </ul>
           )}

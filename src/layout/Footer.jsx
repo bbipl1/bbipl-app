@@ -43,17 +43,17 @@ const Footer = () => {
     };
   }, []);
   return (
-    <footer className="bg-gray-200 text-black">
+    <footer className="bg-black text-white">
       <div className="p-0">
         <h2 className="text-lg font-bold ">
-          <img
+          {/* <img
             src="/assets/logo/logo-png.png"
             alt="logo"
             srcset=""
             className="h-20 w-auto m-auto"
-          />
+          /> */}
         </h2>
-        <p className="mt-2 text-center">
+        <p className="mt-2 text-center text-xl py-20">
           Dedicated to providing the best services and solutions to our clients.
           Your satisfaction is our priority.
         </p>
@@ -122,7 +122,7 @@ const Footer = () => {
 
       <hr />
 
-      <div className="grid grid-cols-3 lg:grid-cols-6 bg-slate-800 w-full p-0 text-white">
+      <div className="grid grid-cols-3 lg:grid-cols-6 bg-black w-full p-0 text-white">
         <div className="text-center mt-6 text-sm">
           &copy; {new Date().getFullYear()} Our Company. All rights reserved.
         </div>
