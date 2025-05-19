@@ -15,6 +15,7 @@ const SiteEngineerAttendanceForm = ({ siteEng }) => {
   const [isCameraOpen, setIsCameraOpen] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [dataToSend, setDataToSend] = useState([]);
+    const [switchCamera,setSwitchCamera]=useState();
 
   console.log(siteEng.objId);
   useEffect(() => {

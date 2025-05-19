@@ -4,12 +4,13 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
   const videoRef = useRef(null);
   const streamRef = useRef(null); // To hold the stream reference
   const [capturedImage, setCapturedImage] = useState(null);
+   const [facingMode, setFacingMode] = useState("user");
 
   // Start the camera on mount
   useEffect(() => {
     const startCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode },});
         streamRef.current = stream; // Save stream reference
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -27,7 +28,7 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
-  }, []);
+  }, [facingMode]);
 
   // Capture an image
   const captureImage = () => {
@@ -56,6 +57,10 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
     setIsCameraOpen(false);
   };
 
+  const switchCamera = () => {
+    setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+  };
+
   return (
     <div className="fixed left-20 top-32 w-full h-full">
       <video
@@ -77,6 +82,12 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
       >
         Close
       </button>
+      <button
+          onClick={switchCamera}
+          className="bg-yellow-500 text-white p-2 rounded-md mr-2"
+        >
+          Switch Camera
+        </button>
       </div>
       {capturedImage && (
         <div className="mt-4">
