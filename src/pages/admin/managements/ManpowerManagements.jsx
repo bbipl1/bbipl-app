@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import apiService from "../../../api/services/apiServices";
-import { Edit2Icon, Trash2, X } from "lucide-react";
-import ImageSlider from "../../../components/VideoSlider";
+import { Edit2Icon, Lock, Trash2, UnlockIcon, X } from "lucide-react";
+import FullScreenLoading from "../../../loading/FullScreenLoading";
 
 const ManpowerManagements = () => {
   const [siteEngs, setSiteEngs] = useState(null);
@@ -9,6 +9,8 @@ const ManpowerManagements = () => {
   const [selectedSiteEng, setSelectedSiteEng] = useState(null);
   const [showImg, setShowImg] = useState(false);
   const [showImgurl, setShowImgurl] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
     const suburl = `/api/constructions/site-engineers/get-all-site-engineers?populate_user=true`;
@@ -21,7 +23,7 @@ const ManpowerManagements = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     setSelectedSiteEng(
@@ -29,21 +31,87 @@ const ManpowerManagements = () => {
     );
   }, [selectedSiteEngId, siteEngs]);
 
+  const handleEdit = () => {
+    alert("Coming soon.");
+  };
 
-  const handleEdit=()=>{
-    alert('Coming soon.')
-  }
+  const handleDelete = () => {
+    alert("Coming soon.");
+  };
 
-  const handleDelete=()=>{
-    alert("Coming soon.")
-  }
+  const handleLock = (id) => {
+     const userRes = window.confirm(
+      "Are you sure to lock manpower?\nNote: pan/aadhaar/account details of the manpower can not be updated by site engineer."
+    );
+    if (!userRes) {
+      return;
+    }
+    setIsLoading(true);
+    const suburl = `/api/constructions/site-engineers/lock-worker-to-not-upload-images`;
+    const payload = { id };
+    apiService
+      .put(suburl, payload)
+      .then((res) => {
+        console.log(res);
+        setRefresh(refresh + 1);
+        alert(res?.msg);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.data?.err) {
+          alert("something went wrong");
+        } else {
+          alert(err?.response?.data?.err);
+        }
+      })
+      .finally((final) => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleUnlock = (id) => {
+    const userRes = window.confirm(
+      "Are you sure to unlock manpower?\nNote: pan/aadhaar/account details of the manpower can be updated by site engineer."
+    );
+    if (!userRes) {
+      return;
+    }
+    setIsLoading(true)
+    const suburl = `/api/constructions/site-engineers/unlock-worker-to-upload-images`;
+    const payload = { id };
+    apiService
+      .put(suburl, payload)
+      .then((res) => {
+        console.log(res);
+        setRefresh(refresh + 1);
+        alert(res?.msg);
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err?.response?.data?.err) {
+          alert("something went wrong");
+        } else {
+          alert(err?.response?.data?.err);
+        }
+      })
+      .finally((final) => {
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div>
+      {isLoading && <FullScreenLoading />}
       {showImg && (
         <>
           <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 border-blue-200 bg-blue-300 p-4 rounded-lg shadow-lg">
-          <X onClick={()=>{setShowImg(false)}} className="text-red-500 cursor-pointer mt-2 absolute right-0 top-0" size={32} />
+            <X
+              onClick={() => {
+                setShowImg(false);
+              }}
+              className="text-red-500 cursor-pointer mt-2 absolute right-0 top-0"
+              size={32}
+            />
             <img
               className="w-96 h-96 object-contain"
               src={showImgurl}
@@ -168,8 +236,34 @@ const ManpowerManagements = () => {
                         </td>
                         <td>
                           <div className="flex justify-evenly">
-                            <Edit2Icon onClick={handleEdit} className="text-green-500 hover:text-green-600 cursor-pointer" />{" "}
-                            <Trash2 onClick={handleDelete} className="text-red-500 hover:text-red-600 cursor-pointer" />
+                            {wc?.isEditable ? (
+                              <>
+                                <UnlockIcon
+                                  onClick={() => {
+                                    
+                                     handleLock(wc?._id);
+                                  }}
+                                  className="text-red-500 cursor-pointer"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <Lock
+                                  onClick={() => {
+                                   handleUnlock(wc?._id);
+                                  }}
+                                  className="text-green-500 cursor-pointer"
+                                />
+                              </>
+                            )}
+                            <Edit2Icon
+                              onClick={handleEdit}
+                              className="text-green-500 hover:text-green-600 cursor-pointer"
+                            />{" "}
+                            <Trash2
+                              onClick={handleDelete}
+                              className="text-red-500 hover:text-red-600 cursor-pointer"
+                            />
                           </div>
                         </td>
                       </tr>
@@ -259,8 +353,36 @@ const ManpowerManagements = () => {
                           </td>
                           <td>
                             <div className="flex justify-evenly">
-                              <Edit2Icon onClick={handleEdit} className="text-green-500 hover:text-green-600 cursor-pointer" />{" "}
-                              <Trash2 onClick={handleDelete} className="text-red-500 hover:text-red-600 cursor-pointer" />
+                                {wc?.isEditable ? (
+                              <>
+                                <UnlockIcon
+                                  onClick={() => {
+                                    
+                                    //  handleLock(wc?._id);
+                                    alert("Permission not allowed.")
+                                  }}
+                                  className="text-red-500 cursor-pointer"
+                                />
+                              </>
+                            ) : (
+                              <>
+                                <Lock
+                                  onClick={() => {
+                                //    handleUnlock(wc?._id);
+                                alert("Permission not allowed.")
+                                  }}
+                                  className="text-green-500 cursor-pointer"
+                                />
+                              </>
+                            )}
+                              <Edit2Icon
+                                onClick={handleEdit}
+                                className="text-green-500 hover:text-green-600 cursor-pointer"
+                              />{" "}
+                              <Trash2
+                                onClick={handleDelete}
+                                className="text-red-500 hover:text-red-600 cursor-pointer"
+                              />
                             </div>
                           </td>
                         </tr>
