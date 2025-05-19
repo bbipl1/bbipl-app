@@ -57,13 +57,13 @@ const ShowUserAttendance = () => {
   // Apply filters to the data
   const applyFilters = () => {
     const { empId, empMobile, empRole, date } = filters;
-    const filtered = attendanceData.filter((record) => {
+    const filtered = attendanceData?.filter((record) => {
       return (
-        (!empId || record.empId.toString().includes(empId)) &&
-        (!empMobile || record.empMobile.toString().includes(empMobile)) &&
+        (!empId || record?.empId?.toString()?.includes(empId)) &&
+        (!empMobile || record?.empMobile?.toString()?.includes(empMobile)) &&
         (!empRole ||
-          record.empRole.toLowerCase().includes(empRole.toLowerCase())) &&
-        (!date || new Date(date)?.toLocaleDateString("en-GB") === record.date)
+          record?.empRole?.toLowerCase()?.includes(empRole?.toLowerCase())) &&
+        (!date || new Date(date)?.toLocaleDateString("en-GB") === record?.date)
       );
     });
     setFilteredData(filtered);
@@ -180,6 +180,7 @@ const ShowUserAttendance = () => {
                 <th className="border border-gray-300 px-4 py-2">Day</th>
                 <th className="border border-gray-300 px-4 py-2">Time</th>
                 <th className="border border-gray-300 px-4 py-2">Location</th>
+                <th className="border border-gray-300 px-4 py-2">Address</th>
               </tr>
             </thead>
             <tbody>
@@ -209,10 +210,11 @@ const ShowUserAttendance = () => {
                   <td className="border border-gray-300 px-4 py-2">
                     {record.time}
                   </td>
-                  <td>
+                  <td className="border border-gray-300 px-4 py-2">
                     <h1>Latitude: {record?.siteLocation.latitude} </h1>
                     <h1>Longitude: {record?.siteLocation.longitude} </h1>
                   </td>
+                  <td className="border border-gray-300 px-4 py-2">{record?.siteLocation.address}</td>
                 </tr>
               ))}
             </tbody>

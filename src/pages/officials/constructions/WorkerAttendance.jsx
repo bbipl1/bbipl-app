@@ -224,26 +224,6 @@ function AttendanceForm() {
     }
   };
 
-  const handleSave = () => {
-    if (videoBlob) {
-      const url = URL.createObjectURL(videoBlob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recorded-video.webm";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  };
-  const handleUpload = () => {
-    if (videoBlob) {
-      const url = URL.createObjectURL(videoBlob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recorded-video.webm";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
