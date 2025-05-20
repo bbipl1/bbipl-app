@@ -65,7 +65,7 @@ const CameraImage = ({ onCapture, setIsCameraOpen }) => {
   };
 
   return (
-    <div className="fixed left-0 md:left-8 lg:left-1/4 top-28 z-50 p-4 bg-slate-700 border-2 border-red-600 rounded-lg">
+    <div className="max-w-screen fixed left-0 md:left-8 lg:left-1/4 top-28 z-50 p-4 bg-slate-700 border-2 border-red-600 rounded-lg">
       <video
         ref={videoRef}
         autoPlay
