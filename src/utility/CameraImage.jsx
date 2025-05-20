@@ -1,16 +1,19 @@
+import { CameraIcon, SwitchCameraIcon, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-const CameraImage = ({ onCapture,setIsCameraOpen }) => {
+const CameraImage = ({ onCapture, setIsCameraOpen }) => {
   const videoRef = useRef(null);
   const streamRef = useRef(null); // To hold the stream reference
   const [capturedImage, setCapturedImage] = useState(null);
-   const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("user");
 
   // Start the camera on mount
   useEffect(() => {
     const startCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode },});
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
+        });
         streamRef.current = stream; // Save stream reference
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -62,31 +65,31 @@ const CameraImage = ({ onCapture,setIsCameraOpen }) => {
   };
 
   return (
-    <div className="fixed left-20 top-32 w-full h-full">
+    <div className="fixed left-0 md:left-8 lg:left-1/4 top-28 z-50 p-4 bg-slate-700 border-2 border-red-600 rounded-lg">
       <video
         ref={videoRef}
         autoPlay
         playsInline
-        className="w-64 h-64 border border-gray-300 rounded-md bg-neutral-200"
+        className="w-3840 h-2160 border border-gray-300 rounded-md bg-neutral-200"
       ></video>
-      <div>
+      <div className="w-3840 flex flex-row justify-evenly mt-4">
         <button
-        onClick={captureImage}
-        className="mt-4 bg-blue-500 text-white p-2 rounded-md mr-1 ml-2"
-      >
-        Capture Image
-      </button>
-      <button
-        onClick={close}
-        className="mt-4 bg-red-600 text-white p-2 rounded-md ml-1"
-      >
-        Close
-      </button>
-      <button
-          onClick={switchCamera}
-          className="bg-yellow-500 text-white p-2 rounded-md mr-2"
+          onClick={captureImage}
+          className=" bg-blue-500 text-white p-2 rounded-md mr-1 ml-2"
         >
-          Switch Camera
+          <CameraIcon />
+        </button>
+        <button
+          onClick={close}
+          className=" bg-red-600 text-white p-2 rounded-md ml-1"
+        >
+          <X />
+        </button>
+        <button
+          onClick={switchCamera}
+          className="bg-yellow-500 text-white p-2 rounded-md"
+        >
+          <SwitchCameraIcon />
         </button>
       </div>
       {capturedImage && (
