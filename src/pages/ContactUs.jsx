@@ -172,19 +172,19 @@ const Contact = (props) => {
                   <span className="font-semibold">Address:</span>{" "}
                   {props.data
                     ? props.data.address
-                    : "vibhutikhand, gomti nagar lucknow"}
+                    : "Near nursery puliya, mohan road, Auras, unnao, Uttar Pradesh"}
                 </p>
               </div>
               <div className="contact-item">
                 <p className="text-gray-600">
                   <span className="font-semibold">Phone:</span>{" "}
-                  {props.data ? props.data.phone : "+91 75036 77953"}
+                  {props.data ? props.data.phone : "+917080206885"}
                 </p>
               </div>
               <div className="contact-item">
                 <p className="text-gray-600">
                   <span className="font-semibold">Email:</span>{" "}
-                  {props.data ? props.data.email : "Rakesh@businessbasket.in"}
+                  {props.data ? props.data.email : "rakesh@businessbasket.in"}
                 </p>
               </div>
             </div>

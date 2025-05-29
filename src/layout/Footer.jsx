@@ -87,30 +87,30 @@ const Footer = () => {
           </p>
           <p className="mt-3">
             Phone:{" "}
-            <a href="tel:+91 75036 77953" className="hover:text-blue-600 ">
-              +917503677953
+            <a href="tel:+917080206885" className="hover:text-blue-600 ">
+              +917080206885
             </a>
           </p>
         </div>
         <div className="flex space-x-10 mt-5 text-center m-6">
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/share/184ZL2vA4E/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-600"
           >
             <i className="fa fa-facebook"></i> Facebook
           </a>
-          <a
+          {/* <a
             href="https://twitter.com"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-600"
           >
             <i className="fa fa-twitter"></i> Twitter
-          </a>
+          </a> */}
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/company/business-basket-infratech-pvt-ltd/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-600"
@@ -127,7 +127,7 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} Our Company. All rights reserved.
         </div>
         <div className="text-center mt-6 text-sm">
-          <Link to="/pages/privacy-policy">Privacy Policy</Link>
+          <Link id='pp' to="/pages/privacy-policy">Privacy Policy</Link>
         </div>
         <div className="text-center mt-6 text-sm">
           <Link to="/pages/terms-and-conditions">T&C / ToS</Link>
@@ -135,9 +135,9 @@ const Footer = () => {
         <div className="text-center mt-6 text-sm">
           <Link to="/pages/cookies-policy">Cookie Policy</Link>
         </div>
-        <div className="text-center mt-6 text-sm">
+        {/* <div className="text-center mt-6 text-sm">
           <Link to="/pages/refund-policy"> Refund Policy</Link>
-        </div>
+        </div> */}
         <div className="text-center mt-6 text-sm">
           <Link to="/pages/disclaimers">Disclaimer</Link>
         </div>

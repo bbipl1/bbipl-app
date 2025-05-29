@@ -13,7 +13,7 @@ const FloatingSocialBar = () => {
       <div className="fixed top-1/3 right-2 md:right-4 flex flex-col space-y-3 z-50">
         {/* WhatsApp */}
         <motion.a
-          href={`https://wa.me/${whatsappNumber}`}
+          href={`https://wa.me/+917080206885`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-green-500 text-white rounded-full shadow-lg transition-transform transform hover:scale-110 p-2"
@@ -25,7 +25,7 @@ const FloatingSocialBar = () => {
 
         {/* Phone */}
         <motion.a
-          href={`tel:${phoneNumber}`}
+          href={`tel:+917080206885`}
           className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-blue-500 text-white rounded-full shadow-lg transition-transform transform hover:scale-110 p-2"
           aria-label="Phone"
           whileTap={{ scale: 0.85 }}
@@ -35,7 +35,7 @@ const FloatingSocialBar = () => {
 
         {/* Email */}
         <motion.a
-          href={`mailto:${email}`}
+          href={`mailto:rakesh@businessbasket.in`}
           className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-red-500 text-white rounded-full shadow-lg transition-transform transform hover:scale-110 p-2"
           aria-label="Email"
           whileTap={{ scale: 0.85 }}

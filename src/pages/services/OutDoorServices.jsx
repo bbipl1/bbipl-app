@@ -86,7 +86,7 @@ const outdoorServices = [
     description: "Comprehensive population data collection for government and policy-making purposes.",
   },
   {
-    title: "Ground Trothing",
+    title: "Ground Truthing",
     img: groundTrothing,
     description: "Validating remote sensing data by physically inspecting survey locations.",
   },
