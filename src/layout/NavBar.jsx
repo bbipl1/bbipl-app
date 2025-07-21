@@ -64,7 +64,7 @@ const NavBar = () => {
               Home
             </Link>
           </li>
-          <li className="relative">
+          {/* <li className="relative">
             <button
               onClick={toggleFormsDropdown}
               name="forms"
@@ -85,8 +85,8 @@ const NavBar = () => {
                 </li>
               </ul>
             )}
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
             <Link
               onClick={handleMenuItemClick}
               to="/pages/map"
@@ -94,7 +94,7 @@ const NavBar = () => {
             >
               Map
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to="/pages/contact-us"

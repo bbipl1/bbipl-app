@@ -55,7 +55,7 @@ const Contact = (props) => {
   };
 
   return (
-    <div>
+    <div className="w-full px-24">
       <div id="contact" className="py-16 bg-white">
         <div className="container mx-auto px-6">
           <div className="section-title  flex justify-items-center flex-col items-center mb-16">
